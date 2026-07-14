@@ -7,10 +7,6 @@
 [![Gemini](https://img.shields.io/badge/Gemini_Flash-Latest-4285F4?style=flat-square&logo=google&logoColor=white)](https://aistudio.google.com)
 [![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
 
-<img src="docs/demo.gif" alt="Demo — describe automation, get JSON" width="100%" />
-
-> **TODO:** Record a screen-capture GIF of a prompt → JSON generation flow and save it to `docs/demo.gif`. Screenshots of the current UI are in `public/screenshots/`.
-
 ---
 
 ## What it does
