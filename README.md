@@ -95,7 +95,7 @@ Instead of manually dragging nodes, wiring connections, and writing boilerplate 
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/pun33th45/n8n-workflow-generator.git op8n
+git clone https://github.com/your-username/op8n.git
 cd op8n
 
 # 2. Install dependencies
@@ -197,5 +197,5 @@ op8n/
 ## 📄 Attribution & License
 
 - Licensed under the **[MIT License](LICENSE)**.
-- Original core workflow generator prototype created by [Puneeth Raj](https://github.com/pun33th45).
+- Created and developed by **Meet Prajapati**.
 - Op8n is an independent project and is **not affiliated with, maintained by, or endorsed by n8n GmbH**.

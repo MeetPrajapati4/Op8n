@@ -46,8 +46,8 @@ export default function Footer() {
       {/* Right: Attribution, License & Version */}
       <div className="flex items-center gap-2.5 sm:gap-3 text-zinc-400 flex-shrink-0">
         <div className="hidden sm:inline-flex items-center gap-1 text-zinc-400 hover:text-zinc-200 transition-colors">
-          <span>Original core by</span>
-          <span className="font-medium text-zinc-300">Puneeth Raj</span>
+          <span>Created by</span>
+          <span className="font-medium text-zinc-300">Meet Prajapati</span>
           <span className="text-[10px] text-zinc-500 font-mono">(MIT)</span>
         </div>
 
