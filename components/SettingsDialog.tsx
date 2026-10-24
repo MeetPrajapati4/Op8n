@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Eye, EyeOff, ShieldCheck, ExternalLink } from 'lucide-react';
+import { Sliders, CheckCircle2, Server, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -11,193 +11,256 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import {
-  AIProvider,
-  PROVIDERS,
-  UserAISettings,
-  getStoredSettings,
-  saveStoredSettings,
-} from '@/lib/providers';
+  WorkflowPreferences,
+  DEFAULT_PREFERENCES,
+  getStoredPreferences,
+  saveStoredPreferences,
+} from '@/lib/settings';
 
 interface SettingsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSaved?: (settings: UserAISettings) => void;
+  onSaved?: (prefs: WorkflowPreferences) => void;
 }
+
+const TIMEZONES = [
+  'UTC',
+  'America/New_York',
+  'America/Chicago',
+  'America/Los_Angeles',
+  'Europe/London',
+  'Europe/Berlin',
+  'Asia/Kolkata',
+  'Asia/Singapore',
+  'Asia/Tokyo',
+  'Australia/Sydney',
+];
 
 export default function SettingsDialog({
   open,
   onOpenChange,
   onSaved,
 }: SettingsDialogProps) {
-  const [settings, setSettings] = useState<UserAISettings>(getStoredSettings());
-  const [showKey, setShowKey] = useState(false);
+  const [prefs, setPrefs] = useState<WorkflowPreferences>(DEFAULT_PREFERENCES);
 
   useEffect(() => {
     if (open) {
-      setSettings(getStoredSettings());
+      setPrefs(getStoredPreferences());
     }
   }, [open]);
 
-  const currentProviderInfo = PROVIDERS[settings.provider] || PROVIDERS.gemini;
-
-  const handleProviderChange = (newProvider: AIProvider) => {
-    const prov = PROVIDERS[newProvider];
-    setSettings((prev) => ({
-      ...prev,
-      provider: newProvider,
-      model: prov.defaultModel,
-      baseUrl: newProvider === 'ollama' ? prev.baseUrl || 'http://localhost:11434' : undefined,
-    }));
-  };
-
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    saveStoredSettings(settings);
-    toast.success('AI provider settings saved!');
-    onSaved?.(settings);
+    saveStoredPreferences(prefs);
+    toast.success('Workflow preferences saved!');
+    onSaved?.(prefs);
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[460px] bg-[#18181b] border-[#2e2e35] text-zinc-100">
+      <DialogContent className="sm:max-w-[480px] bg-[#18181b] border-[#2e2e35] text-zinc-100 max-h-[88vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
-            AI Provider &amp; Model
+          <DialogTitle className="text-base font-bold text-white flex items-center gap-2">
+            <Sliders className="w-4 h-4 text-[#FF6D5A]" />
+            Workflow Engine Preferences
           </DialogTitle>
           <DialogDescription className="text-xs text-zinc-400">
-            Configure your AI provider or Bring Your Own Key (BYOK).
+            Customize how Op8n shapes, formats, and deploys your generated n8n workflows.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSave} className="flex flex-col gap-4 mt-2">
-          {/* Provider Selector */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-zinc-300">
-              Provider
-            </label>
-            <select
-              value={settings.provider}
-              onChange={(e) => handleProviderChange(e.target.value as AIProvider)}
-              className="w-full px-3 py-2 rounded-lg bg-[#111113] border border-[#2e2e35] text-sm text-zinc-200 focus:outline-none focus:border-[#FF6D5A] focus:ring-1 focus:ring-[#FF6D5A]"
-            >
-              {Object.values(PROVIDERS).map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name}
-                </option>
-              ))}
-            </select>
-          </div>
+        <form onSubmit={handleSave} className="flex flex-col gap-4 mt-1">
+          {/* Section 1: Generation Preferences */}
+          <div className="flex flex-col gap-3 p-3 rounded-lg bg-[#111113] border border-[#2e2e35]">
+            <span className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wider">
+              Canvas &amp; Generation Rules
+            </span>
 
-          {/* Model Selector */}
-          <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-medium text-zinc-300">
-              Model
-            </label>
-            <div className="flex gap-2">
+            {/* Error handling strategy */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-zinc-300 flex items-center justify-between">
+                <span>Default Node Error Handling</span>
+                <span className="text-[11px] text-zinc-500 font-mono">
+                  {prefs.errorHandling === 'continue'
+                    ? 'continueOnFail'
+                    : prefs.errorHandling === 'retry'
+                    ? '3 retries'
+                    : 'strict halt'}
+                </span>
+              </label>
               <select
-                value={settings.model}
+                value={prefs.errorHandling}
                 onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, model: e.target.value }))
+                  setPrefs((prev) => ({
+                    ...prev,
+                    errorHandling: e.target.value as 'none' | 'continue' | 'retry',
+                  }))
                 }
-                className="w-full px-3 py-2 rounded-lg bg-[#111113] border border-[#2e2e35] text-sm text-zinc-200 focus:outline-none focus:border-[#FF6D5A] focus:ring-1 focus:ring-[#FF6D5A]"
+                className="w-full px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#2e2e35] text-xs text-zinc-200 focus:outline-none focus:border-[#FF6D5A]"
               >
-                {currentProviderInfo.models.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
+                <option value="none">Strict (Stop on error)</option>
+                <option value="continue">Resilient (Continue execution on failure)</option>
+                <option value="retry">Auto-Retry (Retry failed action nodes 3x)</option>
+              </select>
+            </div>
+
+            {/* Layout Spacing */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-zinc-300 flex items-center justify-between">
+                <span>Canvas Node Spacing</span>
+                <span className="text-[11px] text-zinc-500 font-mono">
+                  {prefs.layoutSpacing}px offset
+                </span>
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: 'Compact', value: 180 },
+                  { label: 'Standard', value: 220 },
+                  { label: 'Spacious', value: 280 },
+                ].map((s) => (
+                  <button
+                    key={s.value}
+                    type="button"
+                    onClick={() =>
+                      setPrefs((prev) => ({
+                        ...prev,
+                        layoutSpacing: s.value as 180 | 220 | 280,
+                      }))
+                    }
+                    className={`py-1.5 text-xs font-medium rounded-md border transition-all ${
+                      prefs.layoutSpacing === s.value
+                        ? 'border-[#FF6D5A] bg-[#FF6D5A]/15 text-white font-semibold'
+                        : 'border-[#2e2e35] bg-[#18181b] text-zinc-400 hover:text-zinc-200'
+                    }`}
+                  >
+                    {s.label} ({s.value}px)
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Timezone */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-medium text-zinc-300">
+                Default Schedule Timezone
+              </label>
+              <select
+                value={prefs.timezone}
+                onChange={(e) =>
+                  setPrefs((prev) => ({ ...prev, timezone: e.target.value }))
+                }
+                className="w-full px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#2e2e35] text-xs text-zinc-200 focus:outline-none focus:border-[#FF6D5A]"
+              >
+                {TIMEZONES.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
                   </option>
                 ))}
               </select>
             </div>
+
+            {/* Toggles */}
+            <div className="flex flex-col gap-2 pt-1 border-t border-[#232328]">
+              {/* PinData Mock Data Toggle */}
+              <label className="flex items-center justify-between cursor-pointer text-xs text-zinc-300 hover:text-white">
+                <div className="flex flex-col">
+                  <span className="font-medium">Inject Sample Mock Payloads (pinData)</span>
+                  <span className="text-[11px] text-zinc-500">
+                    Allows immediate testing in n8n canvas without live webhooks
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={prefs.injectPinData}
+                  onChange={(e) =>
+                    setPrefs((prev) => ({ ...prev, injectPinData: e.target.checked }))
+                  }
+                  className="rounded border-[#2e2e35] text-[#FF6D5A] focus:ring-[#FF6D5A] w-4 h-4 cursor-pointer"
+                />
+              </label>
+
+              {/* Sticky Note Documentation Toggle */}
+              <label className="flex items-center justify-between cursor-pointer text-xs text-zinc-300 hover:text-white">
+                <div className="flex flex-col">
+                  <span className="font-medium">Auto-add Canvas Sticky Note</span>
+                  <span className="text-[11px] text-zinc-500">
+                    Generates a sticky note with workflow summary &amp; credentials checklist
+                  </span>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={prefs.addStickyNote}
+                  onChange={(e) =>
+                    setPrefs((prev) => ({ ...prev, addStickyNote: e.target.checked }))
+                  }
+                  className="rounded border-[#2e2e35] text-[#FF6D5A] focus:ring-[#FF6D5A] w-4 h-4 cursor-pointer"
+                />
+              </label>
+            </div>
           </div>
 
-          {/* Ollama Base URL if selected */}
-          {settings.provider === 'ollama' && (
+          {/* Section 2: n8n Instance Connection for 1-Click Deploy */}
+          <div className="flex flex-col gap-3 p-3 rounded-lg bg-[#111113] border border-[#2e2e35]">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Server className="w-3.5 h-3.5 text-[#FF6D5A]" />
+                n8n Instance (Optional)
+              </span>
+              <span className="text-[10px] text-zinc-500">For 1-click deploy</span>
+            </div>
+
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-zinc-300">
-                Ollama Endpoint URL
+              <label className="text-xs font-medium text-zinc-400">
+                n8n Base URL
               </label>
               <input
-                type="text"
-                value={settings.baseUrl || 'http://localhost:11434'}
+                type="url"
+                value={prefs.n8nBaseUrl || ''}
                 onChange={(e) =>
-                  setSettings((prev) => ({ ...prev, baseUrl: e.target.value }))
+                  setPrefs((prev) => ({ ...prev, n8nBaseUrl: e.target.value }))
                 }
-                placeholder="http://localhost:11434"
-                className="w-full px-3 py-2 rounded-lg bg-[#111113] border border-[#2e2e35] text-sm text-zinc-200 focus:outline-none focus:border-[#FF6D5A] focus:ring-1 focus:ring-[#FF6D5A]"
+                placeholder="e.g. https://n8n.yourdomain.com"
+                className="w-full px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#2e2e35] text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-[#FF6D5A]"
               />
             </div>
-          )}
 
-          {/* API Key */}
-          {settings.provider !== 'ollama' && (
             <div className="flex flex-col gap-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-medium text-zinc-300">
-                  {currentProviderInfo.name} API Key
-                </label>
-                {currentProviderInfo.keyUrl && (
-                  <a
-                    href={currentProviderInfo.keyUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-[11px] text-[#FF6D5A] hover:underline flex items-center gap-1"
-                  >
-                    Get API key <ExternalLink className="w-3 h-3" />
-                  </a>
-                )}
-              </div>
-              <div className="relative">
-                <input
-                  type={showKey ? 'text' : 'password'}
-                  value={settings.apiKey}
-                  onChange={(e) =>
-                    setSettings((prev) => ({ ...prev, apiKey: e.target.value }))
-                  }
-                  placeholder={
-                    settings.provider === 'gemini'
-                      ? 'Leave blank to use default server key'
-                      : currentProviderInfo.placeholderKey
-                  }
-                  className="w-full pr-10 pl-3 py-2 rounded-lg bg-[#111113] border border-[#2e2e35] text-sm text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-[#FF6D5A] focus:ring-1 focus:ring-[#FF6D5A]"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowKey(!showKey)}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
-                >
-                  {showKey ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </button>
-              </div>
+              <label className="text-xs font-medium text-zinc-400">
+                n8n API Key
+              </label>
+              <input
+                type="password"
+                value={prefs.n8nApiKey || ''}
+                onChange={(e) =>
+                  setPrefs((prev) => ({ ...prev, n8nApiKey: e.target.value }))
+                }
+                placeholder="n8n_api_key_..."
+                className="w-full px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#2e2e35] text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-[#FF6D5A]"
+              />
             </div>
-          )}
-
-          {/* Security guarantee note */}
-          <div className="p-2.5 rounded-lg bg-[#111113] border border-[#2e2e35] flex items-start gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-400 flex-shrink-0 mt-0.5" />
-            <p className="text-[11px] text-zinc-400 leading-tight">
-              <strong>BYOK Security:</strong> Keys remain stored exclusively in your browser&apos;s <code className="text-zinc-300 font-mono">localStorage</code> and are forwarded only in HTTP headers. Never logged, cached, or returned to clients.
-            </p>
           </div>
 
-          <div className="flex justify-end gap-2 mt-2">
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="px-4 py-2 rounded-lg text-xs font-medium border border-[#2e2e35] text-zinc-300 hover:bg-[#27272a] transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white hover:opacity-90 transition-opacity"
-            >
-              Save Settings
-            </button>
+          <div className="flex items-center justify-between mt-1 pt-2 border-t border-[#2e2e35]">
+            <div className="flex items-center gap-1 text-[11px] text-emerald-400">
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Built-in Fast AI Engine Active</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2e2e35] text-zinc-400 hover:text-white"
+              >
+                Close
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white hover:opacity-90 transition-opacity"
+              >
+                Save Preferences
+              </button>
+            </div>
           </div>
         </form>
       </DialogContent>

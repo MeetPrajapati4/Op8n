@@ -3,12 +3,12 @@ import { z } from 'zod';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { SYSTEM_PROMPT } from '@/lib/prompt';
 import { validateAndRepairWorkflow } from '@/lib/validator';
-import { AIProvider } from '@/lib/providers';
+import { DEFAULT_PREFERENCES, WorkflowPreferences } from '@/lib/settings';
 
-// Basic in-memory rate limiter (20 requests per minute per IP)
+// Basic in-memory rate limiter (30 requests per minute per IP)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
-const MAX_REQUESTS_PER_WINDOW = 20;
+const MAX_REQUESTS_PER_WINDOW = 30;
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now();
@@ -33,6 +33,16 @@ const generateInputSchema = z.object({
     .string()
     .min(3, 'Description must be at least 3 characters long')
     .max(5000, 'Description must not exceed 5,000 characters'),
+  preferences: z
+    .object({
+      targetVersion: z.enum(['v1', 'v0']).optional(),
+      injectPinData: z.boolean().optional(),
+      errorHandling: z.enum(['none', 'continue', 'retry']).optional(),
+      layoutSpacing: z.union([z.literal(180), z.literal(220), z.literal(280)]).optional(),
+      addStickyNote: z.boolean().optional(),
+      timezone: z.string().optional(),
+    })
+    .optional(),
 });
 
 function cleanJsonString(raw: string): string {
@@ -54,27 +64,11 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Parse headers
-  const provider = (req.headers.get('x-provider') || 'gemini') as AIProvider;
-  const modelName = req.headers.get('x-model') || (provider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o-mini');
-  const userApiKey = req.headers.get('x-api-key') || '';
-  const userBaseUrl = req.headers.get('x-base-url') || undefined;
-
-  // Resolve API key
-  let apiKey = userApiKey.trim();
-  if (!apiKey && provider === 'gemini') {
-    apiKey = process.env.GEMINI_API_KEY || '';
-  }
-
-  if (provider !== 'ollama' && (!apiKey || apiKey === 'your_key_here')) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey || apiKey === 'your_key_here') {
     return NextResponse.json(
-      {
-        error:
-          provider === 'gemini'
-            ? 'Please add your Gemini API key in Settings or configure GEMINI_API_KEY in .env.local'
-            : `Please add your ${provider} API key in Settings`,
-      },
-      { status: 400 }
+      { error: 'Server GEMINI_API_KEY is not configured in .env.local.' },
+      { status: 500 }
     );
   }
 
@@ -94,7 +88,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { description } = inputResult.data;
+  const { description, preferences = DEFAULT_PREFERENCES } = inputResult.data;
 
   // Server-Sent Events Streaming Response
   const encoder = new TextEncoder();
@@ -109,223 +103,59 @@ export async function POST(req: NextRequest) {
       try {
         sendEvent('step', 'Analyzing automation requirements…');
 
-        let rawOutput = '';
-        let retryCount = 0;
-        let lastErrors: string[] = [];
+        const genAI = new GoogleGenerativeAI(apiKey);
+        // Using gemini-2.5-flash with thinkingBudget: 0 and responseMimeType: application/json
+        // for ultra-fast generation (3-5 seconds response time!)
+        const geminiModel = genAI.getGenerativeModel({
+          model: 'gemini-2.5-flash',
+          generationConfig: {
+            temperature: 0.15,
+            responseMimeType: 'application/json',
+            thinkingConfig: {
+              thinkingBudget: 0,
+            },
+            maxOutputTokens: 2500,
+          } as any,
+        });
 
-        while (retryCount <= 2) {
-          if (retryCount > 0) {
-            sendEvent('step', `Auto-repairing workflow schema (attempt ${retryCount}/2)…`);
-          } else {
-            sendEvent('step', 'Choosing n8n nodes & building connection graph…');
-          }
+        sendEvent('step', 'Building n8n workflow graph…');
 
-          let promptText = `${SYSTEM_PROMPT}\n\nGenerate an n8n workflow for: ${description.trim()}`;
-          if (retryCount > 0 && lastErrors.length > 0) {
-            promptText += `\n\nCRITICAL FIX REQUIRED: Your previous output had these validation errors:\n${lastErrors.map((e) => `- ${e}`).join('\n')}\nFix ALL the above errors and output ONLY valid JSON.`;
-          }
-
-          rawOutput = '';
-
-          // Stream from provider
-          if (provider === 'gemini') {
-            const genAI = new GoogleGenerativeAI(apiKey);
-            const geminiModel = genAI.getGenerativeModel({
-              model: modelName.includes('gemini') ? modelName : 'gemini-2.5-flash',
-            });
-
-            const streamResult = await geminiModel.generateContentStream(promptText);
-            for await (const chunk of streamResult.stream) {
-              const text = chunk.text();
-              rawOutput += text;
-              sendEvent('chunk', text);
-            }
-          } else if (provider === 'openai' || provider === 'openrouter') {
-            const endpoint =
-              provider === 'openrouter'
-                ? 'https://openrouter.ai/api/v1/chat/completions'
-                : 'https://api.openai.com/v1/chat/completions';
-
-            const headers: Record<string, string> = {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${apiKey}`,
-            };
-            if (provider === 'openrouter') {
-              headers['HTTP-Referer'] = 'https://op8n.app';
-              headers['X-Title'] = 'Op8n';
-            }
-
-            const res = await fetch(endpoint, {
-              method: 'POST',
-              headers,
-              body: JSON.stringify({
-                model: modelName,
-                stream: true,
-                messages: [
-                  { role: 'system', content: SYSTEM_PROMPT },
-                  { role: 'user', content: promptText },
-                ],
-              }),
-            });
-
-            if (!res.ok) {
-              const errText = await res.text();
-              throw new Error(`${provider} error (${res.status}): ${errText}`);
-            }
-
-            const reader = res.body?.getReader();
-            const decoder = new TextDecoder();
-            if (reader) {
-              while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunkStr = decoder.decode(value);
-                const lines = chunkStr.split('\n');
-                for (const line of lines) {
-                  if (line.startsWith('data: ') && line !== 'data: [DONE]') {
-                    try {
-                      const parsed = JSON.parse(line.slice(6));
-                      const delta = parsed.choices?.[0]?.delta?.content || '';
-                      if (delta) {
-                        rawOutput += delta;
-                        sendEvent('chunk', delta);
-                      }
-                    } catch {
-                      // ignore parse errors of individual SSE chunks
-                    }
-                  }
-                }
-              }
-            }
-          } else if (provider === 'anthropic') {
-            const res = await fetch('https://api.anthropic.com/v1/messages', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': apiKey,
-                'anthropic-version': '2023-06-01',
-              },
-              body: JSON.stringify({
-                model: modelName,
-                max_tokens: 4000,
-                stream: true,
-                system: SYSTEM_PROMPT,
-                messages: [{ role: 'user', content: promptText }],
-              }),
-            });
-
-            if (!res.ok) {
-              const errText = await res.text();
-              throw new Error(`Anthropic error (${res.status}): ${errText}`);
-            }
-
-            const reader = res.body?.getReader();
-            const decoder = new TextDecoder();
-            if (reader) {
-              while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunkStr = decoder.decode(value);
-                const lines = chunkStr.split('\n');
-                for (const line of lines) {
-                  if (line.startsWith('data: ')) {
-                    try {
-                      const parsed = JSON.parse(line.slice(6));
-                      if (parsed.type === 'content_block_delta') {
-                        const delta = parsed.delta?.text || '';
-                        rawOutput += delta;
-                        sendEvent('chunk', delta);
-                      }
-                    } catch {
-                      // ignore parse errors
-                    }
-                  }
-                }
-              }
-            }
-          } else if (provider === 'ollama') {
-            const baseUrl = userBaseUrl || 'http://localhost:11434';
-            const res = await fetch(`${baseUrl}/api/chat`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                model: modelName,
-                stream: true,
-                messages: [
-                  { role: 'system', content: SYSTEM_PROMPT },
-                  { role: 'user', content: promptText },
-                ],
-              }),
-            });
-
-            if (!res.ok) {
-              const errText = await res.text();
-              throw new Error(`Ollama error (${res.status}): ${errText}`);
-            }
-
-            const reader = res.body?.getReader();
-            const decoder = new TextDecoder();
-            if (reader) {
-              while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                const chunkStr = decoder.decode(value);
-                const lines = chunkStr.split('\n');
-                for (const line of lines) {
-                  if (line.trim()) {
-                    try {
-                      const parsed = JSON.parse(line);
-                      const delta = parsed.message?.content || '';
-                      if (delta) {
-                        rawOutput += delta;
-                        sendEvent('chunk', delta);
-                      }
-                    } catch {
-                      // ignore parse error
-                    }
-                  }
-                }
-              }
-            }
-          }
-
-          // Validate and parse raw output
-          const cleaned = cleanJsonString(rawOutput);
-          let parsedWorkflow: unknown;
-          try {
-            parsedWorkflow = JSON.parse(cleaned);
-          } catch {
-            lastErrors = ['Output was not parseable as JSON. Please ensure valid JSON format.'];
-            retryCount++;
-            continue;
-          }
-
-          const validation = validateAndRepairWorkflow(parsedWorkflow);
-
-          if (!validation.isValid && retryCount < 2) {
-            lastErrors = validation.errors.map((e) => e.message);
-            retryCount++;
-            continue;
-          }
-
-          // Completed or max retries reached
-          sendEvent('step', 'Finalizing and verifying layout…');
-          sendEvent('done', {
-            workflow: validation.repairedWorkflow,
-            validation,
-            nodeCount: validation.repairedWorkflow.nodes.length,
-          });
-          controller.close();
-          return;
+        let promptText = `${SYSTEM_PROMPT}\n\nGenerate an n8n workflow for: ${description.trim()}`;
+        if (preferences.injectPinData) {
+          promptText += '\nInclude realistic sample test payload data in the trigger node parameters.';
         }
 
-        // If loop exited after 2 retries without a valid output
-        sendEvent('error', {
-          error: `Workflow generation failed after 2 repair attempts: ${lastErrors.join('; ')}`,
+        const streamResult = await geminiModel.generateContentStream(promptText);
+        let rawOutput = '';
+
+        for await (const chunk of streamResult.stream) {
+          const text = chunk.text();
+          rawOutput += text;
+          sendEvent('chunk', text);
+        }
+
+        sendEvent('step', 'Validating schema & checking credentials…');
+
+        // Parse and validate
+        const cleaned = cleanJsonString(rawOutput);
+        let parsedWorkflow: unknown;
+        try {
+          parsedWorkflow = JSON.parse(cleaned);
+        } catch {
+          throw new Error('Model output could not be parsed as JSON. Please retry.');
+        }
+
+        const validation = validateAndRepairWorkflow(parsedWorkflow, preferences as WorkflowPreferences);
+
+        sendEvent('done', {
+          workflow: validation.repairedWorkflow,
+          validation,
+          nodeCount: validation.repairedWorkflow.nodes.length,
         });
+
         controller.close();
       } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Unknown generation error occurred';
+        const message = err instanceof Error ? err.message : 'Unknown generation error';
         sendEvent('error', { error: message });
         controller.close();
       }
