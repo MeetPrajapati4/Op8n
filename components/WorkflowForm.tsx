@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Sparkles, Square } from 'lucide-react';
 
 const PRESETS = [
   {
@@ -38,10 +40,25 @@ const PRESETS = [
 interface WorkflowFormProps {
   onGenerate: (description: string) => void;
   isLoading: boolean;
+  onStop?: () => void;
+  externalDescription?: string;
+  generationStep?: string;
 }
 
-export default function WorkflowForm({ onGenerate, isLoading }: WorkflowFormProps) {
-  const [description, setDescription] = useState('');
+export default function WorkflowForm({
+  onGenerate,
+  isLoading,
+  onStop,
+  externalDescription,
+  generationStep,
+}: WorkflowFormProps) {
+  const [description, setDescription] = useState(externalDescription || '');
+
+  useEffect(() => {
+    if (externalDescription !== undefined) {
+      setDescription(externalDescription);
+    }
+  }, [externalDescription]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,75 +68,114 @@ export default function WorkflowForm({ onGenerate, isLoading }: WorkflowFormProp
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-zinc-400 uppercase tracking-wider">
-          Describe your automation
-        </label>
+    <form onSubmit={handleSubmit} className="flex flex-col h-full gap-4">
+      <div className="flex flex-col gap-2 flex-1 min-h-0">
+        <div className="flex items-center justify-between">
+          <label
+            htmlFor="automation-description"
+            className="text-xs font-semibold text-zinc-400 uppercase tracking-wider"
+          >
+            Describe your automation
+          </label>
+          <span className="text-[11px] text-zinc-500 font-mono">
+            {description.length} / 5,000 chars
+          </span>
+        </div>
         <textarea
+          id="automation-description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="e.g. Every morning at 9am, fetch top Hacker News posts and send a summary to my Telegram"
-          className="w-full rounded-lg border border-[#2e2e35] bg-[#18181b] text-zinc-100 placeholder-zinc-600 p-3 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[#e8ff47]/40 focus:border-[#e8ff47]/60 transition-colors"
-          style={{ minHeight: '120px' }}
+          className="w-full flex-1 min-h-[140px] rounded-lg border border-[#2e2e35] bg-[#141416] text-zinc-100 placeholder-zinc-600 p-3 text-sm resize-none focus:outline-none focus:border-[#FF6D5A] focus:ring-1 focus:ring-[#FF6D5A] transition-colors"
           disabled={isLoading}
         />
-        <span className="text-xs text-zinc-600 text-right">
-          {description.length} characters
-        </span>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
-          Presets
+      {/* Preset Chips */}
+      <div className="flex flex-col gap-2 flex-shrink-0">
+        <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider">
+          Quick Automation Presets
         </span>
         <div className="flex flex-wrap gap-2">
           {PRESETS.map((preset) => (
-            <button
+            <motion.button
               key={preset.label}
               type="button"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              transition={{ duration: 0.15 }}
               onClick={() => setDescription(preset.value)}
-              className="px-3 py-1.5 rounded-md text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-400 hover:border-[#e8ff47]/50 hover:text-[#e8ff47] transition-colors"
+              className="px-3 py-1.5 rounded-md text-xs font-medium border border-[#2e2e35] bg-[#141416] text-zinc-400 hover:border-[#FF6D5A]/60 hover:text-[#FF6D5A] transition-colors"
             >
               {preset.label}
-            </button>
+            </motion.button>
           ))}
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={!description.trim() || isLoading}
-        className="w-full py-3 px-6 rounded-lg font-semibold text-sm bg-[#e8ff47] text-[#0e0e10] hover:bg-[#d4eb3a] transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-      >
-        {isLoading ? (
-          <>
-            <svg
-              className="animate-spin h-4 w-4 text-[#0e0e10]"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-              />
-            </svg>
-            Generating…
-          </>
-        ) : (
-          'Generate Workflow →'
+      {/* Button Controls */}
+      <div className="flex items-center gap-2 pt-2 flex-shrink-0">
+        <motion.button
+          type="submit"
+          disabled={!description.trim() || isLoading}
+          whileHover={{ scale: !description.trim() || isLoading ? 1 : 1.01 }}
+          whileTap={{ scale: !description.trim() || isLoading ? 1 : 0.99 }}
+          transition={{ duration: 0.15 }}
+          className={`flex-1 py-3 px-6 rounded-lg font-semibold text-sm text-white flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-md ${
+            isLoading
+              ? 'btn-shimmer-loading cursor-wait'
+              : 'bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] hover:opacity-95'
+          }`}
+        >
+          {isLoading ? (
+            <>
+              <svg
+                className="animate-spin h-4 w-4 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+              <span>{generationStep || 'Building Workflow…'}</span>
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4" />
+              <span>Generate Workflow</span>
+            </>
+          )}
+        </motion.button>
+
+        {isLoading && onStop && (
+          <motion.button
+            type="button"
+            onClick={onStop}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="py-3 px-4 rounded-lg font-medium text-xs border border-red-900/60 bg-red-950/40 text-red-300 hover:bg-red-900/40 flex items-center gap-1.5 transition-colors"
+            title="Stop generation"
+          >
+            <Square className="w-3.5 h-3.5 fill-current" />
+            <span>Stop</span>
+          </motion.button>
         )}
-      </button>
+      </div>
     </form>
   );
 }
