@@ -1,18 +1,22 @@
 'use client';
 
 import Image from 'next/image';
-import { Settings, History } from 'lucide-react';
+import { Sliders, History, Sparkles, ShieldCheck } from 'lucide-react';
 
 interface HeaderProps {
   onOpenSettings: () => void;
   onOpenHistory: () => void;
   historyCount?: number;
+  activeMode?: 'studio' | 'audit';
+  onModeChange?: (mode: 'studio' | 'audit') => void;
 }
 
 export default function Header({
   onOpenSettings,
   onOpenHistory,
   historyCount = 0,
+  activeMode = 'studio',
+  onModeChange,
 }: HeaderProps) {
   return (
     <header className="h-16 px-4 md:px-6 border-b border-[#2e2e35] bg-[#111113] flex items-center justify-between flex-shrink-0 select-none">
@@ -45,11 +49,41 @@ export default function Header({
         </div>
       </div>
 
+      {/* Mode Switcher */}
+      {onModeChange && (
+        <div className="hidden sm:inline-flex items-center p-0.5 rounded-lg bg-[#18181b] border border-[#2e2e35]">
+          <button
+            type="button"
+            onClick={() => onModeChange('studio')}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
+              activeMode === 'studio'
+                ? 'bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Studio</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => onModeChange('audit')}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
+              activeMode === 'audit'
+                ? 'bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white shadow-sm'
+                : 'text-zinc-400 hover:text-white'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Audit &amp; Explain</span>
+          </button>
+        </div>
+      )}
+
       <div className="flex items-center gap-2">
         <button
           type="button"
           onClick={onOpenHistory}
-          className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF6D5A]"
+          className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
           title="Workflow History & Backups"
         >
           <History className="w-3.5 h-3.5 text-zinc-400" />
@@ -64,11 +98,11 @@ export default function Header({
         <button
           type="button"
           onClick={onOpenSettings}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors focus:outline-none focus:ring-2 focus:ring-[#FF6D5A]"
-          title="Provider & API Key Settings"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
+          title="Workflow Engine Preferences"
         >
-          <Settings className="w-3.5 h-3.5 text-zinc-400" />
-          <span>Settings</span>
+          <Sliders className="w-3.5 h-3.5 text-zinc-400" />
+          <span>Preferences</span>
         </button>
       </div>
     </header>

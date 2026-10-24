@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Copy, Check, Download, HelpCircle, Layers, Activity } from 'lucide-react';
+import { Copy, Check, Download, HelpCircle, Layers, Activity, Send } from 'lucide-react';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import ValidationBadge from '@/components/ValidationBadge';
@@ -12,6 +12,7 @@ interface OutputToolbarProps {
   workflow: N8nWorkflow | null;
   jsonString: string | null;
   validation: ValidationResult | null;
+  onOpenDeploy?: () => void;
 }
 
 export function calculateComplexity(workflow: N8nWorkflow | null): {
@@ -44,6 +45,7 @@ export default function OutputToolbar({
   workflow,
   jsonString,
   validation,
+  onOpenDeploy,
 }: OutputToolbarProps) {
   const [copied, setCopied] = useState(false);
 
@@ -170,6 +172,19 @@ export default function OutputToolbar({
             </>
           )}
         </button>
+
+        {/* Send to n8n */}
+        {onOpenDeploy && (
+          <button
+            type="button"
+            onClick={onOpenDeploy}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#221f20] hover:bg-[#2e2a2c] text-[#FF6D5A] border border-[#FF6D5A]/40 transition-colors focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
+            title="Deploy directly to your connected n8n instance"
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Send to n8n</span>
+          </button>
+        )}
 
         {/* Download JSON */}
         <button
