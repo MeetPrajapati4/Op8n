@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface JsonViewerProps {
   json: string | null;
@@ -33,73 +33,45 @@ function syntaxHighlight(json: string): string {
 }
 
 export default function JsonViewer({ json }: JsonViewerProps) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = useCallback(() => {
-    if (!json) return;
-    navigator.clipboard.writeText(json).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  }, [json]);
-
-  const handleDownload = useCallback(() => {
-    if (!json) return;
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'workflow.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [json]);
-
   if (!json) return null;
 
   const highlighted = syntaxHighlight(json);
 
   return (
-    <div className="flex flex-col gap-3">
-      <span className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
-        JSON Output
-      </span>
-      <div className="rounded-lg border border-[#2e2e35] overflow-hidden">
-        {/* Sticky header */}
-        <div className="flex items-center justify-between px-4 py-2 bg-[#111113] border-b border-[#2e2e35]">
-          <span className="text-xs text-zinc-500 font-mono">workflow.json</span>
-          <button
-            onClick={handleCopy}
-            className="text-xs px-3 py-1 rounded border border-[#2e2e35] bg-[#18181b] text-zinc-400 hover:text-zinc-100 hover:border-zinc-500 transition-colors"
-          >
-            {copied ? 'Copied ✓' : 'Copy JSON'}
-          </button>
+    <div className="flex flex-col flex-1 min-h-0 rounded-lg border border-[#2e2e35] overflow-hidden bg-[#0d0d0f]">
+      {/* File Header */}
+      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#141416] border-b border-[#2e2e35] flex-shrink-0 select-none">
+        <div className="flex items-center gap-2">
+          <span className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
+          <span className="text-xs text-zinc-400 font-mono">workflow.json</span>
         </div>
-
-        {/* Code block */}
-        <div
-          className="overflow-y-auto"
-          style={{ maxHeight: '400px', backgroundColor: '#0d0d0f' }}
-        >
-          <pre
-            className="p-4 text-sm font-mono leading-relaxed overflow-x-auto"
-            style={{ fontSize: '13px' }}
-            dangerouslySetInnerHTML={{ __html: highlighted }}
-          />
-        </div>
+        <span className="text-[11px] text-zinc-600 font-mono">
+          {(new Blob([json]).size / 1024).toFixed(1)} KB
+        </span>
       </div>
 
-      <button
-        onClick={handleDownload}
-        className="self-start px-4 py-2 rounded-lg text-sm font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-300 hover:text-[#e8ff47] hover:border-[#e8ff47]/50 transition-colors"
-      >
-        ↓ Download JSON
-      </button>
+      {/* Scrollable code block using shadcn ScrollArea */}
+      <ScrollArea className="flex-1 w-full p-4">
+        <pre
+          className="text-xs font-mono leading-relaxed"
+          style={{ fontFamily: 'var(--font-geist-mono), monospace' }}
+          dangerouslySetInnerHTML={{ __html: highlighted }}
+        />
+      </ScrollArea>
 
-      <style>{`
-        .json-key   { color: #60a5fa; }
-        .json-string { color: #4ade80; }
-        .json-number { color: #fbbf24; }
-        .json-bool  { color: #f472b6; }
+      <style jsx global>{`
+        .json-key {
+          color: #60a5fa;
+        }
+        .json-string {
+          color: #34d399;
+        }
+        .json-number {
+          color: #fbbf24;
+        }
+        .json-bool {
+          color: #f472b6;
+        }
       `}</style>
     </div>
   );
