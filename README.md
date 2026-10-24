@@ -1,50 +1,26 @@
-# n8n Workflow Generator
+# Op8n
 
-> Describe an automation in plain English — get importable n8n JSON in seconds.
+> Describe any automation in plain English → get importable n8n JSON
 
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
-[![Gemini](https://img.shields.io/badge/Gemini_Flash-Latest-4285F4?style=flat-square&logo=google&logoColor=white)](https://aistudio.google.com)
-[![License](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
+[![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-22c55e?style=flat-square)](LICENSE)
 
 ---
 
-## What it does
-
-- **Plain-English → n8n JSON** — Describe any automation; Gemini Flash generates a structurally valid n8n workflow JSON with correct node types, positions, and connections — ready to paste into n8n's Import dialog.
-- **6 one-click presets** — Built-in templates for the most common patterns: daily Hacker News digest, webhook fan-out to Slack + Sheets, lead-capture to Notion, uptime monitor, Sheets → WhatsApp, and file-processor pipelines.
-- **Live node-pill preview** — Every workflow renders a horizontal strip of labelled node pills so you can sanity-check the structure before opening the JSON.
-- **Copy or download** — A syntax-highlighted viewer with one-click Copy JSON and a direct `workflow.json` file download.
+> [!NOTE]
+> **Disclaimer**: Op8n is an independent tool and is not affiliated with or endorsed by n8n GmbH. The name "n8n" is used purely descriptively to indicate compatibility with workflow JSON schemas.
 
 ---
 
-## Architecture
+## What Op8n does
 
-```mermaid
-flowchart LR
-    A[User types description\nor picks a preset] --> B[WorkflowForm\nNext.js client]
-    B -->|POST /api/generate| C[Route Handler\napp/api/generate]
-    C -->|SYSTEM_PROMPT + description| D[Gemini Flash\ngoogle/generative-ai]
-    D -->|Raw text response| C
-    C -->|Strip fences · extract JSON · validate| E{Valid JSON?}
-    E -->|Yes| F[Return workflow + nodeCount]
-    E -->|No| G[Return 500\ntry rephrasing]
-    F --> H[NodePreview\npill strip]
-    F --> I[JsonViewer\nsyntax-highlighted · copy · download]
-```
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript 5 |
-| Styling | Tailwind CSS 4 |
-| AI model | Google Gemini Flash (`gemini-flash-latest`) |
-| AI SDK | `@google/generative-ai` 0.24 |
-| Runtime | Node.js (server-side API route) |
+- **Plain-English → n8n JSON** — Describe any automation; Op8n streams structurally sound, validated n8n workflow JSON with correct node types, connection schemas, and visual coordinates.
+- **Built-in Validator & Auto-Repair** — Deep structural Zod validation for triggers, connections, and node schemas, with automatic retry feedback loops and coordinate repair.
+- **BYOK Multi-Provider AI** — Run with OpenAI, Anthropic Claude, Google Gemini, OpenRouter, or local Ollama. API keys remain safe in your browser (`localStorage`) and are never persisted or logged.
+- **History & Saved Workflows** — IndexedDB persistence with search, favorites, custom renaming, and full JSON backup import/export.
+- **One-Click Imports** — Live node visualizer, complexity metrics, copy/download utilities, and guided 3-step n8n import instructions.
 
 ---
 
@@ -52,73 +28,43 @@ flowchart LR
 
 ### Prerequisites
 
-- Node.js 18+
-- A free Gemini API key — [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+- Node.js 18+ or 20+
+- (Optional) AI provider API key (Gemini, Anthropic, OpenAI, OpenRouter) or a local Ollama instance.
 
-### Install
+### Install & Run
 
 ```bash
-git clone https://github.com/pun33th45/n8n-workflow-generator.git
-cd n8n-workflow-generator
+# Install dependencies
 npm install
-```
 
-### Configure
-
-```bash
-# Create .env.local in the project root
-echo "GEMINI_API_KEY=your_key_here" > .env.local
-```
-
-### Run
-
-```bash
+# Start local dev server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+### Configuration
+
+You can either enter your API key directly in the Op8n **Settings** dialog in the browser (saved to `localStorage` under BYOK), or configure server-side defaults:
+
+```bash
+# Copy template
+cp .env.example .env.local
+
+# Optional server-side Gemini key
+GEMINI_API_KEY=your_gemini_key_here
+```
 
 ### Import into n8n
 
-1. Copy the generated JSON or download `workflow.json`
-2. In n8n: **Add Workflow → Import from JSON**
-3. Paste or upload the file
-4. Add your credentials to each node and activate
+1. Copy the generated workflow JSON or click **Download .json** in Op8n.
+2. In your n8n workspace canvas:
+   - Hit `Cmd + V` (or `Ctrl + V`), or click **Workflow menu → Import from JSON**.
+3. Fill in your service credentials on the marked nodes and hit **Activate**.
 
 ---
 
-## Project Structure
+## Attribution & License
 
-```
-├── app/
-│   ├── page.tsx                    # Main UI — two-column layout
-│   ├── layout.tsx                  # Root layout + Syne font
-│   └── api/generate/route.ts       # POST handler → Gemini → JSON
-├── components/
-│   ├── WorkflowForm.tsx            # Textarea + 6 preset buttons
-│   ├── NodePreview.tsx             # Node pill strip renderer
-│   └── JsonViewer.tsx              # Syntax-highlighted JSON + copy/download
-├── lib/
-│   ├── prompt.ts                   # System prompt (20 valid node types, connection rules)
-│   └── n8n-types.ts                # N8nWorkflow · N8nNode · N8nConnection types
-├── public/screenshots/             # UI screenshots
-└── docs/                           # Demo GIF placeholder (add yours here)
-```
-
----
-
-## Roadmap
-
-- [ ] **Workflow validation** — Parse the connections graph and flag orphaned or disconnected nodes before returning the JSON
-- [ ] **n8n Cloud import** — Use the n8n public API to push generated workflows directly to a connected n8n instance
-- [ ] **Generation history** — Persist the last 10 generated workflows in `localStorage` for quick retrieval and comparison
-
----
-
-## Author
-
-**Puneeth Raj** — AI Engineer · Full-Stack Developer
-
-[![Portfolio](https://img.shields.io/badge/Portfolio-puneeth--dev.vercel.app-22c55e?style=flat-square&logo=vercel&logoColor=white)](https://puneeth-dev.vercel.app)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0a66c2?style=flat-square&logo=linkedin&logoColor=white)](https://linkedin.com/in/puneeth-raj-774506211/)
-[![GitHub](https://img.shields.io/badge/GitHub-pun33th45-24292e?style=flat-square&logo=github&logoColor=white)](https://github.com/pun33th45)
+- Licensed under the [MIT License](LICENSE).
+- Core initial prototype and groundwork by Puneeth Raj.

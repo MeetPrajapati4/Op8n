@@ -5,18 +5,28 @@
   --foreground: #f4f4f5;
   --surface: #18181b;
   --border: #2e2e35;
-  --accent: #e8ff47;
+  --primary-start: #FF6D5A;
+  --primary-end: #EE4F7B;
+  --accent-gradient: linear-gradient(135deg, #FF6D5A 0%, #EE4F7B 100%);
+  --accent-hover: linear-gradient(135deg, #ff7e6d 0%, #f3638b 100%);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-border: var(--border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-syne);
 }
 
-body {
+html, body {
+  height: 100%;
+  max-height: 100dvh;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
@@ -25,4 +35,79 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* Primary CTA gradient */
+.btn-primary-gradient {
+  background: linear-gradient(135deg, #FF6D5A 0%, #EE4F7B 100%);
+  color: #ffffff;
+  transition: opacity 0.2s ease, transform 0.15s ease, filter 0.2s ease;
+}
+
+.btn-primary-gradient:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-primary-gradient:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+/* Gradient Shimmer for loading state */
+@keyframes gradient-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.btn-shimmer-loading {
+  background: linear-gradient(
+    90deg,
+    #FF6D5A 0%,
+    #EE4F7B 25%,
+    #FFA185 50%,
+    #EE4F7B 75%,
+    #FF6D5A 100%
+  );
+  background-size: 200% 100%;
+  animation: gradient-shimmer 2.2s infinite linear;
+}
+
+/* Focus ring in gradient hue */
+.focus-ring-accent {
+  outline: none;
+}
+.focus-ring-accent:focus-visible,
+.focus-ring-accent:focus {
+  outline: none;
+  border-color: #FF6D5A !important;
+  box-shadow: 0 0 0 2px rgba(255, 109, 90, 0.45) !important;
+}
+
+/* Custom discreet scrollbars for internal scrollable areas */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #2e2e35;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #454550;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
