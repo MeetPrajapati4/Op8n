@@ -1,140 +1,437 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Zap, AlertCircle, FileCode2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import WorkflowForm from '@/components/WorkflowForm';
 import NodePreview from '@/components/NodePreview';
 import JsonViewer from '@/components/JsonViewer';
+import OutputToolbar from '@/components/OutputToolbar';
+import SettingsDialog from '@/components/SettingsDialog';
+import HistorySheet from '@/components/HistorySheet';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+
 import { N8nWorkflow } from '@/lib/n8n-types';
+import { ValidationResult, validateAndRepairWorkflow } from '@/lib/validator';
+import { getStoredSettings, UserAISettings } from '@/lib/providers';
+import {
+  SavedWorkflow,
+  getAllSavedWorkflows,
+  saveWorkflowToHistory,
+} from '@/lib/db';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
 export default function Home() {
   const [status, setStatus] = useState<Status>('idle');
+  const [generationStep, setGenerationStep] = useState<string>('');
   const [workflow, setWorkflow] = useState<N8nWorkflow | null>(null);
   const [jsonString, setJsonString] = useState<string | null>(null);
+  const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>('');
+  const [activePrompt, setActivePrompt] = useState<string>('');
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const [savedWorkflows, setSavedWorkflows] = useState<SavedWorkflow[]>([]);
+  const [mobileTab, setMobileTab] = useState<'describe' | 'output'>('describe');
+
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  // Load history from IndexedDB
+  const reloadHistory = useCallback(async () => {
+    try {
+      const list = await getAllSavedWorkflows();
+      setSavedWorkflows(list);
+    } catch {
+      // IndexedDB might not be supported in some rare contexts
+    }
+  }, []);
+
+  useEffect(() => {
+    reloadHistory();
+  }, [reloadHistory]);
+
+  const handleStop = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setStatus('idle');
+    setGenerationStep('');
+    toast.info('Generation cancelled');
+  };
 
   const handleGenerate = async (description: string) => {
     setStatus('loading');
     setWorkflow(null);
-    setJsonString(null);
+    setJsonString('');
+    setValidation(null);
     setErrorMsg('');
+    setActivePrompt(description);
+    setGenerationStep('Analyzing automation requirements…');
+
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
+    const settings: UserAISettings = getStoredSettings();
 
     try {
       const res = await fetch('/api/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-provider': settings.provider,
+          'x-model': settings.model,
+          'x-api-key': settings.apiKey || '',
+          ...(settings.baseUrl ? { 'x-base-url': settings.baseUrl } : {}),
+        },
         body: JSON.stringify({ description }),
+        signal: abortController.signal,
       });
 
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        setErrorMsg(data.error ?? 'Something went wrong. Please try again.');
+      if (!res.ok) {
+        let errDesc = 'Failed to generate workflow';
+        try {
+          const errData = await res.json();
+          errDesc = errData.error || errDesc;
+        } catch {
+          errDesc = await res.text();
+        }
+        setErrorMsg(errDesc);
         setStatus('error');
+        toast.error(errDesc);
         return;
       }
 
-      setWorkflow(data.workflow);
-      setJsonString(JSON.stringify(data.workflow, null, 2));
-      setStatus('success');
+      // Read SSE stream
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      if (!reader) {
+        throw new Error('Failed to open streaming reader');
+      }
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        let currentEvent = 'message';
+        for (const line of lines) {
+          if (line.startsWith('event: ')) {
+            currentEvent = line.slice(7).trim();
+          } else if (line.startsWith('data: ')) {
+            const rawData = line.slice(6).trim();
+            if (!rawData) continue;
+
+            try {
+              const data = JSON.parse(rawData);
+
+              if (currentEvent === 'step') {
+                setGenerationStep(data as string);
+              } else if (currentEvent === 'chunk') {
+                setJsonString((prev) => (prev || '') + data);
+              } else if (currentEvent === 'done') {
+                const finalWorkflow: N8nWorkflow = data.workflow;
+                const finalValidation: ValidationResult =
+                  data.validation || validateAndRepairWorkflow(finalWorkflow);
+                const prettyJson = JSON.stringify(finalWorkflow, null, 2);
+
+                setWorkflow(finalWorkflow);
+                setValidation(finalValidation);
+                setJsonString(prettyJson);
+                setStatus('success');
+                setMobileTab('output');
+
+                // Persist to IndexedDB History
+                saveWorkflowToHistory({
+                  prompt: description,
+                  workflow: finalWorkflow,
+                  jsonString: prettyJson,
+                  provider: settings.provider,
+                  model: settings.model,
+                  nodeCount: finalWorkflow.nodes?.length || 0,
+                }).then(() => {
+                  reloadHistory();
+                });
+
+                toast.success(
+                  `Workflow created with ${finalWorkflow.nodes.length} nodes!`
+                );
+              } else if (currentEvent === 'error') {
+                setErrorMsg(data.error || 'Generation error');
+                setStatus('error');
+                toast.error(data.error || 'Generation error');
+              }
+            } catch {
+              // Ignore non-json chunk error
+            }
+          }
+        }
+      }
     } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        return; // Normal cancellation
+      }
       const msg = err instanceof Error ? err.message : 'Network error. Please try again.';
       setErrorMsg(msg);
       setStatus('error');
+      toast.error(msg);
+    } finally {
+      abortControllerRef.current = null;
     }
   };
 
+  const handleSelectFromHistory = (item: SavedWorkflow) => {
+    setWorkflow(item.workflow);
+    setJsonString(item.jsonString);
+    setActivePrompt(item.prompt);
+    setValidation(validateAndRepairWorkflow(item.workflow));
+    setStatus('success');
+    setMobileTab('output');
+    toast.info(`Opened "${item.customName || item.workflow.name}"`);
+  };
+
   return (
-    <main className="min-h-screen bg-[#0e0e10] text-zinc-100">
-      <div className="max-w-6xl mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="mb-10">
-          <div className="flex items-center gap-3 mb-3">
-            <h1
-              className="text-3xl font-bold tracking-tight"
-              style={{ fontFamily: 'var(--font-syne)' }}
-            >
-              n8n Workflow Generator
-            </h1>
-            <span className="px-2 py-0.5 rounded text-xs font-bold bg-[#e8ff47] text-[#0e0e10] uppercase tracking-wide">
-              n8n
-            </span>
-          </div>
-          <p className="text-zinc-400 text-base">
-            Describe any automation in plain English → get importable n8n JSON
-          </p>
+    <div className="h-dvh max-h-dvh overflow-hidden flex flex-col bg-[#0e0e10] text-zinc-100">
+      {/* Top Header */}
+      <Header
+        onOpenSettings={() => setSettingsOpen(true)}
+        onOpenHistory={() => setHistoryOpen(true)}
+        historyCount={savedWorkflows.length}
+      />
+
+      {/* Main Workspace Area */}
+      <main className="flex-1 min-h-0 p-3 md:p-6 overflow-hidden">
+        {/* Mobile View: Two Tabs (< 768px) */}
+        <div className="md:hidden h-full flex flex-col">
+          <Tabs
+            value={mobileTab}
+            onValueChange={(val) => setMobileTab(val as 'describe' | 'output')}
+            className="h-full flex flex-col"
+          >
+            <TabsList className="grid grid-cols-2 w-full mb-3 flex-shrink-0">
+              <TabsTrigger value="describe">Describe</TabsTrigger>
+              <TabsTrigger value="output">
+                Output {workflow ? `(${workflow.nodes.length})` : ''}
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="describe" className="flex-1 min-h-0 mt-0">
+              <div className="h-full rounded-xl border border-[#2e2e35] bg-[#18181b] p-4 flex flex-col">
+                <WorkflowForm
+                  onGenerate={handleGenerate}
+                  isLoading={status === 'loading'}
+                  onStop={handleStop}
+                  externalDescription={activePrompt}
+                  generationStep={generationStep}
+                />
+              </div>
+            </TabsContent>
+
+            <TabsContent value="output" className="flex-1 min-h-0 mt-0 flex flex-col">
+              <div className="h-full rounded-xl border border-[#2e2e35] bg-[#18181b] p-4 flex flex-col gap-3 overflow-hidden">
+                <OutputToolbar
+                  workflow={workflow}
+                  jsonString={jsonString}
+                  validation={validation}
+                />
+                {status === 'loading' && (
+                  <div className="flex flex-col items-center justify-center flex-1 gap-3">
+                    <div className="w-8 h-8 border-2 border-[#FF6D5A]/30 border-t-[#FF6D5A] rounded-full animate-spin" />
+                    <p className="text-zinc-400 text-xs font-medium">
+                      {generationStep || 'Building your workflow…'}
+                    </p>
+                  </div>
+                )}
+                {status === 'success' && workflow && jsonString && (
+                  <>
+                    <NodePreview workflow={workflow} />
+                    <JsonViewer json={jsonString} />
+                  </>
+                )}
+                {(status === 'idle' || status === 'error') && !workflow && (
+                  <div className="flex flex-col items-center justify-center flex-1 text-center gap-2">
+                    <FileCode2 className="w-8 h-8 text-zinc-600 stroke-1" />
+                    <p className="text-zinc-500 text-xs">
+                      {status === 'error' ? errorMsg : 'Generate a workflow to view output'}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
 
-        {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left: Form */}
-          <div className="rounded-xl border border-[#2e2e35] bg-[#18181b] p-6">
+        {/* Desktop View: Two-Column Side-by-Side (>= 768px) */}
+        <div className="hidden md:grid md:grid-cols-2 gap-4 lg:gap-6 h-full max-w-7xl mx-auto">
+          {/* Left Column: Input Form */}
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.25 }}
+            className="rounded-xl border border-[#2e2e35] bg-[#18181b] p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-lg"
+          >
             <WorkflowForm
               onGenerate={handleGenerate}
               isLoading={status === 'loading'}
+              onStop={handleStop}
+              externalDescription={activePrompt}
+              generationStep={generationStep}
             />
 
-            {/* Status area */}
-            <div className="mt-4 min-h-[28px]">
-              {status === 'loading' && (
-                <p className="text-sm text-zinc-400">
-                  Generating workflow with Claude…
-                </p>
-              )}
-              {status === 'success' && workflow && (
-                <p className="text-sm text-[#e8ff47]">
-                  ✓ Workflow generated — {workflow.nodes.length} nodes
-                </p>
-              )}
-              {status === 'error' && (
-                <div className="rounded-lg border border-red-900/50 bg-red-950/30 px-3 py-2">
-                  <p className="text-sm text-red-400">{errorMsg}</p>
-                </div>
-              )}
+            {/* Status / Error Toast Area */}
+            <div className="mt-3 min-h-[24px] flex-shrink-0">
+              <AnimatePresence mode="wait">
+                {status === 'loading' && (
+                  <motion.p
+                    key="step"
+                    initial={{ opacity: 0, y: 3 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -3 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-xs text-zinc-400 flex items-center gap-2 font-mono"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-[#FF6D5A] animate-ping" />
+                    <span>{generationStep || 'Generating workflow…'}</span>
+                  </motion.p>
+                )}
+
+                {status === 'success' && workflow && (
+                  <motion.p
+                    key="success"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-xs text-emerald-400 font-medium flex items-center gap-1.5"
+                  >
+                    <span>✓</span>
+                    <span>
+                      Generated {workflow.nodes.length} nodes successfully
+                    </span>
+                  </motion.p>
+                )}
+
+                {status === 'error' && (
+                  <motion.div
+                    key="err"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="rounded-lg border border-red-900/50 bg-red-950/30 px-3 py-2 flex items-center gap-2"
+                  >
+                    <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
+                    <p className="text-xs text-red-300 line-clamp-2">{errorMsg}</p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right: Output */}
-          <div className="rounded-xl border border-[#2e2e35] bg-[#18181b] p-6 flex flex-col gap-6">
-            {status === 'idle' && (
-              <div className="flex flex-col items-center justify-center h-full min-h-[220px] text-center gap-3">
-                <div className="w-12 h-12 rounded-xl border border-[#2e2e35] bg-[#0e0e10] flex items-center justify-center text-2xl">
-                  ⚡
+          {/* Right Column: Output Pane */}
+          <motion.div
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.25 }}
+            className="rounded-xl border border-[#2e2e35] bg-[#18181b] p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-lg gap-4"
+          >
+            {/* Toolbar always accessible when there is content or status */}
+            {workflow && (
+              <OutputToolbar
+                workflow={workflow}
+                jsonString={jsonString}
+                validation={validation}
+              />
+            )}
+
+            {/* Empty State */}
+            {status === 'idle' && !workflow && (
+              <div className="flex flex-col items-center justify-center flex-1 text-center gap-3">
+                <div className="w-12 h-12 rounded-xl border border-[#2e2e35] bg-[#111113] flex items-center justify-center text-xl text-zinc-400 shadow-inner">
+                  <Zap className="w-6 h-6 text-zinc-500 stroke-1" />
                 </div>
-                <p className="text-zinc-500 text-sm">
-                  Your workflow JSON will appear here
-                </p>
+                <div className="flex flex-col gap-1">
+                  <p className="text-zinc-300 text-sm font-medium">
+                    Your generated n8n workflow will appear here
+                  </p>
+                  <p className="text-zinc-500 text-xs max-w-xs">
+                    Choose a preset on the left or type your automation idea in plain English.
+                  </p>
+                </div>
               </div>
             )}
 
+            {/* Streaming Loading State */}
             {status === 'loading' && (
-              <div className="flex flex-col items-center justify-center h-full min-h-[220px] gap-3">
-                <div className="w-8 h-8 border-2 border-[#e8ff47]/30 border-t-[#e8ff47] rounded-full animate-spin" />
-                <p className="text-zinc-500 text-sm">Building your workflow…</p>
+              <div className="flex flex-col items-center justify-center flex-1 gap-4">
+                <div className="relative">
+                  <div className="w-10 h-10 border-2 border-[#FF6D5A]/20 border-t-[#FF6D5A] rounded-full animate-spin" />
+                  <div className="absolute inset-0 flex items-center justify-center text-[10px] font-mono text-[#FF6D5A]">
+                    AI
+                  </div>
+                </div>
+                <div className="flex flex-col items-center gap-1 text-center">
+                  <p className="text-zinc-200 text-sm font-medium">
+                    {generationStep || 'Building your workflow…'}
+                  </p>
+                  <p className="text-zinc-500 text-xs">
+                    Validating trigger node and node parameters in real-time
+                  </p>
+                </div>
               </div>
             )}
 
+            {/* Workflow Output Result */}
             {status === 'success' && workflow && jsonString && (
-              <>
+              <div className="flex flex-col flex-1 min-h-0 gap-3 overflow-hidden">
                 <NodePreview workflow={workflow} />
                 <JsonViewer json={jsonString} />
-              </>
-            )}
-
-            {status === 'error' && (
-              <div className="flex flex-col items-center justify-center h-full min-h-[220px] text-center gap-3">
-                <div className="w-12 h-12 rounded-xl border border-red-900/50 bg-red-950/30 flex items-center justify-center text-xl text-red-500">
-                  ✕
-                </div>
-                <p className="text-zinc-500 text-sm">
-                  Fix the error on the left and try again
-                </p>
               </div>
             )}
-          </div>
+
+            {/* Error State */}
+            {status === 'error' && !workflow && (
+              <div className="flex flex-col items-center justify-center flex-1 text-center gap-3">
+                <div className="w-12 h-12 rounded-xl border border-red-900/50 bg-red-950/30 flex items-center justify-center text-red-400">
+                  <AlertCircle className="w-6 h-6" />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-red-400 text-sm font-medium">
+                    Generation couldn&apos;t complete
+                  </p>
+                  <p className="text-zinc-500 text-xs max-w-sm">
+                    {errorMsg || 'Please verify your API key or adjust your prompt and retry.'}
+                  </p>
+                </div>
+              </div>
+            )}
+          </motion.div>
         </div>
-      </div>
-    </main>
+      </main>
+
+      {/* Footer Disclaimer & Attribution */}
+      <Footer />
+
+      {/* Modals & Drawers */}
+      <SettingsDialog
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+      />
+
+      <HistorySheet
+        open={historyOpen}
+        onOpenChange={setHistoryOpen}
+        workflows={savedWorkflows}
+        onReload={reloadHistory}
+        onSelectWorkflow={handleSelectFromHistory}
+      />
+    </div>
   );
 }
