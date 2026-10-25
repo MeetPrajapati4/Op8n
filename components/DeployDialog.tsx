@@ -89,27 +89,27 @@ export default function DeployDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-[92vw] sm:max-w-[460px] max-h-[88vh] overflow-y-auto bg-[#0C0C0F]/95 backdrop-blur-2xl border border-white/[0.08] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_25px_50px_-12px_rgba(0,0,0,0.7)] rounded-2xl text-zinc-100 p-5 sm:p-6 smooth-scroll-momentum"
+        className="w-[94vw] sm:max-w-[520px] max-h-[90vh] overflow-y-auto bg-[#0C0C0F]/95 backdrop-blur-2xl border border-white/[0.12] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_25px_50px_-12px_rgba(0,0,0,0.85)] rounded-2xl text-zinc-100 p-6 sm:p-7 smooth-scroll-momentum"
         data-lenis-prevent="true"
       >
-        <DialogHeader>
-          <DialogTitle className="text-sm font-semibold tracking-tight text-white flex items-center gap-2">
+        <DialogHeader className="pb-1 border-b border-white/[0.08]">
+          <DialogTitle className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2.5">
             <Server className="w-4 h-4 text-[#01B6FE]" />
             Send to my n8n Instance
           </DialogTitle>
-          <DialogDescription className="text-xs text-zinc-400 mt-1 leading-relaxed">
+          <DialogDescription className="text-xs sm:text-sm text-zinc-200 mt-1 leading-relaxed">
             Deploy this workflow directly to your self-hosted or cloud n8n workspace via official API.
           </DialogDescription>
         </DialogHeader>
 
         {createdUrl ? (
-          <div className="flex flex-col items-center justify-center py-5 gap-3 text-center">
-            <div className="w-12 h-12 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-[0_0_15px_rgba(52,211,153,0.3)]">
-              <CheckCircle2 className="w-6 h-6" />
+          <div className="flex flex-col items-center justify-center py-6 gap-3.5 text-center">
+            <div className="w-14 h-14 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shadow-[0_0_20px_rgba(52,211,153,0.35)]">
+              <CheckCircle2 className="w-7 h-7" />
             </div>
             <div>
-              <h4 className="text-sm font-semibold text-white">Deployed Successfully!</h4>
-              <p className="text-xs text-zinc-300 mt-1">
+              <h4 className="text-base font-bold text-white">Deployed Successfully!</h4>
+              <p className="text-xs sm:text-sm text-zinc-200 mt-1">
                 Your workflow &ldquo;{workflow.name}&rdquo; was created in n8n.
               </p>
             </div>
@@ -117,16 +117,16 @@ export default function DeployDialog({
               href={createdUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-1.5 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_20px_rgba(3,135,254,0.35)] transition-all duration-150 hover:-translate-y-[1px] active:scale-[0.98]"
+              className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_20px_rgba(3,135,254,0.35)] transition-all duration-150 hover:-translate-y-[1px] active:scale-[0.98]"
             >
               <span>Open in n8n Canvas</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <ExternalLink className="w-4 h-4" />
             </a>
           </div>
         ) : (
-          <form onSubmit={handleDeploy} className="flex flex-col gap-3 mt-1.5">
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-zinc-200">
+          <form onSubmit={handleDeploy} className="flex flex-col gap-4 mt-2">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs sm:text-sm font-semibold text-white">
                 n8n Instance URL
               </label>
               <input
@@ -135,12 +135,12 @@ export default function DeployDialog({
                 onChange={(e) => setN8nUrl(e.target.value)}
                 placeholder="https://n8n.yourcompany.com"
                 required
-                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+                className="w-full h-11 px-3.5 py-2.5 rounded-xl bg-[#181820] border border-white/[0.15] text-xs sm:text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200"
               />
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <label className="text-xs font-medium text-zinc-200">
+            <div className="flex flex-col gap-2">
+              <label className="text-xs sm:text-sm font-semibold text-white">
                 n8n API Key
               </label>
               <input
@@ -149,28 +149,28 @@ export default function DeployDialog({
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Generate in n8n Settings → API"
                 required
-                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+                className="w-full h-11 px-3.5 py-2.5 rounded-xl bg-[#181820] border border-white/[0.15] text-xs sm:text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200"
               />
             </div>
 
             {deployError && (
-              <div className="p-2.5 rounded-xl bg-red-950/40 border border-red-500/30 flex items-start gap-2 text-xs text-red-300">
-                <AlertCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0 mt-0.5" />
+              <div className="p-3 rounded-xl bg-red-950/40 border border-red-500/40 flex items-start gap-2.5 text-xs sm:text-sm text-red-200">
+                <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
                 <p className="leading-snug">{deployError}</p>
               </div>
             )}
 
-            <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs text-zinc-300 leading-relaxed">
-              <strong className="text-zinc-100">SSRF Protected:</strong> Loopback &amp; local private networks are rejected by default for safety.
+            <div className="p-3 rounded-xl bg-[#121217] border border-white/[0.12] text-xs sm:text-sm text-zinc-200 leading-relaxed">
+              <strong className="text-white font-semibold">SSRF Protected:</strong> Loopback &amp; local private networks are rejected by default for safety.
             </div>
 
-            <div className="flex justify-end gap-2 mt-1.5">
+            <div className="flex justify-end gap-2.5 mt-2 pt-2 border-t border-white/[0.08]">
               <motion.button
                 type="button"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => onOpenChange(false)}
-                className="px-3.5 py-1.5 rounded-xl text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold border border-white/[0.15] bg-white/[0.06] hover:bg-white/[0.12] text-zinc-100 hover:text-white transition-all duration-150 cursor-pointer"
               >
                 Cancel
               </motion.button>
@@ -179,16 +179,16 @@ export default function DeployDialog({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={!n8nUrl.trim() || !apiKey.trim() || isDeploying}
-                className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_20px_rgba(3,135,254,0.35)] disabled:opacity-40 disabled:shadow-none transition-all duration-150 cursor-pointer flex items-center gap-2"
+                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_22px_rgba(3,135,254,0.45)] disabled:opacity-40 disabled:shadow-none transition-all duration-150 cursor-pointer flex items-center gap-2"
               >
                 {isDeploying ? (
                   <>
-                    <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     <span>Deploying…</span>
                   </>
                 ) : (
                   <>
-                    <Send className="w-3.5 h-3.5" />
+                    <Send className="w-4 h-4 text-[#02F7C8]" />
                     <span>Deploy Workflow</span>
                   </>
                 )}

@@ -185,24 +185,24 @@ export default function SettingsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-[94vw] sm:max-w-[840px] md:max-w-[880px] max-h-[88vh] overflow-y-auto bg-[#0C0C0F]/95 backdrop-blur-2xl border border-white/[0.08] text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_25px_50px_-12px_rgba(0,0,0,0.7)] p-5 sm:p-6 rounded-2xl smooth-scroll-momentum"
+        className="w-[96vw] sm:max-w-[920px] md:max-w-[960px] max-h-[90vh] overflow-y-auto bg-[#0C0C0F]/95 backdrop-blur-2xl border border-white/[0.12] text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_25px_50px_-12px_rgba(0,0,0,0.85)] p-6 sm:p-7 rounded-2xl smooth-scroll-momentum"
         data-lenis-prevent="true"
       >
-        <DialogHeader className="pb-1">
-          <DialogTitle className="text-sm font-semibold tracking-tight text-white flex items-center gap-2">
-            <Sliders className="w-3.5 h-3.5 text-[#01B6FE]" />
+        <DialogHeader className="pb-1.5 border-b border-white/[0.08]">
+          <DialogTitle className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2.5">
+            <Sliders className="w-4 h-4 text-[#01B6FE]" />
             Workflow Engine Preferences &amp; Models
           </DialogTitle>
-          <DialogDescription className="text-xs text-zinc-300">
+          <DialogDescription className="text-xs sm:text-sm text-zinc-200 leading-relaxed mt-1">
             Configure your AI credentials, model selection, and workflow canvas formatting.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSave} className="flex flex-col gap-3.5 mt-1">
+        <form onSubmit={handleSave} className="flex flex-col gap-4 mt-2">
           {/* Main 2-Column Horizontal Box Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Left Column: AI Credentials / Active Model + Schema Target */}
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3.5">
               {/* 1. API Key Setup OR Active Model Selection */}
               <AnimatePresence mode="wait">
                 {!hasKey ? (
@@ -212,31 +212,31 @@ export default function SettingsDialog({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.18 }}
-                    className="flex flex-col gap-2.5 p-3 rounded-xl bg-[#08080B]/80 border border-[#01B6FE]/30 shadow-xs"
+                    className="flex flex-col gap-3 p-4 sm:p-5 rounded-2xl bg-[#121217] border border-white/[0.12] shadow-md"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-white flex items-center gap-1.5">
-                        <Key className="w-3.5 h-3.5 text-[#01B6FE]" />
+                      <span className="text-sm font-bold text-white flex items-center gap-2">
+                        <Key className="w-4 h-4 text-[#01B6FE]" />
                         API Key Setup
                       </span>
-                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-[#01B6FE]/10 text-sky-300 border border-[#01B6FE]/20">
+                      <span className="text-xs font-semibold px-2.5 py-0.5 rounded-md bg-[#01B6FE]/15 text-[#01B6FE] border border-[#01B6FE]/30">
                         Write-Once &amp; Vanish
                       </span>
                     </div>
 
-                    <p className="text-xs text-zinc-300 leading-relaxed">
+                    <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed">
                       Enter your key once. Validated directly with provider API and encrypted locally.
                     </p>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                      <div className="flex flex-col gap-1 sm:col-span-1">
-                        <label className="text-xs font-medium text-zinc-300">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      <div className="flex flex-col gap-1.5 sm:col-span-1">
+                        <label className="text-xs font-semibold text-white">
                           Provider
                         </label>
                         <select
                           value={selectedProvider}
                           onChange={(e) => setSelectedProvider(e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 cursor-pointer"
+                          className="w-full h-11 px-3 py-2 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
                         >
                           {Object.values(PROVIDER_REGISTRY).map((p) => (
                             <option key={p.id} value={p.id}>
@@ -246,8 +246,8 @@ export default function SettingsDialog({
                         </select>
                       </div>
 
-                      <div className="flex flex-col gap-1 sm:col-span-2">
-                        <label className="text-xs font-medium text-zinc-300">
+                      <div className="flex flex-col gap-1.5 sm:col-span-2">
+                        <label className="text-xs font-semibold text-white">
                           Secret API Key
                         </label>
                         <input
@@ -256,25 +256,25 @@ export default function SettingsDialog({
                           onChange={(e) => handleKeyChange(e.target.value)}
                           placeholder="Paste key (AIzaSy..., sk-...)"
                           autoComplete="off"
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#060608] border border-white/[0.08] text-xs text-zinc-200 font-mono placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+                          className="w-full h-11 px-3.5 py-2 rounded-xl bg-[#181820] border border-white/[0.15] text-xs sm:text-sm text-white font-mono placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200"
                         />
                       </div>
                     </div>
 
                     {/* Supported Generation Models Preview for selected provider */}
                     {providerEntry?.staticModels && providerEntry.staticModels.length > 0 && (
-                      <div className="flex flex-col gap-1.5 pt-0.5">
-                        <div className="flex items-center justify-between text-xs text-zinc-300">
+                      <div className="flex flex-col gap-1.5 pt-1">
+                        <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-white">
                           <span>Supported Generation Models:</span>
-                          <span className="font-mono text-[#02F7C8] text-xs font-semibold">
+                          <span className="font-mono text-[#02F7C8] text-xs font-bold">
                             {providerEntry.staticModels.length} verified
                           </span>
                         </div>
-                        <div className="flex flex-wrap gap-1">
+                        <div className="flex flex-wrap gap-1.5">
                           {providerEntry.staticModels.map((m) => (
                             <span
                               key={m.id}
-                              className="text-xs font-mono px-2 py-0.5 rounded bg-white/[0.04] text-zinc-300 border border-white/[0.08]"
+                              className="text-xs font-mono font-medium px-2.5 py-1 rounded-lg bg-white/[0.06] text-zinc-200 border border-white/[0.1]"
                             >
                               {getFriendlyModelName(m.id, m.name)}
                             </span>
@@ -289,16 +289,16 @@ export default function SettingsDialog({
                       disabled={isValidating || !inputKey.trim()}
                       whileHover={{ scale: isValidating || !inputKey.trim() ? 1 : 1.01 }}
                       whileTap={{ scale: isValidating || !inputKey.trim() ? 1 : 0.98 }}
-                      className="w-full py-2 px-3.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(3,135,254,0.35)] flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(3,135,254,0.35)] flex items-center justify-center gap-2 cursor-pointer mt-1"
                     >
                       {isValidating ? (
                         <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <Loader2 className="w-4 h-4 animate-spin" />
                           <span>Validating Key &amp; Fetching Models…</span>
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-3.5 h-3.5" />
+                          <Sparkles className="w-4 h-4" />
                           <span>Connect &amp; Save Key</span>
                         </>
                       )}
@@ -311,17 +311,17 @@ export default function SettingsDialog({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.18 }}
-                    className="flex flex-col gap-2.5 p-3 rounded-xl bg-[#08080B]/80 border border-white/[0.07] shadow-xs"
+                    className="flex flex-col gap-3.5 p-4 sm:p-5 rounded-2xl bg-[#121217] border border-white/[0.12] shadow-md"
                   >
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)] animate-pulse" />
-                        <span className="text-xs font-semibold text-white">
+                      <div className="flex items-center gap-2.5">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)] animate-pulse" />
+                        <span className="text-sm font-bold text-white">
                           Active Model &bull; {providerEntry?.name || selectedProvider}
                         </span>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/[0.04] border border-white/[0.08] text-zinc-300">
+                        <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-lg bg-white/[0.08] border border-white/[0.12] text-zinc-100">
                           {userModels.length} models
                         </span>
                         <motion.button
@@ -334,7 +334,7 @@ export default function SettingsDialog({
                             setUserModels([]);
                             toast.info('API key cleared. You can reconnect anytime.');
                           }}
-                          className="text-xs text-zinc-300 hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer font-medium"
+                          className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.12] text-zinc-100 hover:text-white transition-colors flex items-center gap-1.5 cursor-pointer"
                           title="Disconnect key and reset"
                         >
                           <RotateCcw className="w-3 h-3" />
@@ -343,14 +343,14 @@ export default function SettingsDialog({
                       </div>
                     </div>
 
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-xs font-medium text-zinc-300">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs sm:text-sm font-semibold text-zinc-200">
                         Select generation model for workflows &amp; auditing:
                       </label>
                       <select
                         value={activeModel}
                         onChange={(e) => handleModelSelect(e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs font-mono text-zinc-100 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 cursor-pointer"
+                        className="w-full h-11 px-3.5 py-2.5 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
                       >
                         {userModels.map((m) => {
                           const friendly = getFriendlyModelName(m.id, m.name);
@@ -367,27 +367,27 @@ export default function SettingsDialog({
               </AnimatePresence>
 
               {/* Schema Target */}
-              <div className="flex flex-col gap-2 p-3.5 rounded-xl bg-[#08080B]/80 border border-white/[0.06]">
+              <div className="flex flex-col gap-3 p-4 sm:p-5 rounded-2xl bg-[#121217] border border-white/[0.12] shadow-md">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                  <span className="text-xs font-bold text-white uppercase tracking-wider">
                     Schema Target
                   </span>
-                  <span className="text-xs font-mono text-zinc-300">n8n syntax version</span>
+                  <span className="text-xs font-mono text-[#01B6FE] font-medium">n8n syntax version</span>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() =>
                       setPrefs((prev) => ({ ...prev, targetVersion: 'v1' }))
                     }
-                    className={`p-2 rounded-lg border text-left flex flex-col gap-0.5 transition-all cursor-pointer ${
+                    className={`p-3.5 sm:p-4 rounded-xl border text-left flex flex-col justify-center gap-1 transition-all cursor-pointer min-h-[68px] ${
                       prefs.targetVersion === 'v1'
-                        ? 'border-[#01B6FE]/60 bg-[#01B6FE]/15 text-white ring-1 ring-[#01B6FE]/30 shadow-[0_0_15px_rgba(1,182,254,0.15)] font-semibold'
-                        : 'border-white/[0.08] bg-[#121217] text-zinc-300 hover:text-white hover:border-white/[0.2]'
+                        ? 'border-2 border-[#01B6FE] bg-[#01B6FE]/20 text-white ring-2 ring-[#01B6FE]/30 shadow-[0_0_20px_rgba(1,182,254,0.25)] font-bold'
+                        : 'border border-white/[0.12] bg-[#181820] text-zinc-200 hover:text-white hover:border-white/[0.25]'
                     }`}
                   >
-                    <span className="text-xs font-semibold text-white">n8n v1.x (Modern)</span>
-                    <span className="text-xs text-zinc-300">UUIDs &amp; typeVersions</span>
+                    <span className="text-xs sm:text-sm font-bold text-white">n8n v1.x (Modern)</span>
+                    <span className="text-xs text-sky-200 font-medium">UUIDs &amp; typeVersions</span>
                   </button>
 
                   <button
@@ -395,44 +395,46 @@ export default function SettingsDialog({
                     onClick={() =>
                       setPrefs((prev) => ({ ...prev, targetVersion: 'v0' }))
                     }
-                    className={`p-2 rounded-lg border text-left flex flex-col gap-0.5 transition-all cursor-pointer ${
+                    className={`p-3.5 sm:p-4 rounded-xl border text-left flex flex-col justify-center gap-1 transition-all cursor-pointer min-h-[68px] ${
                       prefs.targetVersion === 'v0'
-                        ? 'border-[#01B6FE]/60 bg-[#01B6FE]/15 text-white ring-1 ring-[#01B6FE]/30 shadow-[0_0_15px_rgba(1,182,254,0.15)] font-semibold'
-                        : 'border-white/[0.08] bg-[#121217] text-zinc-300 hover:text-white hover:border-white/[0.2]'
+                        ? 'border-2 border-[#01B6FE] bg-[#01B6FE]/20 text-white ring-2 ring-[#01B6FE]/30 shadow-[0_0_20px_rgba(1,182,254,0.25)] font-bold'
+                        : 'border border-white/[0.12] bg-[#181820] text-zinc-200 hover:text-white hover:border-white/[0.25]'
                     }`}
                   >
-                    <span className="text-xs font-semibold text-white">n8n v0.x (Legacy)</span>
-                    <span className="text-xs text-zinc-300">Numeric node IDs</span>
+                    <span className="text-xs sm:text-sm font-semibold text-white">n8n v0.x (Legacy)</span>
+                    <span className="text-xs text-zinc-300 font-medium">Numeric node IDs</span>
                   </button>
                 </div>
               </div>
 
               {/* Serverless engine status */}
-              <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-[#08080B]/80 border border-white/[0.06] text-xs">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-xs text-zinc-300">
+              <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#121217] border border-white/[0.12] shadow-sm text-xs sm:text-sm">
+                <div className="flex items-center gap-2.5">
+                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <span className="text-zinc-100 font-medium">
                     {hasKey ? 'Personal key active (browser encrypted)' : cloudEngineActive ? 'Serverless cloud engine active' : 'API key required'}
                   </span>
                 </div>
-                <span className="text-xs font-mono text-[#02F7C8] font-semibold">Vercel Edge</span>
+                <span className="text-xs font-mono text-[#02F7C8] font-bold px-2 py-0.5 rounded bg-[#02F7C8]/10 border border-[#02F7C8]/25">
+                  Vercel Edge
+                </span>
               </div>
             </div>
 
             {/* Right Column: Canvas & Generation Rules */}
-            <div className="flex flex-col gap-2.5 p-3 rounded-xl bg-[#08080B]/80 border border-white/[0.06]">
+            <div className="flex flex-col gap-4 p-4 sm:p-5 rounded-2xl bg-[#121217] border border-white/[0.12] shadow-md">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                <span className="text-xs font-bold text-white uppercase tracking-wider">
                   Canvas &amp; Generation Rules
                 </span>
-                <span className="text-xs font-mono text-zinc-300">Formatting</span>
+                <span className="text-xs font-mono text-[#01B6FE] font-medium">Formatting</span>
               </div>
 
               {/* Error handling strategy */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-zinc-200 flex items-center justify-between">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs sm:text-sm font-semibold text-white flex items-center justify-between">
                   <span>Default Node Error Handling</span>
-                  <span className="text-xs text-zinc-300 font-mono">
+                  <span className="text-xs text-zinc-200 font-mono font-semibold bg-white/[0.08] px-2 py-0.5 rounded border border-white/[0.1]">
                     {prefs.errorHandling === 'continue'
                       ? 'continueOnFail'
                       : prefs.errorHandling === 'retry'
@@ -448,7 +450,7 @@ export default function SettingsDialog({
                       errorHandling: e.target.value as 'none' | 'continue' | 'retry',
                     }))
                   }
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 cursor-pointer"
+                  className="w-full h-11 px-3.5 py-2.5 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
                 >
                   <option value="none">Strict (Stop on error)</option>
                   <option value="continue">Resilient (Continue execution on failure)</option>
@@ -457,10 +459,10 @@ export default function SettingsDialog({
               </div>
 
               {/* Layout Spacing Segmented Control */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-zinc-200 flex items-center justify-between">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs sm:text-sm font-semibold text-white flex items-center justify-between">
                   <span>Canvas Node Spacing</span>
-                  <span className="text-xs text-zinc-300 font-mono">
+                  <span className="text-xs text-zinc-200 font-mono font-semibold bg-white/[0.08] px-2 py-0.5 rounded border border-white/[0.1]">
                     {prefs.layoutSpacing === 180
                       ? 'Compact (180px)'
                       : prefs.layoutSpacing === 280
@@ -468,7 +470,7 @@ export default function SettingsDialog({
                       : 'Standard (220px)'}
                   </span>
                 </label>
-                <div className="grid grid-cols-3 gap-1.5">
+                <div className="grid grid-cols-3 gap-2">
                   {[
                     { label: 'Compact', val: 180 },
                     { label: 'Standard', val: 220 },
@@ -483,10 +485,10 @@ export default function SettingsDialog({
                           layoutSpacing: item.val as 180 | 220 | 280,
                         }))
                       }
-                      className={`py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
+                      className={`h-10 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
                         prefs.layoutSpacing === item.val
-                          ? 'bg-[#01B6FE]/15 border-[#01B6FE]/60 text-white shadow-[0_0_15px_rgba(1,182,254,0.15)] ring-1 ring-[#01B6FE]/30 font-semibold'
-                          : 'bg-[#121217] border-white/[0.06] text-zinc-300 hover:text-white hover:border-white/[0.15]'
+                          ? 'bg-[#01B6FE]/20 border-2 border-[#01B6FE] text-white shadow-[0_0_15px_rgba(1,182,254,0.3)] ring-1 ring-[#01B6FE]/40'
+                          : 'bg-[#181820] border border-white/[0.12] text-zinc-200 hover:text-white hover:border-white/[0.25]'
                       }`}
                     >
                       {item.label}
@@ -496,10 +498,10 @@ export default function SettingsDialog({
               </div>
 
               {/* Default Schedule Timezone */}
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-zinc-200 flex items-center justify-between">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs sm:text-sm font-semibold text-white flex items-center justify-between">
                   <span>Default Schedule Timezone</span>
-                  <span className="text-xs text-zinc-300 font-mono">
+                  <span className="text-xs text-zinc-200 font-mono font-semibold bg-white/[0.08] px-2 py-0.5 rounded border border-white/[0.1]">
                     {prefs.timezone || 'UTC'}
                   </span>
                 </label>
@@ -508,7 +510,7 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, timezone: e.target.value }))
                   }
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 cursor-pointer"
+                  className="w-full h-11 px-3.5 py-2.5 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
                 >
                   {TIMEZONES.map((tz) => (
                     <option key={tz} value={tz}>
@@ -519,12 +521,12 @@ export default function SettingsDialog({
               </div>
 
               {/* Custom styled checkboxes */}
-              <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
+              <div className="flex items-center justify-between pt-3 border-t border-white/[0.1]">
                 <div className="pr-3">
-                  <span className="text-xs text-zinc-200 font-medium block">
+                  <span className="text-xs sm:text-sm text-white font-semibold block">
                     Inject Sample Mock Payloads (pinData)
                   </span>
-                  <span className="text-[11px] text-zinc-300 block mt-0.5">
+                  <span className="text-xs text-zinc-200 block mt-1 leading-relaxed">
                     Add sample data on trigger nodes for instant testing
                   </span>
                 </div>
@@ -534,16 +536,16 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, injectPinData: e.target.checked }))
                   }
-                  className="w-4 h-4 rounded-md border border-white/20 bg-zinc-900 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
+                  className="w-5 h-5 rounded-md border-2 border-white/30 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
                 />
               </div>
 
-              <div className="flex items-center justify-between pt-2 border-t border-white/[0.06]">
+              <div className="flex items-center justify-between pt-3 border-t border-white/[0.1]">
                 <div className="pr-3">
-                  <span className="text-xs text-zinc-200 font-medium block">
+                  <span className="text-xs sm:text-sm text-white font-semibold block">
                     Auto-add Canvas Sticky Note
                   </span>
-                  <span className="text-[11px] text-zinc-300 block mt-0.5">
+                  <span className="text-xs text-zinc-200 block mt-1 leading-relaxed">
                     Place an annotated sticky note describing the flow
                   </span>
                 </div>
@@ -553,30 +555,30 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, addStickyNote: e.target.checked }))
                   }
-                  className="w-4 h-4 rounded-md border border-white/20 bg-zinc-900 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
+                  className="w-5 h-5 rounded-md border-2 border-white/30 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
                 />
               </div>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-between pt-3 border-t border-white/[0.07]">
-            <span className="text-xs text-zinc-300 font-mono hidden sm:inline">
+          <div className="flex items-center justify-between pt-3.5 border-t border-white/[0.1]">
+            <span className="text-xs sm:text-sm text-zinc-300 font-mono font-medium hidden sm:inline">
               Op8n Studio Engine
             </span>
-            <div className="flex items-center gap-2 ml-auto">
+            <div className="flex items-center gap-2.5 ml-auto">
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] text-zinc-200 hover:text-white transition-colors duration-150 cursor-pointer"
+                className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.15] text-zinc-100 hover:text-white transition-colors duration-150 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_20px_-3px_rgba(3,135,254,0.4)] hover:shadow-[0_0_25px_0px_rgba(117,1,253,0.6)] transition-all duration-200 flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
+                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_22px_rgba(3,135,254,0.45)] hover:shadow-[0_0_30px_rgba(117,1,253,0.65)] transition-all duration-200 flex items-center gap-2 cursor-pointer active:scale-[0.98]"
               >
-                <CheckCircle2 className="w-3.5 h-3.5" />
+                <CheckCircle2 className="w-4 h-4" />
                 <span>Save Preferences</span>
               </button>
             </div>

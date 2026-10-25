@@ -193,7 +193,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
           placeholder="Paste full n8n workflow JSON here…"
-          className="flex-1 w-full rounded-xl bg-[#060608]/90 shadow-inner border border-white/[0.07] text-xs font-mono text-zinc-100 placeholder:text-zinc-400 p-3.5 resize-none focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 leading-relaxed"
+          className="flex-1 w-full rounded-xl bg-[#060608]/90 shadow-inner border border-white/[0.12] text-xs sm:text-sm font-mono text-zinc-100 placeholder:text-zinc-400 p-3.5 sm:p-4 resize-none focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 leading-relaxed"
           disabled={isAnalyzing}
         />
 
@@ -204,7 +204,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
           whileHover={{ scale: !jsonInput.trim() || isAnalyzing ? 1 : 1.01 }}
           whileTap={{ scale: !jsonInput.trim() || isAnalyzing ? 1 : 0.99 }}
           transition={{ duration: 0.15 }}
-          className="py-2.5 px-4 rounded-xl font-semibold text-xs text-white disabled:bg-[#121217] disabled:text-zinc-400 disabled:border-white/[0.08] disabled:shadow-none disabled:cursor-not-allowed bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] shadow-[0_0_25px_-5px_rgba(3,135,254,0.45)] hover:shadow-[0_0_32px_-2px_rgba(117,1,253,0.65)] hover:brightness-110 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer"
+          className="py-3 px-5 rounded-xl font-bold text-xs sm:text-sm text-white disabled:bg-[#121217] disabled:text-zinc-400 disabled:border-white/[0.08] disabled:shadow-none disabled:cursor-not-allowed bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] shadow-[0_0_25px_-5px_rgba(3,135,254,0.45)] hover:shadow-[0_0_32px_-2px_rgba(117,1,253,0.65)] hover:brightness-110 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer"
         >
           {isAnalyzing ? (
             <>
@@ -248,8 +248,8 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
                     <p className="text-xs text-zinc-200 leading-relaxed">
                       {analysis.summary}
                     </p>
-                    <div className="mt-1 pt-2.5 border-t border-white/[0.07] text-xs text-zinc-300 flex items-center gap-2">
-                      <span className="text-zinc-400 font-medium">Trigger:</span>
+                    <div className="mt-1 pt-2.5 border-t border-white/[0.07] text-xs text-zinc-200 flex items-center gap-2">
+                      <span className="text-zinc-200 font-semibold">Trigger:</span>
                       <span className="px-2 py-0.5 rounded bg-[#02F7C8]/15 border border-[#02F7C8]/30 text-[#02F7C8] font-mono text-xs font-semibold">
                         {analysis.trigger}
                       </span>

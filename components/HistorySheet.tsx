@@ -167,28 +167,28 @@ export default function HistorySheet({
           </SheetDescription>
 
           {/* Search bar & Favorite toggle */}
-          <div className="flex items-center gap-2 mt-3">
+          <div className="flex items-center gap-2 mt-3.5">
             <div className="relative flex-1">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-300" />
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-300" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search prompt or name…"
-                className="w-full pl-8.5 pr-3 py-1.5 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+                className="w-full h-10 pl-9 pr-3.5 py-2 rounded-xl bg-[#121217] border border-white/[0.12] text-xs sm:text-sm text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200"
               />
             </div>
             <button
               type="button"
               onClick={() => setFilterFavorites(!filterFavorites)}
-              className={`p-1.5 rounded-lg border text-xs flex items-center gap-1.5 transition-all duration-150 cursor-pointer ${
+              className={`h-10 w-10 rounded-xl border text-xs flex items-center justify-center transition-all duration-150 cursor-pointer ${
                 filterFavorites
-                  ? 'border-amber-500/50 bg-amber-500/20 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.2)]'
-                  : 'border-white/[0.08] bg-white/[0.03] text-zinc-300 hover:text-white hover:bg-white/[0.07]'
+                  ? 'border-amber-500/60 bg-amber-500/20 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                  : 'border-white/[0.12] bg-white/[0.04] text-zinc-200 hover:text-white hover:bg-white/[0.08]'
               }`}
               title="Show Favorites Only"
             >
-              <Star className="w-3.5 h-3.5" fill={filterFavorites ? 'currentColor' : 'none'} />
+              <Star className="w-4 h-4" fill={filterFavorites ? 'currentColor' : 'none'} />
             </button>
           </div>
         </SheetHeader>
@@ -196,10 +196,10 @@ export default function HistorySheet({
         {/* Scrollable List with data-lenis-prevent */}
         <ScrollArea className="flex-1 p-4 sm:p-5" data-lenis-prevent="true">
           {filteredWorkflows.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-300 text-xs">
-              <Clock className="w-8 h-8 text-zinc-400 mb-2.5 stroke-1" />
-              <p className="font-semibold text-xs text-zinc-200">No saved workflows found</p>
-              <p className="text-xs text-zinc-400 mt-1 max-w-[240px]">
+            <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-200 text-xs sm:text-sm">
+              <Clock className="w-9 h-9 text-zinc-300 mb-3 stroke-1" />
+              <p className="font-bold text-sm text-white">No saved workflows found</p>
+              <p className="text-xs text-zinc-300 mt-1 max-w-[260px] leading-relaxed">
                 Generated workflows are automatically stored here.
               </p>
             </div>

@@ -73,24 +73,24 @@ export default function WorkflowForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="e.g. Every morning at 9am, fetch top Hacker News posts and send a summary to my Telegram"
-          className="w-full h-24 sm:h-28 rounded-xl border border-white/[0.08] bg-[#060608]/90 shadow-inner text-zinc-100 placeholder:text-zinc-400 p-3 text-xs resize-none focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 leading-relaxed"
+          className="w-full h-28 sm:h-32 rounded-xl border border-white/[0.12] bg-[#060608]/90 shadow-inner text-white placeholder:text-zinc-400 p-3.5 text-xs sm:text-sm resize-none focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 leading-relaxed"
           disabled={isLoading}
         />
       </div>
 
       {/* Expanded Suggestions Section at Bottom of Input Box */}
-      <div className="flex flex-col gap-2 flex-1 min-h-0 pt-0.5">
+      <div className="flex flex-col gap-2.5 flex-1 min-h-0 pt-0.5">
         <div className="flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold text-zinc-200 uppercase tracking-wider flex items-center gap-1.5">
+            <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
               <Zap className="w-3.5 h-3.5 text-[#02F7C8]" />
               Suggested Automations
             </span>
-            <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/[0.08] text-zinc-300 font-mono font-semibold border border-white/[0.1]">
+            <span className="text-xs px-2 py-0.5 rounded-full bg-white/[0.08] text-zinc-200 font-mono font-bold border border-white/[0.12]">
               {displaySuggestions.length}
             </span>
           </div>
-          <span className="text-[10px] text-zinc-400 font-medium hidden sm:inline">
+          <span className="text-xs text-zinc-300 font-medium hidden sm:inline">
             Ranked by frequency &amp; recency
           </span>
         </div>
@@ -102,10 +102,10 @@ export default function WorkflowForm({
               key={cat}
               type="button"
               onClick={() => setActiveCategory(cat)}
-              className={`text-[11px] px-2.5 py-1 rounded-lg font-semibold transition-all duration-150 flex-shrink-0 cursor-pointer ${
+              className={`text-xs px-3 py-1.5 rounded-xl font-bold transition-all duration-150 flex-shrink-0 cursor-pointer ${
                 activeCategory === cat
                   ? 'bg-gradient-to-r from-[#01B6FE] to-[#0387FE] text-white shadow-[0_0_12px_rgba(1,182,254,0.4)] border border-transparent'
-                  : 'bg-white/[0.04] text-zinc-300 hover:text-white hover:bg-white/[0.08] border border-white/[0.08]'
+                  : 'bg-white/[0.04] text-zinc-200 hover:text-white hover:bg-white/[0.08] border border-white/[0.1]'
               }`}
             >
               {cat}
@@ -114,7 +114,7 @@ export default function WorkflowForm({
         </div>
 
         {/* Rich Suggestions Cloud (Scrollable Multi-Pill Grid) */}
-        <div className="flex-1 min-h-0 overflow-y-auto pr-1 flex flex-wrap content-start gap-1.5 [scrollbar-width:thin] [scrollbar-color:#27272a_transparent]">
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 flex flex-wrap content-start gap-2 [scrollbar-width:thin] [scrollbar-color:#27272a_transparent]">
           {displaySuggestions.map((preset) => (
             <motion.button
               key={preset.itemId}
@@ -124,10 +124,10 @@ export default function WorkflowForm({
               transition={{ duration: 0.15 }}
               onClick={() => handleSelectSuggestion(preset)}
               title={`${preset.title} — ${preset.description}`}
-              className="group inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-[#121217] text-zinc-200 hover:text-white hover:border-[#01B6FE]/60 hover:bg-[#01B6FE]/10 hover:-translate-y-[0.5px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer text-left shadow-xs"
+              className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-white/[0.1] bg-[#121217] text-zinc-100 hover:text-white hover:border-[#01B6FE]/60 hover:bg-[#01B6FE]/15 hover:-translate-y-[0.5px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer text-left shadow-xs"
             >
-              <span className="truncate max-w-[260px] sm:max-w-none font-medium">{preset.title}</span>
-              <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-[#02F7C8]/15 text-[#02F7C8] border border-[#02F7C8]/35 group-hover:bg-[#02F7C8]/25 group-hover:text-white transition-colors flex-shrink-0 shadow-xs">
+              <span className="truncate max-w-[280px] sm:max-w-none font-semibold text-zinc-100 group-hover:text-white">{preset.title}</span>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-[#02F7C8]/15 text-[#02F7C8] border border-[#02F7C8]/35 group-hover:bg-[#02F7C8]/25 group-hover:text-white transition-colors flex-shrink-0 shadow-xs">
                 {preset.reason}
               </span>
             </motion.button>
@@ -143,7 +143,7 @@ export default function WorkflowForm({
           whileHover={{ scale: !description.trim() || isLoading ? 1 : 1.01 }}
           whileTap={{ scale: !description.trim() || isLoading ? 1 : 0.99 }}
           transition={{ duration: 0.15 }}
-          className={`flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs text-white flex items-center justify-center gap-2 transition-all duration-200 disabled:bg-[#121217] disabled:text-zinc-400 disabled:border-white/[0.08] disabled:shadow-none disabled:cursor-not-allowed ${
+          className={`flex-1 py-3 px-5 rounded-xl font-bold text-xs sm:text-sm text-white flex items-center justify-center gap-2.5 transition-all duration-200 disabled:bg-[#121217] disabled:text-zinc-400 disabled:border-white/[0.08] disabled:shadow-none disabled:cursor-not-allowed ${
             isLoading
               ? 'btn-shimmer-loading cursor-wait'
               : 'bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] text-white shadow-[0_0_25px_-5px_rgba(3,135,254,0.45)] hover:shadow-[0_0_32px_-2px_rgba(117,1,253,0.65)] hover:-translate-y-[1px] active:translate-y-0 cursor-pointer'
