@@ -53,8 +53,8 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-lg p-1.5 opacity-70 transition-all hover:opacity-100 hover:bg-white/[0.06] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#01B6FE] active:scale-95 cursor-pointer">
-        <X className="h-4 w-4 text-zinc-400 hover:text-white transition-colors" />
+      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-lg p-1.5 opacity-80 transition-all hover:opacity-100 hover:bg-white/[0.08] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#01B6FE] active:scale-95 cursor-pointer">
+        <X className="h-4 w-4 text-zinc-300 hover:text-white transition-colors" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>
@@ -94,7 +94,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Description
     ref={ref}
-    className={cn('text-xs text-zinc-400', className)}
+    className={cn('text-xs text-zinc-300', className)}
     {...props}
   />
 ));

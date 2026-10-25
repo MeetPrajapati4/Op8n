@@ -35,12 +35,12 @@ export function calculateComplexity(workflow: N8nWorkflow | null): {
   );
 
   if (nodeCount <= 3 && !hasBranching) {
-    return { level: 'Simple', color: '#34d399' };
+    return { level: 'Simple', color: '#02F7C8' };
   }
   if (nodeCount <= 7 && connectionCount <= 8) {
-    return { level: 'Moderate', color: '#60a5fa' };
+    return { level: 'Moderate', color: '#01B6FE' };
   }
-  return { level: 'Complex', color: '#f472b6' };
+  return { level: 'Complex', color: '#c084fc' };
 }
 
 export default function OutputToolbar({
@@ -88,13 +88,13 @@ export default function OutputToolbar({
       <div className="flex items-center gap-2 flex-wrap">
         {/* Node count */}
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-zinc-200">
-          <Layers className="w-3.5 h-3.5 text-zinc-400" />
+          <Layers className="w-3.5 h-3.5 text-[#01B6FE]" />
           <span>{nodeCount} {nodeCount === 1 ? 'node' : 'nodes'}</span>
         </div>
 
         {/* Complexity badge */}
         <div
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border shadow-xs"
           style={{
             borderColor: `${complexity.color}40`,
             backgroundColor: `${complexity.color}15`,
@@ -120,7 +120,7 @@ export default function OutputToolbar({
               whileTap={{ scale: 0.96 }}
               className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
             >
-              <HelpCircle className="w-3.5 h-3.5 text-zinc-400" />
+              <HelpCircle className="w-3.5 h-3.5 text-zinc-300" />
               <span>Import Guide</span>
             </motion.button>
           </PopoverTrigger>
@@ -174,7 +174,7 @@ export default function OutputToolbar({
             </>
           ) : (
             <>
-              <Copy className="w-3.5 h-3.5 text-zinc-400" />
+              <Copy className="w-3.5 h-3.5 text-zinc-300" />
               <span>Copy JSON</span>
             </>
           )}
@@ -187,10 +187,10 @@ export default function OutputToolbar({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
             onClick={onOpenDeploy}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#01B6FE]/10 hover:bg-[#01B6FE]/20 text-[#01B6FE] border border-[#01B6FE]/30 transition-all duration-150 ease-out cursor-pointer focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#01B6FE]/15 hover:bg-[#01B6FE]/25 text-white border border-[#01B6FE]/40 hover:border-[#01B6FE]/70 transition-all duration-150 ease-out cursor-pointer focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 shadow-xs"
             title="Deploy directly to your connected n8n instance"
           >
-            <Send className="w-3.5 h-3.5" />
+            <Send className="w-3.5 h-3.5 text-[#02F7C8]" />
             <span>Send to n8n</span>
           </motion.button>
         )}
@@ -205,7 +205,7 @@ export default function OutputToolbar({
             className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
             title="Start a new blank workflow session"
           >
-            <Plus className="w-3.5 h-3.5 text-[#01B6FE]" />
+            <Plus className="w-3.5 h-3.5 text-[#02F7C8]" />
             <span>New</span>
           </motion.button>
         )}

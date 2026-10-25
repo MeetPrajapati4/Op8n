@@ -162,20 +162,20 @@ export default function HistorySheet({
               />
             </div>
           </div>
-          <SheetDescription className="text-xs text-zinc-400 mt-1 leading-normal">
+          <SheetDescription className="text-xs text-zinc-300 mt-1 leading-normal">
             Persisted in browser IndexedDB. Search, re-open, or backup anytime.
           </SheetDescription>
 
           {/* Search bar & Favorite toggle */}
           <div className="flex items-center gap-2 mt-3">
             <div className="relative flex-1">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-zinc-300" />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search prompt or name…"
-                className="w-full pl-8.5 pr-3 py-1.5 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+                className="w-full pl-8.5 pr-3 py-1.5 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
               />
             </div>
             <button
@@ -196,10 +196,10 @@ export default function HistorySheet({
         {/* Scrollable List with data-lenis-prevent */}
         <ScrollArea className="flex-1 p-4 sm:p-5" data-lenis-prevent="true">
           {filteredWorkflows.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-400 text-xs">
-              <Clock className="w-8 h-8 text-zinc-500 mb-2.5 stroke-1" />
-              <p className="font-medium text-xs text-zinc-300">No saved workflows found</p>
-              <p className="text-xs text-zinc-500 mt-1 max-w-[240px]">
+            <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-300 text-xs">
+              <Clock className="w-8 h-8 text-zinc-400 mb-2.5 stroke-1" />
+              <p className="font-semibold text-xs text-zinc-200">No saved workflows found</p>
+              <p className="text-xs text-zinc-400 mt-1 max-w-[240px]">
                 Generated workflows are automatically stored here.
               </p>
             </div>
@@ -266,7 +266,7 @@ export default function HistorySheet({
                           className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
                             item.favorite
                               ? 'text-amber-400 hover:text-amber-300'
-                              : 'text-zinc-500 hover:text-zinc-300'
+                              : 'text-zinc-400 hover:text-amber-300'
                           }`}
                           title={item.favorite ? 'Unstar' : 'Star'}
                         >
@@ -278,7 +278,7 @@ export default function HistorySheet({
                         <button
                           type="button"
                           onClick={(e) => handleDelete(item.id, e)}
-                          className="p-1.5 rounded-lg text-zinc-500 hover:text-red-400 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-lg text-zinc-400 hover:text-red-400 transition-colors cursor-pointer"
                           title="Delete"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -287,21 +287,21 @@ export default function HistorySheet({
                     </div>
 
                     {/* Prompt snippet */}
-                    <p className="text-xs text-zinc-300 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-zinc-200 line-clamp-2 leading-relaxed">
                       {item.prompt}
                     </p>
 
                     {/* Footer metadata */}
-                    <div className="flex items-center justify-between text-xs text-zinc-400 pt-1.5 border-t border-white/[0.05]">
+                    <div className="flex items-center justify-between text-xs text-zinc-300 pt-1.5 border-t border-white/[0.08]">
                       <div className="flex items-center gap-2 font-mono">
-                        <span className="inline-flex items-center gap-1">
-                          <Layers className="w-3 h-3 text-zinc-400" />
+                        <span className="inline-flex items-center gap-1 text-zinc-300">
+                          <Layers className="w-3 h-3 text-[#01B6FE]" />
                           {item.nodeCount || item.workflow.nodes?.length || 0} nodes
                         </span>
                         <span>&bull;</span>
-                        <span className="capitalize">{item.provider}</span>
+                        <span className="capitalize text-zinc-300">{item.provider}</span>
                       </div>
-                      <span className="flex items-center gap-1 text-[#01B6FE] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+                      <span className="flex items-center gap-1 text-sky-300 group-hover:text-cyan-300 opacity-0 group-hover:opacity-100 transition-opacity font-semibold">
                         Open <ArrowRight className="w-3 h-3" />
                       </span>
                     </div>

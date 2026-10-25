@@ -12,8 +12,8 @@ interface NodePreviewProps {
 
 function getDotColor(type: string): string {
   const t = type.toLowerCase();
-  if (t.includes('trigger') || t.includes('webhook') || t.includes('manual')) {
-    return 'bg-blue-400';
+  if (t.includes('trigger') || t.includes('webhook') || t.includes('manual') || t.includes('schedule')) {
+    return 'bg-[#02F7C8] shadow-[0_0_6px_rgba(2,247,200,0.7)]';
   }
   if (
     t.includes('if') ||
@@ -22,9 +22,9 @@ function getDotColor(type: string): string {
     t.includes('function') ||
     t.includes('wait')
   ) {
-    return 'bg-purple-400';
+    return 'bg-[#7501FD] shadow-[0_0_6px_rgba(117,1,253,0.7)]';
   }
-  return 'bg-emerald-400';
+  return 'bg-[#01B6FE] shadow-[0_0_6px_rgba(1,182,254,0.7)]';
 }
 
 function NodePreview({ workflow }: NodePreviewProps) {
@@ -35,7 +35,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
   return (
     <div className="flex flex-col gap-2 [transform:translateZ(0)]">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
+        <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
           Node Flow Preview (Click node to inspect)
         </span>
       </div>
@@ -85,7 +85,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
                       <div className="flex items-start justify-between border-b border-white/[0.07] pb-2">
                         <div className="flex flex-col">
                           <span className="font-bold text-white text-sm">{node.name}</span>
-                          <span className="text-xs text-zinc-400 font-mono">
+                          <span className="text-xs text-[#01B6FE] font-mono font-medium">
                             {node.type}
                           </span>
                         </div>
@@ -103,7 +103,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
                       {/* Outgoing Targets */}
                       {outgoingConnections.length > 0 && (
                         <div className="flex flex-col gap-1.5 border-t border-white/[0.07] pt-2">
-                          <span className="text-xs text-zinc-400 uppercase tracking-wider font-semibold">
+                          <span className="text-xs text-zinc-300 uppercase tracking-wider font-semibold">
                             Connects To:
                           </span>
                           <div className="flex flex-wrap gap-1.5">
@@ -122,7 +122,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
 
                       {/* Parameters snippet */}
                       <div className="flex flex-col gap-1.5 border-t border-white/[0.07] pt-2">
-                        <span className="text-xs text-zinc-400 uppercase tracking-wider font-semibold">
+                        <span className="text-xs text-zinc-300 uppercase tracking-wider font-semibold">
                           Parameters:
                         </span>
                         <pre className="text-xs font-mono bg-[#060608] border border-white/[0.06] p-2 rounded-lg max-h-32 overflow-y-auto text-zinc-200">
@@ -134,7 +134,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
                 </Popover>
 
                 {i < workflow.nodes.length - 1 && (
-                  <span className="text-zinc-500 text-xs px-0.5 select-none font-mono">
+                  <span className="text-zinc-400 text-xs px-0.5 select-none font-mono font-semibold">
                     →
                   </span>
                 )}

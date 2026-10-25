@@ -133,6 +133,22 @@ button, input, select, textarea, a {
   transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
 }
 
+/* JSON Code Syntax Highlighting — Vibrant, high-contrast palette matching logo */
+.json-key {
+  color: #38bdf8 !important; /* bright azure sky */
+  font-weight: 600;
+}
+.json-string {
+  color: #02F7C8 !important; /* logo neon aqua cyan */
+}
+.json-number {
+  color: #fbbf24 !important; /* warm amber */
+}
+.json-bool {
+  color: #c084fc !important; /* bright logo violet */
+  font-weight: 600;
+}
+
 /* Custom discreet scrollbars for internal scrollable areas */
 ::-webkit-scrollbar {
   width: 6px;

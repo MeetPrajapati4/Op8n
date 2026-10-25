@@ -21,19 +21,19 @@ export default function Footer({ cloudEngineActive = true }: FooterProps) {
           />
           <span className="font-semibold text-zinc-200 tracking-tight">Op8n</span>
         </div>
-        <span className="text-zinc-600 hidden sm:inline">&bull;</span>
-        <span className="text-zinc-500 hidden sm:inline">
+        <span className="text-zinc-400 hidden sm:inline">&bull;</span>
+        <span className="text-zinc-300 hidden sm:inline">
           AI Workflow Generator for n8n
         </span>
       </div>
 
       {/* Right: GitHub, Creator & Version */}
-      <div className="flex items-center gap-3 text-zinc-400">
+      <div className="flex items-center gap-3 text-zinc-300">
         <a
           href="https://github.com/MeetPrajapati4/Op8n"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-zinc-200 transition-colors inline-flex items-center gap-1.5"
+          className="hover:text-white transition-colors inline-flex items-center gap-1.5"
         >
           <svg
             className="w-3.5 h-3.5 fill-current"
@@ -49,20 +49,20 @@ export default function Footer({ cloudEngineActive = true }: FooterProps) {
           <span className="hidden sm:inline">GitHub</span>
         </a>
 
-        <span className="text-zinc-600">&bull;</span>
+        <span className="text-zinc-400">&bull;</span>
 
         <a
           href="https://github.com/MeetPrajapati4/Op8n"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-zinc-200 transition-colors"
+          className="hover:text-white transition-colors"
         >
-          Built by <span className="text-zinc-300 font-medium hover:text-[#01B6FE] transition-colors">Meet Prajapati</span>
+          Built by <span className="text-zinc-100 font-semibold hover:text-[#01B6FE] transition-colors">Meet Prajapati</span>
         </a>
 
-        <span className="text-zinc-600 hidden sm:inline">&bull;</span>
+        <span className="text-zinc-400 hidden sm:inline">&bull;</span>
 
-        <span className="text-zinc-500 font-mono text-[11px] hidden sm:inline">
+        <span className="text-zinc-300 font-mono text-[11px] font-semibold hidden sm:inline">
           v0.1.0
         </span>
       </div>

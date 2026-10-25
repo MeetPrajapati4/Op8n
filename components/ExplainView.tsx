@@ -193,7 +193,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
           placeholder="Paste full n8n workflow JSON here…"
-          className="flex-1 w-full rounded-xl bg-[#060608]/90 shadow-inner border border-white/[0.07] text-xs font-mono text-zinc-100 placeholder:text-zinc-500 p-3.5 resize-none focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 leading-relaxed"
+          className="flex-1 w-full rounded-xl bg-[#060608]/90 shadow-inner border border-white/[0.07] text-xs font-mono text-zinc-100 placeholder:text-zinc-400 p-3.5 resize-none focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 leading-relaxed"
           disabled={isAnalyzing}
         />
 
@@ -204,7 +204,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
           whileHover={{ scale: !jsonInput.trim() || isAnalyzing ? 1 : 1.01 }}
           whileTap={{ scale: !jsonInput.trim() || isAnalyzing ? 1 : 0.99 }}
           transition={{ duration: 0.15 }}
-          className="py-2.5 px-4 rounded-xl font-semibold text-xs text-white disabled:bg-zinc-900/80 disabled:text-zinc-500 disabled:border-white/[0.05] disabled:shadow-none disabled:cursor-not-allowed bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] shadow-[0_0_25px_-5px_rgba(3,135,254,0.45)] hover:shadow-[0_0_32px_-2px_rgba(117,1,253,0.65)] hover:brightness-110 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer"
+          className="py-2.5 px-4 rounded-xl font-semibold text-xs text-white disabled:bg-[#121217] disabled:text-zinc-400 disabled:border-white/[0.08] disabled:shadow-none disabled:cursor-not-allowed bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] shadow-[0_0_25px_-5px_rgba(3,135,254,0.45)] hover:shadow-[0_0_32px_-2px_rgba(117,1,253,0.65)] hover:brightness-110 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer"
         >
           {isAnalyzing ? (
             <>
@@ -238,8 +238,8 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
               >
                 <div className="flex flex-col gap-4 pb-6 overscroll-contain">
                   {/* Header card */}
-                  <div className="p-4 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex flex-col gap-2 shadow-sm">
-                    <span className="text-xs uppercase tracking-wider font-semibold text-rose-400">
+                  <div className="p-4 rounded-xl bg-[#141416]/90 border border-white/[0.08] flex flex-col gap-2 shadow-sm">
+                    <span className="text-xs uppercase tracking-wider font-bold text-[#01B6FE]">
                       Workflow Summary
                     </span>
                     <h3 className="text-sm font-bold text-white tracking-tight leading-snug">
@@ -248,9 +248,9 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
                     <p className="text-xs text-zinc-200 leading-relaxed">
                       {analysis.summary}
                     </p>
-                    <div className="mt-1 pt-2.5 border-t border-[#232328] text-xs text-zinc-300 flex items-center gap-2">
+                    <div className="mt-1 pt-2.5 border-t border-white/[0.07] text-xs text-zinc-300 flex items-center gap-2">
                       <span className="text-zinc-400 font-medium">Trigger:</span>
-                      <span className="text-rose-400 font-mono text-xs">
+                      <span className="px-2 py-0.5 rounded bg-[#02F7C8]/15 border border-[#02F7C8]/30 text-[#02F7C8] font-mono text-xs font-semibold">
                         {analysis.trigger}
                       </span>
                     </div>
@@ -259,14 +259,14 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
                   {/* Execution Flow Steps */}
                   <div className="flex flex-col gap-2.5">
                     <span className="text-xs font-semibold text-zinc-200 flex items-center gap-2">
-                      <Activity className="w-4 h-4 text-rose-500" />
+                      <Activity className="w-4 h-4 text-[#01B6FE]" />
                       Execution Flow Breakdown
                     </span>
                     <div className="flex flex-col gap-2">
                       {analysis.steps.map((step, idx) => (
                         <div
                           key={idx}
-                          className="p-3 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex items-start gap-3 transition-colors duration-150 hover:border-zinc-700"
+                          className="p-3 rounded-xl bg-[#141416]/90 border border-white/[0.08] flex items-start gap-3 transition-colors duration-150 hover:border-[#01B6FE]/40"
                         >
                           <span className="w-5 h-5 rounded-full bg-[#27272a] text-zinc-200 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">
                             {idx + 1}
@@ -287,7 +287,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
                   {/* Security & Reliability Audit */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                     {/* Security */}
-                    <div className="p-3 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex flex-col gap-2">
+                    <div className="p-3 rounded-xl bg-[#141416]/90 border border-white/[0.08] flex flex-col gap-2">
                       <span className="text-xs font-semibold text-zinc-200 flex items-center gap-2">
                         <ShieldCheck className="w-4 h-4 text-emerald-400" />
                         Security Audit
@@ -305,7 +305,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
                     </div>
 
                     {/* Reliability */}
-                    <div className="p-3 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex flex-col gap-2">
+                    <div className="p-3 rounded-xl bg-[#141416]/90 border border-white/[0.08] flex flex-col gap-2">
                       <span className="text-xs font-semibold text-zinc-200 flex items-center gap-2">
                         <Zap className="w-4 h-4 text-amber-400" />
                         Reliability &amp; Errors
@@ -324,7 +324,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
                   </div>
 
                   {/* Recommendations */}
-                  <div className="p-3 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex flex-col gap-2">
+                  <div className="p-3 rounded-xl bg-[#141416]/90 border border-white/[0.08] flex flex-col gap-2">
                     <span className="text-xs font-semibold text-zinc-200 flex items-center gap-2">
                       <Lightbulb className="w-4 h-4 text-yellow-400" />
                       Architect Recommendations
@@ -332,7 +332,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
                     <ul className="flex flex-col gap-2 text-xs text-zinc-200">
                       {analysis.recommendations.map((rec, i) => (
                         <li key={i} className="flex items-start gap-2.5 leading-relaxed">
-                          <span className="text-rose-500 font-bold mt-0.5">&bull;</span>
+                          <span className="text-[#01B6FE] font-bold mt-0.5">&bull;</span>
                           <span>{rec}</span>
                         </li>
                       ))}
@@ -350,12 +350,12 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
               transition={{ duration: 0.2 }}
               className="flex flex-col items-center justify-center flex-1 text-center gap-3 bg-[radial-gradient(#ffffff12_1px,transparent_1px)] [background-size:20px_20px] rounded-xl h-full"
             >
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent border border-white/[0.08] shadow-2xl flex items-center justify-center text-zinc-400 animate-pulse">
-                <FileCode2 className="w-7 h-7 stroke-1" />
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent border border-white/[0.08] shadow-2xl flex items-center justify-center text-zinc-300 animate-pulse">
+                <FileCode2 className="w-7 h-7 stroke-1 text-[#01B6FE]" />
               </div>
               <div className="flex flex-col gap-1.5 max-w-sm px-4">
                 <h4 className="text-sm font-semibold text-zinc-100">No workflow audited yet</h4>
-                <p className="text-zinc-400 text-xs leading-relaxed">
+                <p className="text-zinc-300 text-xs leading-relaxed">
                   Paste any n8n workflow JSON on the left to receive an instant security, architecture, and reliability audit.
                 </p>
               </div>

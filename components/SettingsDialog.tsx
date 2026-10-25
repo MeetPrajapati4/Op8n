@@ -193,7 +193,7 @@ export default function SettingsDialog({
             <Sliders className="w-3.5 h-3.5 text-[#01B6FE]" />
             Workflow Engine Preferences &amp; Models
           </DialogTitle>
-          <DialogDescription className="text-xs text-zinc-400">
+          <DialogDescription className="text-xs text-zinc-300">
             Configure your AI credentials, model selection, and workflow canvas formatting.
           </DialogDescription>
         </DialogHeader>
@@ -224,7 +224,7 @@ export default function SettingsDialog({
                       </span>
                     </div>
 
-                    <p className="text-xs text-zinc-400 leading-relaxed">
+                    <p className="text-xs text-zinc-300 leading-relaxed">
                       Enter your key once. Validated directly with provider API and encrypted locally.
                     </p>
 
@@ -256,7 +256,7 @@ export default function SettingsDialog({
                           onChange={(e) => handleKeyChange(e.target.value)}
                           placeholder="Paste key (AIzaSy..., sk-...)"
                           autoComplete="off"
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#060608] border border-white/[0.08] text-xs text-zinc-200 font-mono placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#060608] border border-white/[0.08] text-xs text-zinc-200 font-mono placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
                         />
                       </div>
                     </div>
@@ -264,9 +264,9 @@ export default function SettingsDialog({
                     {/* Supported Generation Models Preview for selected provider */}
                     {providerEntry?.staticModels && providerEntry.staticModels.length > 0 && (
                       <div className="flex flex-col gap-1.5 pt-0.5">
-                        <div className="flex items-center justify-between text-xs text-zinc-400">
+                        <div className="flex items-center justify-between text-xs text-zinc-300">
                           <span>Supported Generation Models:</span>
-                          <span className="font-mono text-emerald-400 text-xs font-semibold">
+                          <span className="font-mono text-[#02F7C8] text-xs font-semibold">
                             {providerEntry.staticModels.length} verified
                           </span>
                         </div>
@@ -334,7 +334,7 @@ export default function SettingsDialog({
                             setUserModels([]);
                             toast.info('API key cleared. You can reconnect anytime.');
                           }}
-                          className="text-xs text-zinc-400 hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer font-medium"
+                          className="text-xs text-zinc-300 hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer font-medium"
                           title="Disconnect key and reset"
                         >
                           <RotateCcw className="w-3 h-3" />
@@ -372,7 +372,7 @@ export default function SettingsDialog({
                   <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
                     Schema Target
                   </span>
-                  <span className="text-xs font-mono text-zinc-400">n8n syntax version</span>
+                  <span className="text-xs font-mono text-zinc-300">n8n syntax version</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <button
@@ -382,12 +382,12 @@ export default function SettingsDialog({
                     }
                     className={`p-2 rounded-lg border text-left flex flex-col gap-0.5 transition-all cursor-pointer ${
                       prefs.targetVersion === 'v1'
-                        ? 'border-[#01B6FE]/60 bg-[#01B6FE]/15 text-white ring-1 ring-[#01B6FE]/30 shadow-[0_0_15px_rgba(1,182,254,0.15)]'
-                        : 'border-white/[0.06] bg-[#121217] text-zinc-400 hover:text-white hover:border-white/[0.15]'
+                        ? 'border-[#01B6FE]/60 bg-[#01B6FE]/15 text-white ring-1 ring-[#01B6FE]/30 shadow-[0_0_15px_rgba(1,182,254,0.15)] font-semibold'
+                        : 'border-white/[0.08] bg-[#121217] text-zinc-300 hover:text-white hover:border-white/[0.2]'
                     }`}
                   >
                     <span className="text-xs font-semibold text-white">n8n v1.x (Modern)</span>
-                    <span className="text-xs text-zinc-400">UUIDs &amp; typeVersions</span>
+                    <span className="text-xs text-zinc-300">UUIDs &amp; typeVersions</span>
                   </button>
 
                   <button
@@ -397,12 +397,12 @@ export default function SettingsDialog({
                     }
                     className={`p-2 rounded-lg border text-left flex flex-col gap-0.5 transition-all cursor-pointer ${
                       prefs.targetVersion === 'v0'
-                        ? 'border-[#01B6FE]/60 bg-[#01B6FE]/15 text-white ring-1 ring-[#01B6FE]/30 shadow-[0_0_15px_rgba(1,182,254,0.15)]'
-                        : 'border-white/[0.06] bg-[#121217] text-zinc-400 hover:text-white hover:border-white/[0.15]'
+                        ? 'border-[#01B6FE]/60 bg-[#01B6FE]/15 text-white ring-1 ring-[#01B6FE]/30 shadow-[0_0_15px_rgba(1,182,254,0.15)] font-semibold'
+                        : 'border-white/[0.08] bg-[#121217] text-zinc-300 hover:text-white hover:border-white/[0.2]'
                     }`}
                   >
                     <span className="text-xs font-semibold text-white">n8n v0.x (Legacy)</span>
-                    <span className="text-xs text-zinc-400">Numeric node IDs</span>
+                    <span className="text-xs text-zinc-300">Numeric node IDs</span>
                   </button>
                 </div>
               </div>
@@ -415,7 +415,7 @@ export default function SettingsDialog({
                     {hasKey ? 'Personal key active (browser encrypted)' : cloudEngineActive ? 'Serverless cloud engine active' : 'API key required'}
                   </span>
                 </div>
-                <span className="text-xs font-mono text-zinc-400">Vercel Edge</span>
+                <span className="text-xs font-mono text-[#02F7C8] font-semibold">Vercel Edge</span>
               </div>
             </div>
 
@@ -425,14 +425,14 @@ export default function SettingsDialog({
                 <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
                   Canvas &amp; Generation Rules
                 </span>
-                <span className="text-xs font-mono text-zinc-400">Formatting</span>
+                <span className="text-xs font-mono text-zinc-300">Formatting</span>
               </div>
 
               {/* Error handling strategy */}
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-zinc-200 flex items-center justify-between">
                   <span>Default Node Error Handling</span>
-                  <span className="text-xs text-zinc-400 font-mono">
+                  <span className="text-xs text-zinc-300 font-mono">
                     {prefs.errorHandling === 'continue'
                       ? 'continueOnFail'
                       : prefs.errorHandling === 'retry'
@@ -460,7 +460,7 @@ export default function SettingsDialog({
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-zinc-200 flex items-center justify-between">
                   <span>Canvas Node Spacing</span>
-                  <span className="text-xs text-zinc-400 font-mono">
+                  <span className="text-xs text-zinc-300 font-mono">
                     {prefs.layoutSpacing === 180
                       ? 'Compact (180px)'
                       : prefs.layoutSpacing === 280
@@ -499,7 +499,7 @@ export default function SettingsDialog({
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-zinc-200 flex items-center justify-between">
                   <span>Default Schedule Timezone</span>
-                  <span className="text-xs text-zinc-400 font-mono">
+                  <span className="text-xs text-zinc-300 font-mono">
                     {prefs.timezone || 'UTC'}
                   </span>
                 </label>
@@ -524,7 +524,7 @@ export default function SettingsDialog({
                   <span className="text-xs text-zinc-200 font-medium block">
                     Inject Sample Mock Payloads (pinData)
                   </span>
-                  <span className="text-[11px] text-zinc-400 block mt-0.5">
+                  <span className="text-[11px] text-zinc-300 block mt-0.5">
                     Add sample data on trigger nodes for instant testing
                   </span>
                 </div>
@@ -543,7 +543,7 @@ export default function SettingsDialog({
                   <span className="text-xs text-zinc-200 font-medium block">
                     Auto-add Canvas Sticky Note
                   </span>
-                  <span className="text-[11px] text-zinc-400 block mt-0.5">
+                  <span className="text-[11px] text-zinc-300 block mt-0.5">
                     Place an annotated sticky note describing the flow
                   </span>
                 </div>
@@ -561,7 +561,7 @@ export default function SettingsDialog({
 
           {/* Footer Actions */}
           <div className="flex items-center justify-between pt-3 border-t border-white/[0.07]">
-            <span className="text-xs text-zinc-400 font-mono hidden sm:inline">
+            <span className="text-xs text-zinc-300 font-mono hidden sm:inline">
               Op8n Studio Engine
             </span>
             <div className="flex items-center gap-2 ml-auto">

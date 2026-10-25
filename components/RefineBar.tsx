@@ -151,7 +151,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
           <Sparkles className="w-3.5 h-3.5 text-[#01B6FE]" />
           Refine Workflow
         </span>
-        <span className="text-xs text-zinc-400">Iterative AI modifications</span>
+        <span className="text-xs text-zinc-300">Iterative AI modifications</span>
       </div>
 
       {/* Input bar */}
@@ -167,7 +167,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
           placeholder="e.g. Add an error alert to Telegram if request fails, or change schedule to 8am"
-          className="flex-1 px-3.5 py-2 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+          className="flex-1 px-3.5 py-2 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
           disabled={isRefining}
         />
         <motion.button

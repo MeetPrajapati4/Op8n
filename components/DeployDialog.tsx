@@ -135,7 +135,7 @@ export default function DeployDialog({
                 onChange={(e) => setN8nUrl(e.target.value)}
                 placeholder="https://n8n.yourcompany.com"
                 required
-                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
               />
             </div>
 
@@ -149,7 +149,7 @@ export default function DeployDialog({
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Generate in n8n Settings → API"
                 required
-                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
+                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
               />
             </div>
 
@@ -160,8 +160,8 @@ export default function DeployDialog({
               </div>
             )}
 
-            <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.06] text-xs text-zinc-400 leading-relaxed">
-              <strong className="text-zinc-200">SSRF Protected:</strong> Loopback &amp; local private networks are rejected by default for safety.
+            <div className="p-2.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs text-zinc-300 leading-relaxed">
+              <strong className="text-zinc-100">SSRF Protected:</strong> Loopback &amp; local private networks are rejected by default for safety.
             </div>
 
             <div className="flex justify-end gap-2 mt-1.5">

@@ -119,22 +119,24 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
 
           {/* Credentials needed */}
           {credentialsNeeded.length > 0 && (
-            <div className="flex flex-col gap-1.5 mt-1 border-t border-[#2e2e35] pt-2">
+            <div className="flex flex-col gap-1.5 mt-1 border-t border-white/[0.08] pt-2">
               <div className="flex items-center gap-1.5 text-zinc-200 text-xs font-semibold">
                 <KeyRound className="w-3.5 h-3.5 text-[#01B6FE]" />
                 <span>Credentials Needed ({credentialsNeeded.length})</span>
               </div>
-              <p className="text-xs text-zinc-400">
+              <p className="text-xs text-zinc-300">
                 Secrets were replaced with placeholders for security:
               </p>
               <div className="flex flex-col gap-1">
                 {credentialsNeeded.map((cred, idx) => (
                   <div
                     key={idx}
-                    className="p-1.5 rounded-lg bg-[#1f1f23] border border-[#2e2e35] text-xs text-zinc-200 flex items-center justify-between font-mono"
+                    className="p-1.5 rounded-lg bg-[#15151a] border border-white/[0.08] text-xs text-zinc-200 flex items-center justify-between font-mono gap-2"
                   >
-                    <span className="text-zinc-400">{cred.node}</span>
-                    <span className="text-[#02F7C8]">{cred.placeholder}</span>
+                    <span className="text-zinc-300 font-medium">{cred.node}</span>
+                    <span className="px-1.5 py-0.5 rounded bg-[#02F7C8]/15 border border-[#02F7C8]/35 text-[#02F7C8] font-semibold text-[11px] shadow-xs">
+                      {cred.placeholder}
+                    </span>
                   </div>
                 ))}
               </div>

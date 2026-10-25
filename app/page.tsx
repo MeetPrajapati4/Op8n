@@ -423,7 +423,7 @@ export default function Home() {
                     {(status === 'idle' || status === 'error') && !workflow && (
                       <div className="flex flex-col items-center justify-center flex-1 text-center gap-3">
                         <div className="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent border border-white/[0.08] shadow-2xl flex items-center justify-center animate-pulse">
-                          <FileCode2 className="w-7 h-7 text-zinc-400 stroke-[1.5]" />
+                          <FileCode2 className="w-7 h-7 text-[#01B6FE] stroke-[1.5]" />
                         </div>
                         <p className="text-zinc-300 text-xs">
                           {status === 'error' ? errorMsg : 'Generate a workflow to view output'}
@@ -535,7 +535,7 @@ export default function Home() {
                         <p className="text-white text-sm font-semibold tracking-tight">
                           Your generated n8n workflow will appear here
                         </p>
-                        <p className="text-zinc-400 text-xs max-w-sm leading-relaxed">
+                        <p className="text-zinc-300 text-xs max-w-sm leading-relaxed">
                           Responses are generated and validated in 3-5 seconds.
                         </p>
                       </div>
@@ -562,7 +562,7 @@ export default function Home() {
                         <p className="text-white text-sm font-semibold">
                           {generationStep || 'Building your workflow…'}
                         </p>
-                        <p className="text-zinc-400 text-xs">
+                        <p className="text-zinc-300 text-xs">
                           High-speed generation active &bull; ~3-5 seconds response
                         </p>
                       </div>
@@ -605,7 +605,7 @@ export default function Home() {
                         <p className="text-red-400 text-sm font-semibold tracking-tight">
                           Generation couldn&apos;t complete
                         </p>
-                        <p className="text-zinc-400 text-xs max-w-sm leading-relaxed">
+                        <p className="text-zinc-300 text-xs max-w-sm leading-relaxed">
                           {errorMsg || 'Please adjust your prompt and retry.'}
                         </p>
                       </div>

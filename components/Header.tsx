@@ -52,7 +52,7 @@ export default function Header({
             </span>
           </div>
           <span className="hidden xl:inline-block h-3.5 w-px bg-white/[0.1]" />
-          <span className="hidden xl:inline text-xs text-zinc-400 font-normal truncate">
+          <span className="hidden xl:inline text-xs text-zinc-300 font-normal truncate">
             Describe any automation in plain English → get importable n8n JSON
           </span>
         </div>
@@ -68,7 +68,7 @@ export default function Header({
             type="button"
             onClick={() => onModeChange('studio')}
             className={`relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium cursor-pointer focus:outline-none focus-visible:ring-0 outline-none select-none transition-colors duration-150 ${
-              activeMode === 'studio' ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
+              activeMode === 'studio' ? 'text-white font-semibold' : 'text-zinc-300 hover:text-white'
             }`}
           >
             {activeMode === 'studio' && (
@@ -87,7 +87,7 @@ export default function Header({
             type="button"
             onClick={() => onModeChange('audit')}
             className={`relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium cursor-pointer focus:outline-none focus-visible:ring-0 outline-none select-none transition-colors duration-150 ${
-              activeMode === 'audit' ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
+              activeMode === 'audit' ? 'text-white font-semibold' : 'text-zinc-300 hover:text-white'
             }`}
           >
             {activeMode === 'audit' && (
@@ -114,12 +114,12 @@ export default function Header({
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.12 }}
             onClick={onNewSession}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#01B6FE]/10 hover:bg-[#01B6FE]/20 border border-[#01B6FE]/30 hover:border-[#01B6FE]/60 text-sky-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#01B6FE]/15 hover:bg-[#01B6FE]/25 border border-[#01B6FE]/40 hover:border-[#01B6FE]/70 text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
             title="Start a new blank workflow session (Alt+N)"
           >
             <Plus className="w-3.5 h-3.5 text-[#02F7C8]" />
             <span>New Session</span>
-            <kbd className="hidden lg:inline text-[10px] font-mono opacity-80 ml-1 px-1.5 py-0.5 rounded bg-[#01B6FE]/20 text-sky-200">
+            <kbd className="hidden lg:inline text-[10px] font-mono ml-1 px-1.5 py-0.5 rounded bg-[#01B6FE]/25 text-white font-semibold border border-[#01B6FE]/30">
               Alt+N
             </kbd>
           </motion.button>
@@ -131,13 +131,13 @@ export default function Header({
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.12 }}
           onClick={onOpenHistory}
-          className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-300 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+          className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
           title="Workflow History & Backups"
         >
-          <History className="w-3.5 h-3.5 text-zinc-400" />
+          <History className="w-3.5 h-3.5 text-zinc-300" />
           <span className="hidden sm:inline">History</span>
           {historyCount > 0 && (
-            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-white/[0.06] text-zinc-200 border border-white/[0.1]">
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-[#01B6FE]/20 text-[#01B6FE] border border-[#01B6FE]/35 shadow-xs">
               {historyCount}
             </span>
           )}
@@ -149,10 +149,10 @@ export default function Header({
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.12 }}
           onClick={onOpenSettings}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-300 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
           title="Workflow Engine Preferences & Models"
         >
-          <Sliders className="w-3.5 h-3.5 text-zinc-400" />
+          <Sliders className="w-3.5 h-3.5 text-zinc-300" />
           <span className="hidden sm:inline">Preferences</span>
         </motion.button>
       </div>

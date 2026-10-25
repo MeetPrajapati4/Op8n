@@ -54,7 +54,7 @@ function JsonViewer({ json }: JsonViewerProps) {
           <span className="w-2 h-2 rounded-full bg-[#02F7C8] shadow-[0_0_8px_rgba(2,247,200,0.7)]" />
           <span className="text-xs text-zinc-200 font-mono">workflow.json</span>
         </div>
-        <span className="text-xs text-zinc-400 font-mono">
+        <span className="text-xs text-zinc-300 font-semibold font-mono">
           {jsonSizeKb} KB
         </span>
       </div>
@@ -67,21 +67,6 @@ function JsonViewer({ json }: JsonViewerProps) {
           dangerouslySetInnerHTML={{ __html: highlighted }}
         />
       </ScrollArea>
-
-      <style jsx global>{`
-        .json-key {
-          color: #60a5fa;
-        }
-        .json-string {
-          color: #34d399;
-        }
-        .json-number {
-          color: #fbbf24;
-        }
-        .json-bool {
-          color: #f472b6;
-        }
-      `}</style>
     </div>
   );
 }
