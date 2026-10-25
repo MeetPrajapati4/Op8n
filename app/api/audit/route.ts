@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getServerAiConfig } from '@/lib/server/ai-config';
 import { executeSelfHealingAiCall, isAuthError } from '@/lib/server/auto-error-handler';
+import { robustJsonParse } from '@/lib/json-repair';
 
 // Maximum size limits for payload to prevent abuse
 const auditInputSchema = z
@@ -98,22 +99,11 @@ Return ONLY valid JSON.`;
       systemPrompt: systemInstruction,
       userPrompt,
       temperature: 0.2,
-      maxOutputTokens: 2500,
+      maxOutputTokens: 8192,
       requireJson: true,
     });
 
-    let cleanJson = rawText
-      .replace(/```json\n?/gi, '')
-      .replace(/```\n?/g, '')
-      .trim();
-
-    // Fallback: extract JSON substring if wrapped in extra text
-    if (!cleanJson.startsWith('{')) {
-      const match = cleanJson.match(/\{[\s\S]*\}/);
-      if (match) cleanJson = match[0];
-    }
-
-    const analysis = JSON.parse(cleanJson);
+    const analysis = robustJsonParse(rawText);
     return NextResponse.json({ analysis, modelUsed, autoRecovered });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Analysis failed';

@@ -22,9 +22,9 @@ export interface AutoAiOptions {
 const PROVIDER_FALLBACK_CHAINS: Record<string, string[]> = {
   gemini: [
     'gemini-2.5-flash',
-    'gemini-2.0-flash',
-    'gemini-2.5-pro',
-    'gemini-1.5-flash',
+    'gemini-3.5-flash',
+    'gemini-3-flash-preview',
+    'gemini-flash-latest',
   ],
   openai: [
     'gpt-4o',
@@ -64,8 +64,9 @@ const PROVIDER_FALLBACK_CHAINS: Record<string, string[]> = {
 export function sanitizeModelId(model: string): string {
   if (!model) return 'gemini-2.5-flash';
   const clean = model.trim().replace(/^models\//i, '');
-  // Auto-heal retired/404 Gemini 1.5 Pro to flagship Gemini 2.5 Flash
-  if (clean.toLowerCase() === 'gemini-1.5-pro') {
+  const lower = clean.toLowerCase();
+  // Auto-heal retired/404 Gemini models to active models
+  if (lower === 'gemini-1.5-pro' || lower === 'gemini-1.5-flash' || lower === 'gemini-2.0-flash' || lower === 'gemini-2.5-pro') {
     return 'gemini-2.5-flash';
   }
   return clean;
@@ -75,19 +76,16 @@ export function sanitizeModelId(model: string): string {
  * Builds an ordered list of fallback models for autonomous recovery
  */
 export function getModelFallbackChain(provider: string, requestedModel: string): string[] {
-  let cleanRequested = sanitizeModelId(requestedModel);
-  if (cleanRequested.toLowerCase() === 'gemini-1.5-pro') {
-    cleanRequested = 'gemini-2.5-flash';
-  }
+  const cleanRequested = sanitizeModelId(requestedModel);
   const chain = PROVIDER_FALLBACK_CHAINS[provider.toLowerCase()] || ['gemini-2.5-flash'];
   
   // Put requested model first if valid, followed by the provider's fallback chain
   const result: string[] = [];
-  if (cleanRequested && cleanRequested !== 'gemini-1.5-pro') {
+  if (cleanRequested) {
     result.push(cleanRequested);
   }
   for (const fallback of chain) {
-    if (!result.includes(fallback) && fallback !== 'gemini-1.5-pro') {
+    if (!result.includes(fallback)) {
       result.push(fallback);
     }
   }
@@ -170,7 +168,7 @@ export async function executeSelfHealingAiCall(
     systemPrompt,
     userPrompt,
     temperature = 0.2,
-    maxOutputTokens = 2500,
+    maxOutputTokens = 8192,
     requireJson = true,
   } = options;
 
@@ -280,7 +278,8 @@ async function executeSingleModelCall(params: {
 
     const generationConfig: Record<string, unknown> = {
       temperature,
-      maxOutputTokens,
+      maxOutputTokens: Math.max(maxOutputTokens || 8192, 8192),
+      thinkingConfig: { thinkingBudget: 0 },
     };
 
     if (useAdvancedConfig && requireJson) {
@@ -351,7 +350,8 @@ export async function createSelfHealingAiStream(options: {
             generationConfig: {
               temperature: 0.15,
               responseMimeType: 'application/json',
-              maxOutputTokens: 2500,
+              maxOutputTokens: 8192,
+              thinkingConfig: { thinkingBudget: 0 },
             } as any,
           });
 

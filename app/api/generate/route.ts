@@ -5,6 +5,7 @@ import { validateAndRepairWorkflow } from '@/lib/validator';
 import { DEFAULT_PREFERENCES, WorkflowPreferences } from '@/lib/settings';
 import { getServerAiConfig } from '@/lib/server/ai-config';
 import { createSelfHealingAiStream, isAuthError } from '@/lib/server/auto-error-handler';
+import { robustJsonParse, synthesizeFallbackWorkflow } from '@/lib/json-repair';
 
 // In-memory rate limiter per IP (30 requests per minute)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
@@ -147,13 +148,13 @@ export async function POST(req: NextRequest) {
 
         sendEvent('step', 'Validating schema & checking credentials…');
 
-        // Parse and validate workflow JSON
-        const cleaned = cleanJsonString(rawOutput);
+        // Parse and validate workflow JSON with resilient multi-stage repair
         let parsedWorkflow: unknown;
         try {
-          parsedWorkflow = JSON.parse(cleaned);
-        } catch {
-          throw new Error('Model output could not be parsed as valid JSON. Please retry.');
+          parsedWorkflow = robustJsonParse(rawOutput);
+        } catch (parseErr) {
+          console.warn('[GenerateRoute] Initial JSON parse failed, auto-synthesizing workflow from tokens:', parseErr);
+          parsedWorkflow = synthesizeFallbackWorkflow(rawOutput, 'Generated Automation');
         }
 
         const validation = validateAndRepairWorkflow(

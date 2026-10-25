@@ -5,6 +5,7 @@ import { validateAndRepairWorkflow } from '@/lib/validator';
 import { DEFAULT_PREFERENCES, WorkflowPreferences } from '@/lib/settings';
 import { getServerAiConfig } from '@/lib/server/ai-config';
 import { executeSelfHealingAiCall, isAuthError } from '@/lib/server/auto-error-handler';
+import { robustJsonParse, synthesizeFallbackWorkflow } from '@/lib/json-repair';
 
 const refineInputSchema = z.object({
   existingWorkflow: z.record(z.string(), z.unknown()),
@@ -77,12 +78,16 @@ Output ONLY the updated valid n8n workflow JSON.`;
       systemPrompt: SYSTEM_PROMPT,
       userPrompt: `You are refining an EXISTING n8n workflow.\nExisting Workflow JSON:\n${JSON.stringify(existingWorkflow, null, 2)}\n\nUser Refinement Request:\n"${instruction.trim()}"\n\nModify the workflow according to the user request. Keep existing node names and structure where possible, add or modify nodes as requested, update connection mappings properly.\nOutput ONLY the updated valid n8n workflow JSON.`,
       temperature: 0.15,
-      maxOutputTokens: 2500,
+      maxOutputTokens: 8192,
       requireJson: true,
     });
 
-    const cleaned = cleanJsonString(rawText);
-    const parsed = JSON.parse(cleaned);
+    let parsed: unknown;
+    try {
+      parsed = robustJsonParse(rawText);
+    } catch {
+      parsed = synthesizeFallbackWorkflow(rawText, (existingWorkflow as any)?.name || 'Refined Automation');
+    }
 
     const validation = validateAndRepairWorkflow(parsed, preferences as WorkflowPreferences);
 
