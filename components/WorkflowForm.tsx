@@ -52,7 +52,7 @@ export default function WorkflowForm({
       : suggestions.filter((s) => s.category === activeCategory);
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col h-full gap-3">
+    <form onSubmit={handleSubmit} className="flex flex-col h-full gap-3 min-h-0">
       {/* Input Box with Decreased, Sleek Height */}
       <div className="flex flex-col gap-1.5 flex-shrink-0">
         <div className="flex items-start justify-between gap-2 flex-shrink-0">
@@ -96,7 +96,7 @@ export default function WorkflowForm({
         </div>
 
         {/* Category Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 flex-shrink-0 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden smooth-scroll-momentum">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 flex-shrink-0 custom-scrollbar smooth-scroll-momentum overscroll-contain">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -114,7 +114,7 @@ export default function WorkflowForm({
         </div>
 
         {/* Rich Suggestions Cloud (Scrollable Multi-Pill Grid) */}
-        <div className="flex-1 min-h-0 overflow-y-auto pr-1 flex flex-wrap content-start gap-1.5 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden smooth-scroll-momentum">
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1.5 flex flex-wrap content-start gap-1.5 custom-scrollbar smooth-scroll-momentum overscroll-contain">
           {displaySuggestions.map((preset) => (
             <button
               key={preset.itemId}

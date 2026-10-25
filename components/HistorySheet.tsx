@@ -193,8 +193,8 @@ export default function HistorySheet({
           </div>
         </SheetHeader>
 
-        {/* Scrollable List with data-lenis-prevent */}
-        <ScrollArea className="flex-1 p-4 sm:p-5 no-scrollbar smooth-scroll-momentum min-h-0" data-lenis-prevent="true">
+        {/* Scrollable List */}
+        <ScrollArea className="flex-1 p-4 sm:p-5 custom-scrollbar smooth-scroll-momentum min-h-0" data-lenis-prevent="true">
           {filteredWorkflows.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center text-zinc-200 text-xs sm:text-sm">
               <Clock className="w-9 h-9 text-zinc-300 mb-3 stroke-1" />

@@ -89,7 +89,7 @@ export default function DeployDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-[94vw] sm:max-w-[520px] max-h-[90vh] overflow-y-auto no-scrollbar bg-[#0C0C0F]/95 backdrop-blur-2xl border border-white/[0.12] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_25px_50px_-12px_rgba(0,0,0,0.85)] rounded-2xl text-zinc-100 p-6 sm:p-7 smooth-scroll-momentum"
+        className="w-[94vw] sm:max-w-[520px] max-h-[90vh] overflow-y-auto custom-scrollbar bg-[#0C0C0F]/95 backdrop-blur-2xl border border-white/[0.12] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_25px_50px_-12px_rgba(0,0,0,0.85)] rounded-2xl text-zinc-100 p-6 sm:p-7 smooth-scroll-momentum"
         data-lenis-prevent="true"
       >
         <DialogHeader className="pb-1 border-b border-white/[0.08]">

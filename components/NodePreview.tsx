@@ -39,7 +39,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
           Node Flow Preview (Click node to inspect)
         </span>
       </div>
-      <div className="overflow-x-auto pb-1.5 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden smooth-scroll-momentum [contain:paint]">
+      <div className="overflow-x-auto pb-1.5 custom-scrollbar smooth-scroll-momentum [contain:paint]">
         <motion.div
           initial="hidden"
           animate="show"
@@ -125,7 +125,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
                         <span className="text-xs text-zinc-300 uppercase tracking-wider font-semibold">
                           Parameters:
                         </span>
-                        <pre className="text-xs font-mono bg-[#060608] border border-white/[0.06] p-2 rounded-lg max-h-32 overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden whitespace-pre-wrap break-all text-zinc-200 smooth-scroll-momentum">
+                        <pre className="text-xs font-mono bg-[#060608] border border-white/[0.06] p-2 rounded-lg max-h-32 overflow-y-auto custom-scrollbar whitespace-pre-wrap break-all text-zinc-200 smooth-scroll-momentum">
                           {JSON.stringify(node.parameters || {}, null, 2)}
                         </pre>
                       </div>

@@ -59,7 +59,7 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-80 sm:w-84 max-w-[calc(100vw-2rem)] p-3.5 max-h-80 overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl smooth-scroll-momentum"
+        className="w-80 sm:w-84 max-w-[calc(100vw-2rem)] p-3.5 max-h-80 overflow-y-auto custom-scrollbar bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl smooth-scroll-momentum"
         align="end"
         data-lenis-prevent="true"
       >

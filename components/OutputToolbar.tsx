@@ -83,7 +83,7 @@ export default function OutputToolbar({
   const complexity = calculateComplexity(workflow);
 
   return (
-    <div className="flex items-center justify-between gap-2.5 px-3.5 py-2 bg-[#0C0C0F]/90 backdrop-blur-md border border-white/[0.07] rounded-xl select-none shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-nowrap flex-shrink-0 min-w-0 smooth-scroll-momentum">
+    <div className="flex items-center justify-between gap-2.5 px-3.5 py-2 bg-[#0C0C0F]/90 backdrop-blur-md border border-white/[0.07] rounded-xl select-none shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] overflow-x-auto custom-scrollbar flex-nowrap flex-shrink-0 min-w-0 smooth-scroll-momentum">
       {/* Left: Metrics & Validation */}
       <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 min-w-0">
         {/* Node count */}
@@ -126,7 +126,7 @@ export default function OutputToolbar({
               <span><span className="hidden sm:inline">Import </span>Guide</span>
             </motion.button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 sm:w-84 max-w-[calc(100vw-2rem)] p-3.5 bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" align="end" data-lenis-prevent="true">
+          <PopoverContent className="w-80 sm:w-84 max-w-[calc(100vw-2rem)] p-3.5 bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl custom-scrollbar" align="end" data-lenis-prevent="true">
             <h4 className="text-xs font-semibold text-zinc-100 uppercase tracking-wider mb-2.5">
               How to import into n8n (3 Steps)
             </h4>

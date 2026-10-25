@@ -241,7 +241,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
             className="h-full flex flex-col min-h-0 flex-1 overflow-hidden min-w-0"
           >
             <ScrollArea
-              className="flex-1 min-h-0 h-full w-full pr-2 sm:pr-3.5 no-scrollbar"
+              className="flex-1 min-h-0 h-full w-full pr-2 sm:pr-3.5 custom-scrollbar smooth-scroll-momentum"
               data-lenis-prevent="true"
             >
               <div className="flex flex-col gap-4 pb-6 overscroll-contain">

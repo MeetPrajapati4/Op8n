@@ -79,7 +79,6 @@ button, input, select, textarea, a {
 .smooth-scroll-momentum {
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  scroll-behavior: smooth;
 }
 
 /* Primary CTA gradient */
@@ -154,21 +153,44 @@ button, input, select, textarea, a {
 
 /* Custom discreet scrollbars for internal scrollable areas */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2e2e35;
+  background: rgba(255, 255, 255, 0.18);
   border-radius: 9999px;
+  transition: background-color 0.15s ease;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #454550;
+  background: rgba(1, 182, 254, 0.6);
 }
 
-/* Completely hide scrollbars across all browsers */
+/* Explicit sleek custom-scrollbar utility with cross-browser support */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  -webkit-overflow-scrolling: touch;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 9999px;
+  transition: background-color 0.15s ease;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(1, 182, 254, 0.7);
+}
+
+/* Completely hide scrollbars across all browsers when explicitly required */
 .no-scrollbar::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;

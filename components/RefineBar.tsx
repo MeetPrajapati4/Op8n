@@ -193,7 +193,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
 
       {/* Quick suggestions */}
       {!stagedResult && (
-        <div className="flex items-center gap-1.5 pt-0.5 overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-nowrap smooth-scroll-momentum">
+        <div className="flex items-center gap-1.5 pt-0.5 overflow-x-auto custom-scrollbar flex-nowrap smooth-scroll-momentum">
           {QUICK_SUGGESTIONS.map((sug) => (
             <motion.button
               key={sug}
@@ -246,7 +246,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
             </div>
 
             {/* Diff Pills */}
-            <div className="flex items-center gap-2 flex-wrap text-xs overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex items-center gap-2 flex-wrap text-xs overflow-x-auto custom-scrollbar">
               {stagedResult.diff.added.map((node) => (
                 <span
                   key={node.name}
