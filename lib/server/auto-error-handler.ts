@@ -65,8 +65,13 @@ export function sanitizeModelId(model: string): string {
   if (!model) return 'gemini-2.5-flash';
   const clean = model.trim().replace(/^models\//i, '');
   const lower = clean.toLowerCase();
-  // Auto-heal retired/404 Gemini models to active models
-  if (lower === 'gemini-1.5-pro' || lower === 'gemini-1.5-flash' || lower === 'gemini-2.0-flash' || lower === 'gemini-2.5-pro') {
+  // Auto-heal retired/404 Gemini models to supported active models
+  if (
+    lower === 'gemini-1.5-pro' ||
+    lower === 'gemini-1.5-flash' ||
+    lower === 'gemini-2.0-flash' ||
+    lower === 'gemini-2.5-pro'
+  ) {
     return 'gemini-2.5-flash';
   }
   return clean;
@@ -275,19 +280,23 @@ async function executeSingleModelCall(params: {
 
   if (provider.toLowerCase() === 'gemini') {
     const genAI = new GoogleGenerativeAI(apiKey);
+    const cleanModel = sanitizeModelId(model);
 
     const generationConfig: Record<string, unknown> = {
       temperature,
       maxOutputTokens: Math.max(maxOutputTokens || 8192, 8192),
-      thinkingConfig: { thinkingBudget: 0 },
     };
 
     if (useAdvancedConfig && requireJson) {
       generationConfig.responseMimeType = 'application/json';
     }
 
+    if (cleanModel.includes('2.5') || cleanModel.includes('2.0')) {
+      generationConfig.thinkingConfig = { thinkingBudget: 0 };
+    }
+
     const geminiModel = genAI.getGenerativeModel({
-      model: sanitizeModelId(model),
+      model: cleanModel,
       generationConfig: generationConfig as any,
     });
 
@@ -345,14 +354,19 @@ export async function createSelfHealingAiStream(options: {
 
         if (provider.toLowerCase() === 'gemini') {
           const genAI = new GoogleGenerativeAI(apiKey);
+          const cleanModel = sanitizeModelId(candidateModel);
+          const generationConfig: Record<string, unknown> = {
+            temperature: 0.15,
+            responseMimeType: 'application/json',
+            maxOutputTokens: 8192,
+          };
+          if (cleanModel.includes('2.5') || cleanModel.includes('2.0')) {
+            generationConfig.thinkingConfig = { thinkingBudget: 0 };
+          }
+
           const geminiModel = genAI.getGenerativeModel({
-            model: sanitizeModelId(candidateModel),
-            generationConfig: {
-              temperature: 0.15,
-              responseMimeType: 'application/json',
-              maxOutputTokens: 8192,
-              thinkingConfig: { thinkingBudget: 0 },
-            } as any,
+            model: cleanModel,
+            generationConfig: generationConfig as any,
           });
 
           const streamResult = await geminiModel.generateContentStream(promptText);

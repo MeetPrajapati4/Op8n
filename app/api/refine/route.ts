@@ -14,15 +14,6 @@ const refineInputSchema = z.object({
   model: z.string().optional(),
 });
 
-function cleanJsonString(raw: string): string {
-  const stripped = raw
-    .replace(/```json\n?/gi, '')
-    .replace(/```\n?/g, '')
-    .trim();
-  const match = stripped.match(/\{[\s\S]*\}/);
-  return match ? match[0] : stripped;
-}
-
 export async function POST(req: NextRequest) {
   const userApiKey = req.headers.get('x-user-api-key')?.trim();
   const userProvider = req.headers.get('x-user-provider')?.trim();
@@ -86,7 +77,11 @@ Output ONLY the updated valid n8n workflow JSON.`;
     try {
       parsed = robustJsonParse(rawText);
     } catch {
-      parsed = synthesizeFallbackWorkflow(rawText, (existingWorkflow as any)?.name || 'Refined Automation');
+      try {
+        parsed = synthesizeFallbackWorkflow(rawText, (existingWorkflow as any)?.name || 'Refined Automation');
+      } catch {
+        throw new Error('Model output could not be parsed as valid JSON.');
+      }
     }
 
     const validation = validateAndRepairWorkflow(parsed, preferences as WorkflowPreferences);

@@ -22,7 +22,8 @@ export default function WorkflowForm({
   generationStep,
 }: WorkflowFormProps) {
   const [description, setDescription] = useState(externalDescription || '');
-  const { suggestions, trackAction } = usePersonalizedSuggestions(6);
+  const [activeCategory, setActiveCategory] = useState<string>('All');
+  const { suggestions, trackAction } = usePersonalizedSuggestions(16);
 
   useEffect(() => {
     if (externalDescription !== undefined) {
@@ -44,9 +45,16 @@ export default function WorkflowForm({
     }
   };
 
+  const categories = ['All', 'CRM & Leads', 'DevOps & Alerts', 'AI & Data', 'Messaging', 'Scheduling', 'Webhooks'];
+  const displaySuggestions =
+    activeCategory === 'All'
+      ? suggestions
+      : suggestions.filter((s) => s.category === activeCategory);
+
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col h-full gap-3.5">
-      <div className="flex flex-col gap-2 flex-1 min-h-0">
+    <form onSubmit={handleSubmit} className="flex flex-col h-full gap-3">
+      {/* Input Box with Decreased, Sleek Height */}
+      <div className="flex flex-col gap-2 flex-shrink-0">
         <div className="flex items-start justify-between gap-2 flex-shrink-0">
           <div>
             <h3 className="text-sm font-semibold tracking-tight text-white">
@@ -65,25 +73,49 @@ export default function WorkflowForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="e.g. Every morning at 9am, fetch top Hacker News posts and send a summary to my Telegram"
-          className="w-full flex-1 min-h-[130px] rounded-xl border border-white/[0.07] bg-[#060608]/90 shadow-inner text-zinc-100 placeholder:text-zinc-500 p-3 sm:p-3.5 text-xs resize-none focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 leading-relaxed"
+          className="w-full h-24 sm:h-28 rounded-xl border border-white/[0.07] bg-[#060608]/90 shadow-inner text-zinc-100 placeholder:text-zinc-500 p-3 text-xs resize-none focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 leading-relaxed"
           disabled={isLoading}
         />
       </div>
 
-      {/* Dynamic Personalized Suggestions (Unique per User) */}
-      <div className="flex flex-col gap-1.5 flex-shrink-0">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
-            <Zap className="w-3 h-3 text-[#FF6D5A]" />
-            Suggested Automations
-          </span>
+      {/* Expanded Suggestions Section at Bottom of Input Box */}
+      <div className="flex flex-col gap-2 flex-1 min-h-0 pt-0.5">
+        <div className="flex items-center justify-between flex-shrink-0">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
+              <Zap className="w-3.5 h-3.5 text-[#FF6D5A]" />
+              Suggested Automations
+            </span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/[0.06] text-zinc-400 font-mono border border-white/[0.05]">
+              {displaySuggestions.length}
+            </span>
+          </div>
           <span className="text-[10px] text-zinc-500 font-medium hidden sm:inline">
             Ranked by frequency &amp; recency
           </span>
         </div>
 
-        <div className="flex flex-wrap gap-1.5">
-          {suggestions.map((preset) => (
+        {/* Category Filter Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 flex-shrink-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {categories.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setActiveCategory(cat)}
+              className={`text-[10px] px-2.5 py-0.5 rounded-md font-medium transition-all duration-150 flex-shrink-0 cursor-pointer ${
+                activeCategory === cat
+                  ? 'bg-[#FF6D5A]/20 text-[#FF6D5A] border border-[#FF6D5A]/40 shadow-[0_0_10px_rgba(255,109,90,0.2)]'
+                  : 'bg-white/[0.03] text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06] border border-white/[0.05]'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        {/* Rich Suggestions Cloud (Scrollable Multi-Pill Grid) */}
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 flex flex-wrap content-start gap-1.5 [scrollbar-width:thin] [scrollbar-color:#27272a_transparent]">
+          {displaySuggestions.map((preset) => (
             <motion.button
               key={preset.itemId}
               type="button"
@@ -91,11 +123,11 @@ export default function WorkflowForm({
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.15 }}
               onClick={() => handleSelectSuggestion(preset)}
-              title={`${preset.title} — ${preset.reason}`}
-              className="group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border border-white/[0.07] bg-[#121217] text-zinc-300 hover:text-white hover:border-[#FF6D5A]/50 hover:bg-[#FF6D5A]/[0.08] hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer"
+              title={`${preset.title} — ${preset.description}`}
+              className="group inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.07] bg-[#121217]/90 text-zinc-300 hover:text-white hover:border-[#FF6D5A]/50 hover:bg-[#FF6D5A]/[0.08] hover:-translate-y-[0.5px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer text-left"
             >
-              <span>{preset.title}</span>
-              <span className="text-[9px] px-1 py-0.5 rounded bg-white/[0.05] text-zinc-400 group-hover:text-[#FF6D5A] border border-white/[0.04] transition-colors">
+              <span className="truncate max-w-[260px] sm:max-w-none">{preset.title}</span>
+              <span className="text-[9px] px-1 py-0.5 rounded bg-white/[0.05] text-zinc-400 group-hover:text-[#FF6D5A] border border-white/[0.04] transition-colors flex-shrink-0">
                 {preset.reason}
               </span>
             </motion.button>

@@ -56,7 +56,7 @@ function appendLocalAction(action: ActionRecord) {
 /**
  * Client-side hook for dynamic personalized suggestions
  */
-export function usePersonalizedSuggestions(limit = 6) {
+export function usePersonalizedSuggestions(limit = 16) {
   const [suggestions, setSuggestions] = useState<RankedSuggestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string>('anonymous');

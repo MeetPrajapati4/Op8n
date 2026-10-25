@@ -14,8 +14,8 @@ export async function GET(req: NextRequest) {
 
   const { searchParams } = new URL(req.url);
   const userId = searchParams.get('userId')?.trim() || 'anonymous';
-  const limitParam = parseInt(searchParams.get('limit') || '6', 10);
-  const limit = Math.min(Math.max(1, limitParam), 12);
+  const limitParam = parseInt(searchParams.get('limit') || '16', 10);
+  const limit = Math.min(Math.max(1, limitParam), 20);
 
   try {
     const mongoose = await connectToDatabase();

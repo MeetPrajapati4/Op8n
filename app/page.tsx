@@ -435,14 +435,14 @@ export default function Home() {
               </Tabs>
             </div>
 
-            {/* Desktop View: Two-Column Side-by-Side (>= 768px) - Decreased left width, increased right width */}
-            <div className="hidden md:grid md:grid-cols-12 gap-4 lg:gap-6 h-full w-full max-w-[1920px] mx-auto px-1">
-              {/* Left Column: Input Form (narrower) */}
+            {/* Desktop View: Two-Column Side-by-Side (>= 768px) */}
+            <div className="hidden md:grid md:grid-cols-2 gap-4 lg:gap-6 h-full w-full max-w-[1920px] mx-auto px-1">
+              {/* Left Column: Input Form */}
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.25 }}
-                className="md:col-span-5 lg:col-span-4 xl:col-span-4 rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]"
+                className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]"
               >
                 <WorkflowForm
                   onGenerate={handleGenerate}
@@ -504,7 +504,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.25 }}
-                className="md:col-span-7 lg:col-span-8 xl:col-span-8 rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] gap-3 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px]"
+                className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] gap-3 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px]"
               >
                 {/* Toolbar */}
                 {workflow && (

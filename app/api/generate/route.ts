@@ -29,7 +29,7 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-// Zod Input Validation: Strictly limits description to 5,000 characters to protect Vercel functions from abuse
+// Zod Input Validation: Strictly limits description to 5,000 characters
 const generateInputSchema = z.object({
   description: z
     .string()
@@ -47,15 +47,6 @@ const generateInputSchema = z.object({
     })
     .optional(),
 });
-
-function cleanJsonString(raw: string): string {
-  const stripped = raw
-    .replace(/```json\n?/gi, '')
-    .replace(/```\n?/g, '')
-    .trim();
-  const match = stripped.match(/\{[\s\S]*\}/);
-  return match ? match[0] : stripped;
-}
 
 export async function POST(req: NextRequest) {
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
@@ -148,13 +139,16 @@ export async function POST(req: NextRequest) {
 
         sendEvent('step', 'Validating schema & checking credentials…');
 
-        // Parse and validate workflow JSON with resilient multi-stage repair
+        // Parse and validate workflow JSON with multi-stage resilient repair
         let parsedWorkflow: unknown;
         try {
           parsedWorkflow = robustJsonParse(rawOutput);
-        } catch (parseErr) {
-          console.warn('[GenerateRoute] Initial JSON parse failed, auto-synthesizing workflow from tokens:', parseErr);
-          parsedWorkflow = synthesizeFallbackWorkflow(rawOutput, 'Generated Automation');
+        } catch {
+          try {
+            parsedWorkflow = synthesizeFallbackWorkflow(rawOutput, 'Generated Automation');
+          } catch {
+            throw new Error('Model output could not be parsed as valid JSON. Please retry.');
+          }
         }
 
         const validation = validateAndRepairWorkflow(

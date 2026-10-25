@@ -156,9 +156,9 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-6 h-full w-full max-w-[1920px] mx-auto overflow-hidden">
-      {/* Left: Input Editor (narrower) */}
-      <div className="md:col-span-5 lg:col-span-4 xl:col-span-4 rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] gap-3">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 h-full w-full max-w-[1920px] mx-auto overflow-hidden">
+      {/* Left: Input Editor */}
+      <div className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] gap-3">
         <div className="flex items-start justify-between gap-2 flex-shrink-0">
           <div>
             <h3 className="text-sm font-semibold tracking-tight text-white">
@@ -220,8 +220,8 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
         </motion.button>
       </div>
 
-      {/* Right: Audit Report Output (wider) */}
-      <div className="md:col-span-7 lg:col-span-8 xl:col-span-8 rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]">
+      {/* Right: Audit Report Output */}
+      <div className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]">
         <AnimatePresence mode="wait">
           {analysis ? (
             <motion.div
