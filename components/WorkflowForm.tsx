@@ -54,17 +54,17 @@ export default function WorkflowForm({
   return (
     <form onSubmit={handleSubmit} className="flex flex-col h-full gap-3">
       {/* Input Box with Decreased, Sleek Height */}
-      <div className="flex flex-col gap-2 flex-shrink-0">
+      <div className="flex flex-col gap-1.5 flex-shrink-0">
         <div className="flex items-start justify-between gap-2 flex-shrink-0">
           <div>
-            <h3 className="text-sm font-semibold tracking-tight text-white">
+            <h3 className="text-xs sm:text-sm font-semibold tracking-tight text-white">
               Describe Your Automation
             </h3>
-            <p className="text-xs text-zinc-300">
+            <p className="text-[11px] text-zinc-400">
               Generate fully-configured, importable n8n workflow JSON
             </p>
           </div>
-          <span className="text-[11px] text-zinc-300 font-medium font-mono px-2 py-0.5 rounded-md bg-white/[0.06] border border-white/[0.1] flex-shrink-0">
+          <span className="text-[10px] text-zinc-400 font-medium font-mono px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.08] flex-shrink-0">
             {description.length} / 5,000 chars
           </span>
         </div>
@@ -73,24 +73,24 @@ export default function WorkflowForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="e.g. Every morning at 9am, fetch top Hacker News posts and send a summary to my Telegram"
-          className="w-full h-28 sm:h-32 rounded-xl border border-white/[0.12] bg-[#060608]/90 shadow-inner text-white placeholder:text-zinc-400 p-3.5 text-xs sm:text-sm resize-none focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 leading-relaxed"
+          className="w-full h-28 sm:h-32 rounded-xl border border-white/[0.1] bg-[#060608]/90 shadow-inner text-white placeholder:text-zinc-400 p-3 text-xs resize-none focus:outline-none focus:border-[#01B6FE]/60 focus:ring-2 focus:ring-[#01B6FE]/20 transition-colors leading-relaxed"
           disabled={isLoading}
         />
       </div>
 
       {/* Expanded Suggestions Section at Bottom of Input Box */}
-      <div className="flex flex-col gap-2.5 flex-1 min-h-0 pt-0.5">
+      <div className="flex flex-col gap-2 flex-1 min-h-0 pt-0.5">
         <div className="flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-[#02F7C8]" />
+          <div className="flex items-center gap-1.5">
+            <span className="text-[11px] font-semibold text-white uppercase tracking-wider flex items-center gap-1.5">
+              <Zap className="w-3 h-3 text-[#02F7C8]" />
               Suggested Automations
             </span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-white/[0.08] text-zinc-200 font-mono font-bold border border-white/[0.12]">
+            <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/[0.06] text-zinc-300 font-mono font-semibold border border-white/[0.1]">
               {displaySuggestions.length}
             </span>
           </div>
-          <span className="text-xs text-zinc-300 font-medium hidden sm:inline">
+          <span className="text-[11px] text-zinc-400 font-normal hidden sm:inline">
             Ranked by frequency &amp; recency
           </span>
         </div>
@@ -102,10 +102,10 @@ export default function WorkflowForm({
               key={cat}
               type="button"
               onClick={() => setActiveCategory(cat)}
-              className={`text-xs px-3 py-1.5 rounded-xl font-bold transition-all duration-150 flex-shrink-0 cursor-pointer ${
+              className={`text-[11px] px-2.5 py-1 rounded-lg font-medium flex-shrink-0 cursor-pointer ${
                 activeCategory === cat
-                  ? 'bg-gradient-to-r from-[#01B6FE] to-[#0387FE] text-white shadow-[0_0_12px_rgba(1,182,254,0.4)] border border-transparent'
-                  : 'bg-white/[0.04] text-zinc-200 hover:text-white hover:bg-white/[0.08] border border-white/[0.1]'
+                  ? 'bg-gradient-to-r from-[#01B6FE] to-[#0387FE] text-white shadow-xs border border-transparent'
+                  : 'bg-white/[0.04] text-zinc-300 border border-white/[0.08]'
               }`}
             >
               {cat}
@@ -114,23 +114,22 @@ export default function WorkflowForm({
         </div>
 
         {/* Rich Suggestions Cloud (Scrollable Multi-Pill Grid) */}
-        <div className="flex-1 min-h-0 overflow-y-auto pr-1 flex flex-wrap content-start gap-2 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden smooth-scroll-momentum">
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 flex flex-wrap content-start gap-1.5 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden smooth-scroll-momentum">
           {displaySuggestions.map((preset) => (
-            <motion.button
+            <button
               key={preset.itemId}
               type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.15 }}
               onClick={() => handleSelectSuggestion(preset)}
               title={`${preset.title} — ${preset.description}`}
-              className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-white/[0.1] bg-[#121217] text-zinc-100 hover:text-white hover:border-[#01B6FE]/60 hover:bg-[#01B6FE]/15 hover:-translate-y-[0.5px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer text-left shadow-xs"
+              className="inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-xs font-normal border border-white/[0.08] bg-[#121217] text-zinc-200 cursor-pointer text-left active:scale-[0.99] transition-none shadow-xs"
             >
-              <span className="truncate max-w-[170px] xs:max-w-[240px] sm:max-w-none font-semibold text-zinc-100 group-hover:text-white">{preset.title}</span>
-              <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-[#02F7C8]/15 text-[#02F7C8] border border-[#02F7C8]/35 group-hover:bg-[#02F7C8]/25 group-hover:text-white transition-colors flex-shrink-0 shadow-xs">
+              <span className="truncate max-w-[170px] xs:max-w-[240px] sm:max-w-none text-xs font-medium text-zinc-200">
+                {preset.title}
+              </span>
+              <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-[#02F7C8]/10 text-[#02F7C8] border border-[#02F7C8]/25 flex-shrink-0">
                 {preset.reason}
               </span>
-            </motion.button>
+            </button>
           ))}
         </div>
       </div>
@@ -140,13 +139,12 @@ export default function WorkflowForm({
         <motion.button
           type="submit"
           disabled={!description.trim() || isLoading}
-          whileHover={{ scale: !description.trim() || isLoading ? 1 : 1.01 }}
           whileTap={{ scale: !description.trim() || isLoading ? 1 : 0.99 }}
-          transition={{ duration: 0.15 }}
-          className={`flex-1 py-3 px-5 rounded-xl font-bold text-xs sm:text-sm text-white flex items-center justify-center gap-2.5 transition-all duration-200 disabled:bg-[#121217] disabled:text-zinc-400 disabled:border-white/[0.08] disabled:shadow-none disabled:cursor-not-allowed ${
+          transition={{ duration: 0.1 }}
+          className={`flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs text-white flex items-center justify-center gap-2 transition-opacity disabled:bg-[#121217] disabled:text-zinc-400 disabled:border-white/[0.08] disabled:shadow-none disabled:cursor-not-allowed ${
             isLoading
               ? 'btn-shimmer-loading cursor-wait'
-              : 'bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] text-white shadow-[0_0_25px_-5px_rgba(3,135,254,0.45)] hover:shadow-[0_0_32px_-2px_rgba(117,1,253,0.65)] hover:-translate-y-[1px] active:translate-y-0 cursor-pointer'
+              : 'bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] text-white shadow-[0_0_20px_-5px_rgba(3,135,254,0.35)] cursor-pointer'
           }`}
         >
           {isLoading ? (
@@ -182,20 +180,15 @@ export default function WorkflowForm({
         </motion.button>
 
         {isLoading && onStop && (
-          <motion.button
+          <button
             type="button"
             onClick={onStop}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="py-2.5 px-3 rounded-xl font-medium text-xs border border-red-900/60 bg-red-950/40 text-red-300 hover:bg-red-900/40 flex items-center gap-1.5 transition-colors cursor-pointer"
+            className="py-2 px-3 rounded-xl font-medium text-xs border border-red-900/60 bg-red-950/40 text-red-300 flex items-center gap-1.5 cursor-pointer active:scale-95"
             title="Stop generation"
           >
             <Square className="w-3.5 h-3.5 fill-current" />
             <span>Stop</span>
-          </motion.button>
+          </button>
         )}
       </div>
     </form>
