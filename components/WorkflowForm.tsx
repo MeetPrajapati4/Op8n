@@ -2,40 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, Square } from 'lucide-react';
-
-const PRESETS = [
-  {
-    label: 'Webhook → Slack + Sheets',
-    value:
-      'When a webhook receives data, post a message to Slack and append a row to Google Sheets',
-  },
-  {
-    label: 'Daily HN digest',
-    value:
-      'Every day at 9am, fetch the top 5 Hacker News posts via HTTP and send them as a formatted Telegram message',
-  },
-  {
-    label: 'Lead capture',
-    value:
-      'When a Typeform webhook fires, add the lead to a Notion database and send a welcome email via Gmail',
-  },
-  {
-    label: 'Uptime monitor',
-    value:
-      'Every 10 minutes, make an HTTP GET request to my website. If the status is not 200, send a Slack alert immediately',
-  },
-  {
-    label: 'Sheets → WhatsApp',
-    value:
-      'When a new row is added to Google Sheets, send a WhatsApp message with the row contents via HTTP request to the WhatsApp API',
-  },
-  {
-    label: 'File processor',
-    value:
-      'When a webhook receives a file URL, download it via HTTP, process it with a Code node, and save the result to Airtable',
-  },
-];
+import { Sparkles, Square, Zap } from 'lucide-react';
+import { usePersonalizedSuggestions } from '@/lib/client/recommendations';
+import { RankedSuggestion } from '@/lib/recommendations/ranking';
 
 interface WorkflowFormProps {
   onGenerate: (description: string) => void;
@@ -53,6 +22,7 @@ export default function WorkflowForm({
   generationStep,
 }: WorkflowFormProps) {
   const [description, setDescription] = useState(externalDescription || '');
+  const { suggestions, trackAction } = usePersonalizedSuggestions(6);
 
   useEffect(() => {
     if (externalDescription !== undefined) {
@@ -60,9 +30,16 @@ export default function WorkflowForm({
     }
   }, [externalDescription]);
 
+  const handleSelectSuggestion = (item: RankedSuggestion) => {
+    setDescription(item.description);
+    trackAction(item.itemId, 'click', item.category, item.tags);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (description.trim() && !isLoading) {
+      // Find matching suggestion tag or log as general generation
+      trackAction('custom-generation', 'generate', 'Custom', []);
       onGenerate(description.trim());
     }
   };
@@ -93,23 +70,34 @@ export default function WorkflowForm({
         />
       </div>
 
-      {/* Preset Chips */}
+      {/* Dynamic Personalized Suggestions (Unique per User) */}
       <div className="flex flex-col gap-1.5 flex-shrink-0">
-        <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider">
-          Quick Automation Presets
-        </span>
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+            <Zap className="w-3 h-3 text-[#FF6D5A]" />
+            Suggested Automations
+          </span>
+          <span className="text-[10px] text-zinc-500 font-medium hidden sm:inline">
+            Ranked by frequency &amp; recency
+          </span>
+        </div>
+
         <div className="flex flex-wrap gap-1.5">
-          {PRESETS.map((preset) => (
+          {suggestions.map((preset) => (
             <motion.button
-              key={preset.label}
+              key={preset.itemId}
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.15 }}
-              onClick={() => setDescription(preset.value)}
-              className="px-2.5 py-1 rounded-lg text-xs font-medium border border-white/[0.07] bg-[#121217] text-zinc-300 hover:text-white hover:border-[#FF6D5A]/50 hover:bg-[#FF6D5A]/[0.08] hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer"
+              onClick={() => handleSelectSuggestion(preset)}
+              title={`${preset.title} — ${preset.reason}`}
+              className="group inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border border-white/[0.07] bg-[#121217] text-zinc-300 hover:text-white hover:border-[#FF6D5A]/50 hover:bg-[#FF6D5A]/[0.08] hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer"
             >
-              {preset.label}
+              <span>{preset.title}</span>
+              <span className="text-[9px] px-1 py-0.5 rounded bg-white/[0.05] text-zinc-400 group-hover:text-[#FF6D5A] border border-white/[0.04] transition-colors">
+                {preset.reason}
+              </span>
             </motion.button>
           ))}
         </div>
@@ -129,7 +117,6 @@ export default function WorkflowForm({
               : 'bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] text-white shadow-[0_0_25px_-5px_rgba(255,109,90,0.45)] hover:shadow-[0_0_32px_-2px_rgba(255,109,90,0.65)] hover:-translate-y-[1px] active:translate-y-0 cursor-pointer'
           }`}
         >
-
           {isLoading ? (
             <>
               <svg
