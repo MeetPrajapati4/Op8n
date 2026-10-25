@@ -11,7 +11,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
 [![Turbopack](https://img.shields.io/badge/Turbopack-Ready-blueviolet?style=flat-square)](https://nextjs.org/docs/app/api-reference/turbopack)
-[![Speed](https://img.shields.io/badge/Generation-3--5s-FF6D5A?style=flat-square)](#-ultra-fast-generation)
+[![Speed](https://img.shields.io/badge/Generation-3--5s-01B6FE?style=flat-square)](#-ultra-fast-generation)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
 <br/>

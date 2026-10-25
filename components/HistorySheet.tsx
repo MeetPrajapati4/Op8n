@@ -133,7 +133,7 @@ export default function HistorySheet({
         <SheetHeader className="p-4 sm:p-5 border-b border-white/[0.07] flex-shrink-0">
           <div className="flex items-center justify-between">
             <SheetTitle className="text-sm font-semibold tracking-tight text-white flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#FF6D5A]" />
+              <Clock className="w-4 h-4 text-[#01B6FE]" />
               Saved Workflows
             </SheetTitle>
             <div className="flex items-center gap-2 mr-6">
@@ -175,7 +175,7 @@ export default function HistorySheet({
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search prompt or name…"
-                className="w-full pl-8.5 pr-3 py-1.5 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200"
+                className="w-full pl-8.5 pr-3 py-1.5 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
               />
             </div>
             <button
@@ -219,7 +219,7 @@ export default function HistorySheet({
                       onSelectWorkflow(item);
                       onOpenChange(false);
                     }}
-                    className="group relative p-3 rounded-xl border border-white/[0.07] bg-[#0E0E12]/85 hover:border-[#FF6D5A]/40 hover:bg-[#14141A] cursor-pointer transition-all duration-150 flex flex-col gap-2 shadow-sm hover:shadow-lg"
+                    className="group relative p-3 rounded-xl border border-white/[0.07] bg-[#0E0E12]/85 hover:border-[#01B6FE]/40 hover:bg-[#14141A] cursor-pointer transition-all duration-150 flex flex-col gap-2 shadow-sm hover:shadow-lg"
                   >
                     {/* Top line: Name & Actions */}
                     <div className="flex items-center justify-between gap-2">
@@ -233,12 +233,12 @@ export default function HistorySheet({
                             type="text"
                             value={editName}
                             onChange={(e) => setEditName(e.target.value)}
-                            className="px-2 py-0.5 rounded-lg bg-[#060608] border border-[#FF6D5A]/60 text-xs text-white flex-1 focus:outline-none focus:ring-2 focus:ring-[#FF6D5A]/20"
+                            className="px-2 py-0.5 rounded-lg bg-[#060608] border border-[#01B6FE]/60 text-xs text-white flex-1 focus:outline-none focus:ring-2 focus:ring-[#01B6FE]/20"
                             autoFocus
                           />
                           <button
                             type="submit"
-                            className="p-1 rounded-lg bg-[#FF6D5A] text-white hover:brightness-110 cursor-pointer"
+                            className="p-1 rounded-lg bg-[#01B6FE] text-white hover:brightness-110 cursor-pointer"
                           >
                             <Check className="w-3 h-3" />
                           </button>
@@ -301,7 +301,7 @@ export default function HistorySheet({
                         <span>&bull;</span>
                         <span className="capitalize">{item.provider}</span>
                       </div>
-                      <span className="flex items-center gap-1 text-[#FF6D5A] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
+                      <span className="flex items-center gap-1 text-[#01B6FE] opacity-0 group-hover:opacity-100 transition-opacity font-medium">
                         Open <ArrowRight className="w-3 h-3" />
                       </span>
                     </div>

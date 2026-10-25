@@ -190,7 +190,7 @@ export default function SettingsDialog({
       >
         <DialogHeader className="pb-1">
           <DialogTitle className="text-sm font-semibold tracking-tight text-white flex items-center gap-2">
-            <Sliders className="w-3.5 h-3.5 text-[#FF6D5A]" />
+            <Sliders className="w-3.5 h-3.5 text-[#01B6FE]" />
             Workflow Engine Preferences &amp; Models
           </DialogTitle>
           <DialogDescription className="text-xs text-zinc-400">
@@ -212,14 +212,14 @@ export default function SettingsDialog({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.18 }}
-                    className="flex flex-col gap-2.5 p-3 rounded-xl bg-[#08080B]/80 border border-[#FF6D5A]/30 shadow-xs"
+                    className="flex flex-col gap-2.5 p-3 rounded-xl bg-[#08080B]/80 border border-[#01B6FE]/30 shadow-xs"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-semibold text-white flex items-center gap-1.5">
-                        <Key className="w-3.5 h-3.5 text-[#FF6D5A]" />
+                        <Key className="w-3.5 h-3.5 text-[#01B6FE]" />
                         API Key Setup
                       </span>
-                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-[#FF6D5A]/10 text-rose-300 border border-[#FF6D5A]/20">
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-[#01B6FE]/10 text-sky-300 border border-[#01B6FE]/20">
                         Write-Once &amp; Vanish
                       </span>
                     </div>
@@ -236,7 +236,7 @@ export default function SettingsDialog({
                         <select
                           value={selectedProvider}
                           onChange={(e) => setSelectedProvider(e.target.value)}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 cursor-pointer"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 cursor-pointer"
                         >
                           {Object.values(PROVIDER_REGISTRY).map((p) => (
                             <option key={p.id} value={p.id}>
@@ -256,7 +256,7 @@ export default function SettingsDialog({
                           onChange={(e) => handleKeyChange(e.target.value)}
                           placeholder="Paste key (AIzaSy..., sk-...)"
                           autoComplete="off"
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#060608] border border-white/[0.08] text-xs text-zinc-200 font-mono placeholder:text-zinc-500 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200"
+                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#060608] border border-white/[0.08] text-xs text-zinc-200 font-mono placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
                         />
                       </div>
                     </div>
@@ -289,7 +289,7 @@ export default function SettingsDialog({
                       disabled={isValidating || !inputKey.trim()}
                       whileHover={{ scale: isValidating || !inputKey.trim() ? 1 : 1.01 }}
                       whileTap={{ scale: isValidating || !inputKey.trim() ? 1 : 0.98 }}
-                      className="w-full py-2 px-3.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-2 px-3.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(3,135,254,0.35)] flex items-center justify-center gap-2 cursor-pointer"
                     >
                       {isValidating ? (
                         <>
@@ -350,7 +350,7 @@ export default function SettingsDialog({
                       <select
                         value={activeModel}
                         onChange={(e) => handleModelSelect(e.target.value)}
-                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs font-mono text-zinc-100 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 cursor-pointer"
+                        className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs font-mono text-zinc-100 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 cursor-pointer"
                       >
                         {userModels.map((m) => {
                           const friendly = getFriendlyModelName(m.id, m.name);
@@ -382,7 +382,7 @@ export default function SettingsDialog({
                     }
                     className={`p-2 rounded-lg border text-left flex flex-col gap-0.5 transition-all cursor-pointer ${
                       prefs.targetVersion === 'v1'
-                        ? 'border-[#FF6D5A]/60 bg-[#FF6D5A]/15 text-white ring-1 ring-[#FF6D5A]/30 shadow-[0_0_15px_rgba(255,109,90,0.15)]'
+                        ? 'border-[#01B6FE]/60 bg-[#01B6FE]/15 text-white ring-1 ring-[#01B6FE]/30 shadow-[0_0_15px_rgba(1,182,254,0.15)]'
                         : 'border-white/[0.06] bg-[#121217] text-zinc-400 hover:text-white hover:border-white/[0.15]'
                     }`}
                   >
@@ -397,7 +397,7 @@ export default function SettingsDialog({
                     }
                     className={`p-2 rounded-lg border text-left flex flex-col gap-0.5 transition-all cursor-pointer ${
                       prefs.targetVersion === 'v0'
-                        ? 'border-[#FF6D5A]/60 bg-[#FF6D5A]/15 text-white ring-1 ring-[#FF6D5A]/30 shadow-[0_0_15px_rgba(255,109,90,0.15)]'
+                        ? 'border-[#01B6FE]/60 bg-[#01B6FE]/15 text-white ring-1 ring-[#01B6FE]/30 shadow-[0_0_15px_rgba(1,182,254,0.15)]'
                         : 'border-white/[0.06] bg-[#121217] text-zinc-400 hover:text-white hover:border-white/[0.15]'
                     }`}
                   >
@@ -448,7 +448,7 @@ export default function SettingsDialog({
                       errorHandling: e.target.value as 'none' | 'continue' | 'retry',
                     }))
                   }
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 cursor-pointer"
+                  className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 cursor-pointer"
                 >
                   <option value="none">Strict (Stop on error)</option>
                   <option value="continue">Resilient (Continue execution on failure)</option>
@@ -485,7 +485,7 @@ export default function SettingsDialog({
                       }
                       className={`py-1.5 rounded-lg text-xs font-medium border transition-all cursor-pointer ${
                         prefs.layoutSpacing === item.val
-                          ? 'bg-[#FF6D5A]/15 border-[#FF6D5A]/60 text-white shadow-[0_0_15px_rgba(255,109,90,0.15)] ring-1 ring-[#FF6D5A]/30 font-semibold'
+                          ? 'bg-[#01B6FE]/15 border-[#01B6FE]/60 text-white shadow-[0_0_15px_rgba(1,182,254,0.15)] ring-1 ring-[#01B6FE]/30 font-semibold'
                           : 'bg-[#121217] border-white/[0.06] text-zinc-300 hover:text-white hover:border-white/[0.15]'
                       }`}
                     >
@@ -508,7 +508,7 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, timezone: e.target.value }))
                   }
-                  className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 cursor-pointer"
+                  className="w-full px-2.5 py-1.5 rounded-lg bg-[#121217] border border-white/[0.08] hover:border-white/[0.15] text-xs text-zinc-200 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 cursor-pointer"
                 >
                   {TIMEZONES.map((tz) => (
                     <option key={tz} value={tz}>
@@ -534,7 +534,7 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, injectPinData: e.target.checked }))
                   }
-                  className="w-4 h-4 rounded-md border border-white/20 bg-zinc-900 checked:bg-[#FF6D5A] checked:border-[#FF6D5A] text-[#FF6D5A] accent-[#FF6D5A] focus:ring-4 focus:ring-[#FF6D5A]/10 cursor-pointer transition-all duration-200 flex-shrink-0"
+                  className="w-4 h-4 rounded-md border border-white/20 bg-zinc-900 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
                 />
               </div>
 
@@ -553,7 +553,7 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, addStickyNote: e.target.checked }))
                   }
-                  className="w-4 h-4 rounded-md border border-white/20 bg-zinc-900 checked:bg-[#FF6D5A] checked:border-[#FF6D5A] text-[#FF6D5A] accent-[#FF6D5A] focus:ring-4 focus:ring-[#FF6D5A]/10 cursor-pointer transition-all duration-200 flex-shrink-0"
+                  className="w-4 h-4 rounded-md border border-white/20 bg-zinc-900 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
                 />
               </div>
             </div>
@@ -574,7 +574,7 @@ export default function SettingsDialog({
               </button>
               <button
                 type="submit"
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white shadow-[0_0_20px_-3px_rgba(255,109,90,0.4)] hover:shadow-[0_0_25px_0px_rgba(255,109,90,0.6)] transition-all duration-200 flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
+                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_20px_-3px_rgba(3,135,254,0.4)] hover:shadow-[0_0_25px_0px_rgba(117,1,253,0.6)] transition-all duration-200 flex items-center gap-1.5 cursor-pointer active:scale-[0.98]"
               >
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Save Preferences</span>

@@ -118,7 +118,7 @@ export default function OutputToolbar({
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
             >
               <HelpCircle className="w-3.5 h-3.5 text-zinc-400" />
               <span>Import Guide</span>
@@ -130,16 +130,16 @@ export default function OutputToolbar({
             </h4>
             <div className="flex flex-col gap-2.5 text-xs text-zinc-300">
               <div className="flex items-start gap-2.5">
-                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-xs">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] text-white flex items-center justify-center font-bold text-xs">
                   1
                 </span>
                 <p className="leading-snug">
-                  Click <strong className="text-white">Copy JSON</strong> above or download the <code className="text-[#FF6D5A] bg-white/[0.06] border border-white/[0.08] px-1 py-0.5 rounded text-xs font-mono">.json</code> file.
+                  Click <strong className="text-white">Copy JSON</strong> above or download the <code className="text-[#01B6FE] bg-white/[0.06] border border-white/[0.08] px-1 py-0.5 rounded text-xs font-mono">.json</code> file.
                 </p>
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-xs">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] text-white flex items-center justify-center font-bold text-xs">
                   2
                 </span>
                 <p className="leading-snug">
@@ -148,7 +148,7 @@ export default function OutputToolbar({
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-xs">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] text-white flex items-center justify-center font-bold text-xs">
                   3
                 </span>
                 <p className="leading-snug">
@@ -165,7 +165,7 @@ export default function OutputToolbar({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
         >
           {copied ? (
             <>
@@ -187,7 +187,7 @@ export default function OutputToolbar({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
             onClick={onOpenDeploy}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#FF6D5A]/10 hover:bg-[#FF6D5A]/20 text-[#FF6D5A] border border-[#FF6D5A]/30 transition-all duration-150 ease-out cursor-pointer focus:outline-none focus:border-[#FF6D5A]/60 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#01B6FE]/10 hover:bg-[#01B6FE]/20 text-[#01B6FE] border border-[#01B6FE]/30 transition-all duration-150 ease-out cursor-pointer focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
             title="Deploy directly to your connected n8n instance"
           >
             <Send className="w-3.5 h-3.5" />
@@ -202,10 +202,10 @@ export default function OutputToolbar({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
             onClick={onNewSession}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
             title="Start a new blank workflow session"
           >
-            <Plus className="w-3.5 h-3.5 text-[#FF6D5A]" />
+            <Plus className="w-3.5 h-3.5 text-[#01B6FE]" />
             <span>New</span>
           </motion.button>
         )}
@@ -216,7 +216,7 @@ export default function OutputToolbar({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleDownload}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white transition-all duration-150 ease-out shadow-[0_0_15px_rgba(255,109,90,0.3)] cursor-pointer focus:outline-none focus:border-[#FF6D5A]/60 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white transition-all duration-150 ease-out shadow-[0_0_15px_rgba(3,135,254,0.35)] cursor-pointer focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
         >
           <Download className="w-3.5 h-3.5" />
           <span>Download</span>

@@ -148,7 +148,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
     <div className="flex flex-col gap-3 p-3.5 rounded-xl bg-[#0C0C0F]/90 backdrop-blur-md border border-white/[0.07] select-none shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-[#FF6D5A]" />
+          <Sparkles className="w-3.5 h-3.5 text-[#01B6FE]" />
           Refine Workflow
         </span>
         <span className="text-xs text-zinc-400">Iterative AI modifications</span>
@@ -167,7 +167,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
           placeholder="e.g. Add an error alert to Telegram if request fails, or change schedule to 8am"
-          className="flex-1 px-3.5 py-2 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200"
+          className="flex-1 px-3.5 py-2 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
           disabled={isRefining}
         />
         <motion.button
@@ -175,7 +175,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
           whileHover={{ scale: !instruction.trim() || isRefining ? 1 : 1.02, y: -1 }}
           whileTap={{ scale: !instruction.trim() || isRefining ? 1 : 0.96 }}
           disabled={!instruction.trim() || isRefining}
-          className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white disabled:opacity-40 disabled:text-zinc-400 transition-all duration-150 ease-out flex items-center gap-1.5 flex-shrink-0 shadow-[0_0_15px_rgba(255,109,90,0.3)] cursor-pointer"
+          className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white disabled:opacity-40 disabled:text-zinc-400 transition-all duration-150 ease-out flex items-center gap-1.5 flex-shrink-0 shadow-[0_0_15px_rgba(3,135,254,0.35)] cursor-pointer"
         >
           {isRefining ? (
             <>
@@ -204,7 +204,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
                 setInstruction(sug);
                 handleRefine(sug);
               }}
-              className="text-xs px-2.5 py-1 rounded-lg border border-white/[0.06] bg-[#121217] text-zinc-300 hover:text-white hover:border-[#FF6D5A]/40 hover:bg-[#FF6D5A]/[0.06] transition-all duration-150 ease-out cursor-pointer"
+              className="text-xs px-2.5 py-1 rounded-lg border border-white/[0.06] bg-[#121217] text-zinc-300 hover:text-white hover:border-[#01B6FE]/40 hover:bg-[#01B6FE]/[0.08] transition-all duration-150 ease-out cursor-pointer"
             >
               + {sug}
             </motion.button>
@@ -219,7 +219,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-1.5 p-3 rounded-xl border border-[#FF6D5A]/30 bg-[#FF6D5A]/[0.05] flex flex-col gap-2.5"
+            className="mt-1.5 p-3 rounded-xl border border-[#01B6FE]/30 bg-[#01B6FE]/[0.05] flex flex-col gap-2.5"
           >
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold text-zinc-100">
@@ -237,7 +237,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
                 <button
                   type="button"
                   onClick={handleConfirmApply}
-                  className="px-3 py-1 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white flex items-center gap-1 shadow-sm transition-all duration-150 active:scale-[0.97] cursor-pointer"
+                  className="px-3 py-1 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white flex items-center gap-1 shadow-sm transition-all duration-150 active:scale-[0.97] cursor-pointer"
                 >
                   <Check className="w-3 h-3" />
                   <span>Apply Refinement</span>

@@ -47,7 +47,7 @@ export default function Header({
             >
               Op8n
             </span>
-            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-gradient-to-r from-[#FF6D5A] to-[#E04F67] text-white uppercase tracking-wider shadow-sm shadow-rose-500/20">
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] text-white uppercase tracking-wider shadow-sm shadow-[#0387FE]/25">
               Studio
             </span>
           </div>
@@ -74,7 +74,7 @@ export default function Header({
             {activeMode === 'studio' && (
               <motion.div
                 layoutId="header-active-pill"
-                className="absolute inset-0 bg-gradient-to-r from-[#FF6D5A] to-[#E04F67] rounded-full shadow-[0_2px_12px_rgba(255,109,90,0.35)]"
+                className="absolute inset-0 bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] rounded-full shadow-[0_2px_14px_rgba(3,135,254,0.4)]"
                 transition={{ type: 'spring', stiffness: 480, damping: 32 }}
               />
             )}
@@ -93,7 +93,7 @@ export default function Header({
             {activeMode === 'audit' && (
               <motion.div
                 layoutId="header-active-pill"
-                className="absolute inset-0 bg-gradient-to-r from-[#FF6D5A] to-[#E04F67] rounded-full shadow-[0_2px_12px_rgba(255,109,90,0.35)]"
+                className="absolute inset-0 bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] rounded-full shadow-[0_2px_14px_rgba(3,135,254,0.4)]"
                 transition={{ type: 'spring', stiffness: 480, damping: 32 }}
               />
             )}
@@ -114,12 +114,12 @@ export default function Header({
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.12 }}
             onClick={onNewSession}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#FF6D5A]/10 hover:bg-[#FF6D5A]/20 border border-[#FF6D5A]/30 hover:border-[#FF6D5A]/60 text-rose-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#01B6FE]/10 hover:bg-[#01B6FE]/20 border border-[#01B6FE]/30 hover:border-[#01B6FE]/60 text-sky-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
             title="Start a new blank workflow session (Alt+N)"
           >
-            <Plus className="w-3.5 h-3.5 text-rose-400" />
+            <Plus className="w-3.5 h-3.5 text-[#02F7C8]" />
             <span>New Session</span>
-            <kbd className="hidden lg:inline text-[10px] font-mono opacity-80 ml-1 px-1.5 py-0.5 rounded bg-[#FF6D5A]/20 text-rose-200">
+            <kbd className="hidden lg:inline text-[10px] font-mono opacity-80 ml-1 px-1.5 py-0.5 rounded bg-[#01B6FE]/20 text-sky-200">
               Alt+N
             </kbd>
           </motion.button>
@@ -131,7 +131,7 @@ export default function Header({
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.12 }}
           onClick={onOpenHistory}
-          className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-300 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+          className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-300 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
           title="Workflow History & Backups"
         >
           <History className="w-3.5 h-3.5 text-zinc-400" />
@@ -149,7 +149,7 @@ export default function Header({
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.12 }}
           onClick={onOpenSettings}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-300 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-300 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
           title="Workflow Engine Preferences & Models"
         >
           <Sliders className="w-3.5 h-3.5 text-zinc-400" />

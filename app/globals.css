@@ -5,10 +5,12 @@
   --foreground: #f4f4f5;
   --surface: #0C0C0F;
   --border: rgba(255, 255, 255, 0.08);
-  --primary-start: #FF6D5A;
-  --primary-end: #EE4F7B;
-  --accent-gradient: linear-gradient(135deg, #FF6D5A 0%, #EE4F7B 100%);
-  --accent-hover: linear-gradient(135deg, #ff7e6d 0%, #f3638b 100%);
+  --primary-start: #01B6FE;
+  --primary-mid: #0387FE;
+  --primary-end: #7501FD;
+  --accent-cyan: #02F7C8;
+  --accent-gradient: linear-gradient(135deg, #01B6FE 0%, #0387FE 50%, #7501FD 100%);
+  --accent-hover: linear-gradient(135deg, #1fc1ff 0%, #1e95ff 50%, #8919ff 100%);
 }
 
 @theme inline {
@@ -79,7 +81,7 @@ button, input, select, textarea, a {
 
 /* Primary CTA gradient */
 .btn-primary-gradient {
-  background: linear-gradient(135deg, #FF6D5A 0%, #EE4F7B 100%);
+  background: linear-gradient(135deg, #01B6FE 0%, #0387FE 50%, #7501FD 100%);
   color: #ffffff;
   transition: opacity 0.15s ease, transform 0.12s ease, filter 0.15s ease;
   transform: translateZ(0);
@@ -87,7 +89,7 @@ button, input, select, textarea, a {
 }
 
 .btn-primary-gradient:hover:not(:disabled) {
-  filter: brightness(1.08);
+  filter: brightness(1.1);
   transform: translateY(-1px) translateZ(0);
 }
 
@@ -108,26 +110,26 @@ button, input, select, textarea, a {
 .btn-shimmer-loading {
   background: linear-gradient(
     90deg,
-    #FF6D5A 0%,
-    #EE4F7B 25%,
-    #FFA185 50%,
-    #EE4F7B 75%,
-    #FF6D5A 100%
+    #01B6FE 0%,
+    #0387FE 25%,
+    #7501FD 50%,
+    #02F7C8 75%,
+    #01B6FE 100%
   );
   background-size: 200% 100%;
   animation: gradient-shimmer 2.2s infinite linear;
   will-change: background-position;
 }
 
-/* Refined smooth diffused focus ring in gradient coral hue */
+/* Refined smooth diffused focus ring in logo azure hue */
 .focus-ring-accent {
   outline: none;
 }
 .focus-ring-accent:focus-visible,
 .focus-ring-accent:focus {
   outline: none;
-  border-color: rgba(255, 109, 90, 0.5) !important;
-  box-shadow: 0 0 0 4px rgba(255, 109, 90, 0.1) !important;
+  border-color: rgba(1, 182, 254, 0.5) !important;
+  box-shadow: 0 0 0 4px rgba(1, 182, 254, 0.15) !important;
   transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
 }
 

@@ -68,7 +68,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} h-full antialiased`}
     >
-      <body className="h-dvh max-h-dvh overflow-hidden flex flex-col bg-[#070709] text-zinc-100 selection:bg-[#FF6D5A]/30 selection:text-white">
+      <body className="h-dvh max-h-dvh overflow-hidden flex flex-col bg-[#070709] text-zinc-100 selection:bg-[#01B6FE]/30 selection:text-white">
         <SmoothScroll>
           {children}
         </SmoothScroll>

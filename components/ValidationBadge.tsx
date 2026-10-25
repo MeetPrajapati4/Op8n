@@ -18,7 +18,7 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
       <PopoverTrigger asChild>
         <button
           type="button"
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-all duration-150 hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.97] focus:outline-none focus:ring-4 focus:ring-[#FF6D5A]/10 cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition-all duration-150 hover:-translate-y-[1px] active:translate-y-0 active:scale-[0.97] focus:outline-none focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer"
           style={{
             backgroundColor: !isValid
               ? 'rgba(239, 68, 68, 0.15)'
@@ -121,7 +121,7 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
           {credentialsNeeded.length > 0 && (
             <div className="flex flex-col gap-1.5 mt-1 border-t border-[#2e2e35] pt-2">
               <div className="flex items-center gap-1.5 text-zinc-200 text-xs font-semibold">
-                <KeyRound className="w-3.5 h-3.5 text-[#FF6D5A]" />
+                <KeyRound className="w-3.5 h-3.5 text-[#01B6FE]" />
                 <span>Credentials Needed ({credentialsNeeded.length})</span>
               </div>
               <p className="text-xs text-zinc-400">
@@ -134,7 +134,7 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
                     className="p-1.5 rounded-lg bg-[#1f1f23] border border-[#2e2e35] text-xs text-zinc-200 flex items-center justify-between font-mono"
                   >
                     <span className="text-zinc-400">{cred.node}</span>
-                    <span className="text-[#FF6D5A]">{cred.placeholder}</span>
+                    <span className="text-[#02F7C8]">{cred.placeholder}</span>
                   </div>
                 ))}
               </div>

@@ -73,7 +73,7 @@ export default function WorkflowForm({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="e.g. Every morning at 9am, fetch top Hacker News posts and send a summary to my Telegram"
-          className="w-full h-24 sm:h-28 rounded-xl border border-white/[0.07] bg-[#060608]/90 shadow-inner text-zinc-100 placeholder:text-zinc-500 p-3 text-xs resize-none focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 leading-relaxed"
+          className="w-full h-24 sm:h-28 rounded-xl border border-white/[0.07] bg-[#060608]/90 shadow-inner text-zinc-100 placeholder:text-zinc-500 p-3 text-xs resize-none focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 leading-relaxed"
           disabled={isLoading}
         />
       </div>
@@ -83,7 +83,7 @@ export default function WorkflowForm({
         <div className="flex items-center justify-between flex-shrink-0">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-[#FF6D5A]" />
+              <Zap className="w-3.5 h-3.5 text-[#02F7C8]" />
               Suggested Automations
             </span>
             <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/[0.06] text-zinc-400 font-mono border border-white/[0.05]">
@@ -104,7 +104,7 @@ export default function WorkflowForm({
               onClick={() => setActiveCategory(cat)}
               className={`text-[10px] px-2.5 py-0.5 rounded-md font-medium transition-all duration-150 flex-shrink-0 cursor-pointer ${
                 activeCategory === cat
-                  ? 'bg-[#FF6D5A]/20 text-[#FF6D5A] border border-[#FF6D5A]/40 shadow-[0_0_10px_rgba(255,109,90,0.2)]'
+                  ? 'bg-[#01B6FE]/20 text-[#01B6FE] border border-[#01B6FE]/40 shadow-[0_0_10px_rgba(1,182,254,0.25)]'
                   : 'bg-white/[0.03] text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.06] border border-white/[0.05]'
               }`}
             >
@@ -124,10 +124,10 @@ export default function WorkflowForm({
               transition={{ duration: 0.15 }}
               onClick={() => handleSelectSuggestion(preset)}
               title={`${preset.title} — ${preset.description}`}
-              className="group inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.07] bg-[#121217]/90 text-zinc-300 hover:text-white hover:border-[#FF6D5A]/50 hover:bg-[#FF6D5A]/[0.08] hover:-translate-y-[0.5px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer text-left"
+              className="group inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.07] bg-[#121217]/90 text-zinc-300 hover:text-white hover:border-[#01B6FE]/50 hover:bg-[#01B6FE]/[0.08] hover:-translate-y-[0.5px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer text-left"
             >
               <span className="truncate max-w-[260px] sm:max-w-none">{preset.title}</span>
-              <span className="text-[9px] px-1 py-0.5 rounded bg-white/[0.05] text-zinc-400 group-hover:text-[#FF6D5A] border border-white/[0.04] transition-colors flex-shrink-0">
+              <span className="text-[9px] px-1 py-0.5 rounded bg-white/[0.05] text-zinc-400 group-hover:text-[#02F7C8] border border-white/[0.04] transition-colors flex-shrink-0">
                 {preset.reason}
               </span>
             </motion.button>
@@ -146,7 +146,7 @@ export default function WorkflowForm({
           className={`flex-1 py-2.5 px-4 rounded-xl font-semibold text-xs text-white flex items-center justify-center gap-2 transition-all duration-200 disabled:bg-zinc-900/80 disabled:text-zinc-500 disabled:border-white/[0.05] disabled:shadow-none disabled:cursor-not-allowed ${
             isLoading
               ? 'btn-shimmer-loading cursor-wait'
-              : 'bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] text-white shadow-[0_0_25px_-5px_rgba(255,109,90,0.45)] hover:shadow-[0_0_32px_-2px_rgba(255,109,90,0.65)] hover:-translate-y-[1px] active:translate-y-0 cursor-pointer'
+              : 'bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] text-white shadow-[0_0_25px_-5px_rgba(3,135,254,0.45)] hover:shadow-[0_0_32px_-2px_rgba(117,1,253,0.65)] hover:-translate-y-[1px] active:translate-y-0 cursor-pointer'
           }`}
         >
           {isLoading ? (

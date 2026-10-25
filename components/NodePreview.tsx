@@ -69,7 +69,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
                       whileHover={{ scale: 1.03, y: -1 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setSelectedNode(node)}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-[#0E0E12]/85 hover:bg-[#14141A] text-xs text-zinc-200 hover:border-[#FF6D5A]/50 hover:text-white transition-all duration-150 shadow-sm focus:outline-none focus:ring-4 focus:ring-[#FF6D5A]/10 cursor-pointer"
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/[0.08] bg-[#0E0E12]/85 hover:bg-[#14141A] text-xs text-zinc-200 hover:border-[#01B6FE]/50 hover:text-white transition-all duration-150 shadow-sm focus:outline-none focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer"
                     >
                       <span
                         className={`w-2 h-2 rounded-full flex-shrink-0 ${getDotColor(
@@ -112,7 +112,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
                                 key={idx}
                                 className="inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded bg-white/[0.04] text-zinc-200 border border-white/[0.08]"
                               >
-                                <ArrowRight className="w-3 h-3 text-[#FF6D5A]" />
+                                <ArrowRight className="w-3 h-3 text-[#01B6FE]" />
                                 <span>{c.node}</span>
                               </span>
                             ))}

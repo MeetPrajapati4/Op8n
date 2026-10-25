@@ -331,8 +331,8 @@ export default function Home() {
 
   return (
     <div className="relative h-dvh max-h-dvh overflow-hidden flex flex-col bg-[#070709] text-zinc-100">
-      {/* Soft Ambient Glow */}
-      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[350px] bg-[radial-gradient(ellipse_at_top,rgba(255,109,90,0.06),transparent_60%)] z-10" />
+      {/* Soft Ambient Glow from Logo Palette */}
+      <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[380px] bg-[radial-gradient(ellipse_at_top,rgba(1,182,254,0.08),rgba(117,1,253,0.04)_45%,transparent_70%)] z-10" />
 
       {/* Top Header */}
       <Header
@@ -404,7 +404,7 @@ export default function Home() {
                     />
                     {status === 'loading' && (
                       <div className="flex flex-col items-center justify-center flex-1 gap-3">
-                        <div className="w-8 h-8 border-2 border-rose-500/30 border-t-rose-500 rounded-full animate-spin" />
+                        <div className="w-8 h-8 border-2 border-[#01B6FE]/30 border-t-[#01B6FE] rounded-full animate-spin" />
                         <p className="text-zinc-300 text-xs font-medium">
                           {generationStep || 'Building your workflow…'}
                         </p>
@@ -464,7 +464,7 @@ export default function Home() {
                         transition={{ duration: 0.2 }}
                         className="text-xs text-zinc-300 flex items-center gap-2 font-mono"
                       >
-                        <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-[#02F7C8] animate-ping" />
                         <span>{generationStep || 'Generating workflow…'}</span>
                       </motion.p>
                     )}
@@ -529,7 +529,7 @@ export default function Home() {
                       className="flex flex-col items-center justify-center flex-1 text-center gap-3"
                     >
                       <div className="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent border border-white/[0.08] shadow-2xl flex items-center justify-center animate-pulse">
-                        <Zap className="w-6 h-6 text-[#FF6D5A] stroke-[1.5]" />
+                        <Zap className="w-6 h-6 text-[#02F7C8] stroke-[1.5]" />
                       </div>
                       <div className="flex flex-col gap-1">
                         <p className="text-white text-sm font-semibold tracking-tight">
@@ -553,8 +553,8 @@ export default function Home() {
                       className="flex flex-col items-center justify-center flex-1 gap-3.5"
                     >
                       <div className="relative">
-                        <div className="w-10 h-10 border-2 border-rose-500/20 border-t-rose-500 rounded-full animate-spin" />
-                        <div className="absolute inset-0 flex items-center justify-center text-xs font-mono text-rose-500 font-semibold">
+                        <div className="w-10 h-10 border-2 border-[#01B6FE]/20 border-t-[#01B6FE] rounded-full animate-spin" />
+                        <div className="absolute inset-0 flex items-center justify-center text-xs font-mono text-[#01B6FE] font-semibold">
                           AI
                         </div>
                       </div>

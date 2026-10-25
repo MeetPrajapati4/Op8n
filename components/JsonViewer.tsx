@@ -51,7 +51,7 @@ function JsonViewer({ json }: JsonViewerProps) {
       {/* File Header */}
       <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#0C0C0F]/90 backdrop-blur-md border-b border-white/[0.07] flex-shrink-0 select-none">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[#FF6D5A]/80 shadow-[0_0_6px_rgba(255,109,90,0.5)]" />
+          <span className="w-2 h-2 rounded-full bg-[#02F7C8] shadow-[0_0_8px_rgba(2,247,200,0.7)]" />
           <span className="text-xs text-zinc-200 font-mono">workflow.json</span>
         </div>
         <span className="text-xs text-zinc-400 font-mono">

@@ -94,7 +94,7 @@ export default function DeployDialog({
       >
         <DialogHeader>
           <DialogTitle className="text-sm font-semibold tracking-tight text-white flex items-center gap-2">
-            <Server className="w-4 h-4 text-[#FF6D5A]" />
+            <Server className="w-4 h-4 text-[#01B6FE]" />
             Send to my n8n Instance
           </DialogTitle>
           <DialogDescription className="text-xs text-zinc-400 mt-1 leading-relaxed">
@@ -117,7 +117,7 @@ export default function DeployDialog({
               href={createdUrl}
               target="_blank"
               rel="noreferrer"
-              className="mt-1.5 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white shadow-[0_0_20px_rgba(255,109,90,0.35)] transition-all duration-150 hover:-translate-y-[1px] active:scale-[0.98]"
+              className="mt-1.5 inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_20px_rgba(3,135,254,0.35)] transition-all duration-150 hover:-translate-y-[1px] active:scale-[0.98]"
             >
               <span>Open in n8n Canvas</span>
               <ExternalLink className="w-3.5 h-3.5" />
@@ -135,7 +135,7 @@ export default function DeployDialog({
                 onChange={(e) => setN8nUrl(e.target.value)}
                 placeholder="https://n8n.yourcompany.com"
                 required
-                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200"
+                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
               />
             </div>
 
@@ -149,7 +149,7 @@ export default function DeployDialog({
                 onChange={(e) => setApiKey(e.target.value)}
                 placeholder="Generate in n8n Settings → API"
                 required
-                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200"
+                className="w-full px-3 py-2 rounded-xl bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200"
               />
             </div>
 
@@ -179,7 +179,7 @@ export default function DeployDialog({
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 disabled={!n8nUrl.trim() || !apiKey.trim() || isDeploying}
-                className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white shadow-[0_0_20px_rgba(255,109,90,0.35)] disabled:opacity-40 disabled:shadow-none transition-all duration-150 cursor-pointer flex items-center gap-2"
+                className="px-4 py-1.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_20px_rgba(3,135,254,0.35)] disabled:opacity-40 disabled:shadow-none transition-all duration-150 cursor-pointer flex items-center gap-2"
               >
                 {isDeploying ? (
                   <>

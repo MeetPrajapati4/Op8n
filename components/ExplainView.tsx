@@ -173,7 +173,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
               <button
                 type="button"
                 onClick={() => setJsonInput(activeWorkflowJson)}
-                className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[#FF6D5A]/40 bg-[#FF6D5A]/10 text-rose-300 hover:text-white hover:bg-[#FF6D5A]/20 transition-all duration-150 ease-out cursor-pointer hover:-translate-y-[1px] active:translate-y-0"
+                className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[#01B6FE]/40 bg-[#01B6FE]/10 text-sky-300 hover:text-white hover:bg-[#01B6FE]/20 transition-all duration-150 ease-out cursor-pointer hover:-translate-y-[1px] active:translate-y-0"
               >
                 Use Active
               </button>
@@ -193,7 +193,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
           placeholder="Paste full n8n workflow JSON here…"
-          className="flex-1 w-full rounded-xl bg-[#060608]/90 shadow-inner border border-white/[0.07] text-xs font-mono text-zinc-100 placeholder:text-zinc-500 p-3.5 resize-none focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 leading-relaxed"
+          className="flex-1 w-full rounded-xl bg-[#060608]/90 shadow-inner border border-white/[0.07] text-xs font-mono text-zinc-100 placeholder:text-zinc-500 p-3.5 resize-none focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 transition-all duration-200 leading-relaxed"
           disabled={isAnalyzing}
         />
 
@@ -204,7 +204,7 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
           whileHover={{ scale: !jsonInput.trim() || isAnalyzing ? 1 : 1.01 }}
           whileTap={{ scale: !jsonInput.trim() || isAnalyzing ? 1 : 0.99 }}
           transition={{ duration: 0.15 }}
-          className="py-2.5 px-4 rounded-xl font-semibold text-xs text-white disabled:bg-zinc-900/80 disabled:text-zinc-500 disabled:border-white/[0.05] disabled:shadow-none disabled:cursor-not-allowed bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] shadow-[0_0_25px_-5px_rgba(255,109,90,0.45)] hover:shadow-[0_0_32px_-2px_rgba(255,109,90,0.65)] hover:brightness-110 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer"
+          className="py-2.5 px-4 rounded-xl font-semibold text-xs text-white disabled:bg-zinc-900/80 disabled:text-zinc-500 disabled:border-white/[0.05] disabled:shadow-none disabled:cursor-not-allowed bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] shadow-[0_0_25px_-5px_rgba(3,135,254,0.45)] hover:shadow-[0_0_32px_-2px_rgba(117,1,253,0.65)] hover:brightness-110 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer"
         >
           {isAnalyzing ? (
             <>

@@ -57,7 +57,7 @@ export default function Footer({ cloudEngineActive = true }: FooterProps) {
           rel="noopener noreferrer"
           className="hover:text-zinc-200 transition-colors"
         >
-          Built by <span className="text-zinc-300 font-medium hover:text-[#FF6D5A] transition-colors">Meet Prajapati</span>
+          Built by <span className="text-zinc-300 font-medium hover:text-[#01B6FE] transition-colors">Meet Prajapati</span>
         </a>
 
         <span className="text-zinc-600 hidden sm:inline">&bull;</span>
