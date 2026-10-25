@@ -83,18 +83,18 @@ export default function OutputToolbar({
   const complexity = calculateComplexity(workflow);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2.5 px-3.5 py-2 bg-[#0C0C0F]/90 backdrop-blur-md border border-white/[0.07] rounded-xl select-none shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
+    <div className="flex items-center justify-between gap-2.5 px-3.5 py-2 bg-[#0C0C0F]/90 backdrop-blur-md border border-white/[0.07] rounded-xl select-none shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] overflow-x-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden flex-nowrap flex-shrink-0 min-w-0 smooth-scroll-momentum">
       {/* Left: Metrics & Validation */}
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 min-w-0">
         {/* Node count */}
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-zinc-200">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-zinc-200 flex-shrink-0">
           <Layers className="w-3.5 h-3.5 text-[#01B6FE]" />
           <span>{nodeCount} {nodeCount === 1 ? 'node' : 'nodes'}</span>
         </div>
 
         {/* Complexity badge */}
         <div
-          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border shadow-xs"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold border shadow-xs flex-shrink-0"
           style={{
             borderColor: `${complexity.color}40`,
             backgroundColor: `${complexity.color}15`,
@@ -106,11 +106,13 @@ export default function OutputToolbar({
         </div>
 
         {/* Validation Status Badge */}
-        <ValidationBadge validation={validation} />
+        <div className="flex-shrink-0">
+          <ValidationBadge validation={validation} />
+        </div>
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-1.5 sm:gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
         {/* How to import popover */}
         <Popover>
           <PopoverTrigger asChild>
@@ -118,13 +120,13 @@ export default function OutputToolbar({
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 flex-shrink-0"
             >
               <HelpCircle className="w-3.5 h-3.5 text-zinc-300" />
-              <span>Import Guide</span>
+              <span><span className="hidden sm:inline">Import </span>Guide</span>
             </motion.button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 sm:w-84 p-3.5 bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl" align="end" data-lenis-prevent="true">
+          <PopoverContent className="w-80 sm:w-84 max-w-[calc(100vw-2rem)] p-3.5 bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden" align="end" data-lenis-prevent="true">
             <h4 className="text-xs font-semibold text-zinc-100 uppercase tracking-wider mb-2.5">
               How to import into n8n (3 Steps)
             </h4>
@@ -165,7 +167,7 @@ export default function OutputToolbar({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 flex-shrink-0"
         >
           {copied ? (
             <>
@@ -175,7 +177,7 @@ export default function OutputToolbar({
           ) : (
             <>
               <Copy className="w-3.5 h-3.5 text-zinc-300" />
-              <span>Copy JSON</span>
+              <span>Copy<span className="hidden sm:inline"> JSON</span></span>
             </>
           )}
         </motion.button>
@@ -187,11 +189,11 @@ export default function OutputToolbar({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
             onClick={onOpenDeploy}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#01B6FE]/15 hover:bg-[#01B6FE]/25 text-white border border-[#01B6FE]/40 hover:border-[#01B6FE]/70 transition-all duration-150 ease-out cursor-pointer focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 shadow-xs"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#01B6FE]/15 hover:bg-[#01B6FE]/25 text-white border border-[#01B6FE]/40 hover:border-[#01B6FE]/70 transition-all duration-150 ease-out cursor-pointer focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 shadow-xs flex-shrink-0"
             title="Deploy directly to your connected n8n instance"
           >
             <Send className="w-3.5 h-3.5 text-[#02F7C8]" />
-            <span>Send to n8n</span>
+            <span><span className="hidden sm:inline">Send to </span>n8n</span>
           </motion.button>
         )}
 
@@ -202,7 +204,7 @@ export default function OutputToolbar({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.96 }}
             onClick={onNewSession}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 flex-shrink-0"
             title="Start a new blank workflow session"
           >
             <Plus className="w-3.5 h-3.5 text-[#02F7C8]" />
@@ -216,7 +218,7 @@ export default function OutputToolbar({
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.96 }}
           onClick={handleDownload}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white transition-all duration-150 ease-out shadow-[0_0_15px_rgba(3,135,254,0.35)] cursor-pointer focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white transition-all duration-150 ease-out shadow-[0_0_15px_rgba(3,135,254,0.35)] cursor-pointer focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 flex-shrink-0"
         >
           <Download className="w-3.5 h-3.5" />
           <span>Download</span>

@@ -8,10 +8,10 @@ interface FooterProps {
 
 export default function Footer({ cloudEngineActive = true }: FooterProps) {
   return (
-    <footer className="h-10 px-4 md:px-6 border-t border-white/[0.08] bg-[#070709] flex items-center justify-between text-xs text-zinc-400 flex-shrink-0 select-none z-20">
+    <footer className="h-10 px-4 md:px-6 border-t border-white/[0.08] bg-[#070709] flex items-center justify-between text-xs text-zinc-400 flex-shrink-0 select-none z-20 min-w-0 overflow-hidden">
       {/* Left: Brand & Description */}
-      <div className="flex items-center gap-2.5">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2.5 min-w-0 flex-shrink-0">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <Image
             src="/logo.png"
             alt="Op8n"
@@ -22,18 +22,18 @@ export default function Footer({ cloudEngineActive = true }: FooterProps) {
           <span className="font-semibold text-zinc-200 tracking-tight">Op8n</span>
         </div>
         <span className="text-zinc-400 hidden sm:inline">&bull;</span>
-        <span className="text-zinc-300 hidden sm:inline">
+        <span className="text-zinc-300 hidden sm:inline truncate">
           AI Workflow Generator for n8n
         </span>
       </div>
 
       {/* Right: GitHub, Creator & Version */}
-      <div className="flex items-center gap-3 text-zinc-300">
+      <div className="flex items-center gap-2.5 sm:gap-3 text-zinc-300 min-w-0 flex-shrink-0">
         <a
           href="https://github.com/MeetPrajapati4/Op8n"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white transition-colors inline-flex items-center gap-1.5"
+          className="hover:text-white transition-colors inline-flex items-center gap-1.5 flex-shrink-0"
         >
           <svg
             className="w-3.5 h-3.5 fill-current"
@@ -55,14 +55,14 @@ export default function Footer({ cloudEngineActive = true }: FooterProps) {
           href="https://github.com/MeetPrajapati4/Op8n"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white transition-colors"
+          className="hover:text-white transition-colors truncate"
         >
           Built by <span className="text-zinc-100 font-semibold hover:text-[#01B6FE] transition-colors">Meet Prajapati</span>
         </a>
 
         <span className="text-zinc-400 hidden sm:inline">&bull;</span>
 
-        <span className="text-zinc-300 font-mono text-[11px] font-semibold hidden sm:inline">
+        <span className="text-zinc-300 font-mono text-[11px] font-semibold hidden sm:inline flex-shrink-0">
           v0.1.0
         </span>
       </div>

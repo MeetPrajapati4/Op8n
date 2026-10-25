@@ -59,7 +59,7 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-80 sm:w-84 p-3.5 max-h-80 overflow-y-auto bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl"
+        className="w-80 sm:w-84 max-w-[calc(100vw-2rem)] p-3.5 max-h-80 overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl smooth-scroll-momentum"
         align="end"
         data-lenis-prevent="true"
       >
@@ -94,7 +94,7 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
               {errors.map((err, idx) => (
                 <div
                   key={idx}
-                  className="p-2 rounded-lg bg-red-950/40 border border-red-900/50 text-xs text-red-300 leading-snug"
+                  className="p-2 rounded-lg bg-red-950/40 border border-red-900/50 text-xs text-red-300 leading-snug break-words"
                 >
                   {err.message}
                 </div>
@@ -109,7 +109,7 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
               {warnings.map((warn, idx) => (
                 <div
                   key={idx}
-                  className="p-2 rounded-lg bg-amber-950/40 border border-amber-900/50 text-xs text-amber-300 leading-snug"
+                  className="p-2 rounded-lg bg-amber-950/40 border border-amber-900/50 text-xs text-amber-300 leading-snug break-words"
                 >
                   {warn.message}
                 </div>
@@ -131,10 +131,10 @@ export default function ValidationBadge({ validation }: ValidationBadgeProps) {
                 {credentialsNeeded.map((cred, idx) => (
                   <div
                     key={idx}
-                    className="p-1.5 rounded-lg bg-[#15151a] border border-white/[0.08] text-xs text-zinc-200 flex items-center justify-between font-mono gap-2"
+                    className="p-1.5 rounded-lg bg-[#15151a] border border-white/[0.08] text-xs text-zinc-200 flex items-center justify-between font-mono gap-2 min-w-0"
                   >
-                    <span className="text-zinc-300 font-medium">{cred.node}</span>
-                    <span className="px-1.5 py-0.5 rounded bg-[#02F7C8]/15 border border-[#02F7C8]/35 text-[#02F7C8] font-semibold text-[11px] shadow-xs">
+                    <span className="text-zinc-300 font-medium truncate">{cred.node}</span>
+                    <span className="px-1.5 py-0.5 rounded bg-[#02F7C8]/15 border border-[#02F7C8]/35 text-[#02F7C8] font-semibold text-[11px] shadow-xs truncate flex-shrink-0">
                       {cred.placeholder}
                     </span>
                   </div>

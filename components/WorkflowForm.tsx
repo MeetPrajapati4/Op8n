@@ -96,7 +96,7 @@ export default function WorkflowForm({
         </div>
 
         {/* Category Filter Chips */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 flex-shrink-0 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 flex-shrink-0 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden smooth-scroll-momentum">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -114,7 +114,7 @@ export default function WorkflowForm({
         </div>
 
         {/* Rich Suggestions Cloud (Scrollable Multi-Pill Grid) */}
-        <div className="flex-1 min-h-0 overflow-y-auto pr-1 flex flex-wrap content-start gap-2 [scrollbar-width:thin] [scrollbar-color:#27272a_transparent]">
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1 flex flex-wrap content-start gap-2 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden smooth-scroll-momentum">
           {displaySuggestions.map((preset) => (
             <motion.button
               key={preset.itemId}
@@ -126,7 +126,7 @@ export default function WorkflowForm({
               title={`${preset.title} — ${preset.description}`}
               className="group inline-flex items-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-medium border border-white/[0.1] bg-[#121217] text-zinc-100 hover:text-white hover:border-[#01B6FE]/60 hover:bg-[#01B6FE]/15 hover:-translate-y-[0.5px] active:translate-y-0 active:scale-[0.98] transition-all duration-150 will-change-transform cursor-pointer text-left shadow-xs"
             >
-              <span className="truncate max-w-[280px] sm:max-w-none font-semibold text-zinc-100 group-hover:text-white">{preset.title}</span>
+              <span className="truncate max-w-[170px] xs:max-w-[240px] sm:max-w-none font-semibold text-zinc-100 group-hover:text-white">{preset.title}</span>
               <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-[#02F7C8]/15 text-[#02F7C8] border border-[#02F7C8]/35 group-hover:bg-[#02F7C8]/25 group-hover:text-white transition-colors flex-shrink-0 shadow-xs">
                 {preset.reason}
               </span>

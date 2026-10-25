@@ -16,11 +16,12 @@ const ScrollArea = React.forwardRef<
   >
     <ScrollAreaPrimitive.Viewport
       data-lenis-prevent="true"
-      className="h-full w-full rounded-[inherit] smooth-scroll-momentum overscroll-contain transform-gpu"
+      className="h-full w-full rounded-[inherit] smooth-scroll-momentum overscroll-contain transform-gpu [&>div]:!block"
     >
       {children}
     </ScrollAreaPrimitive.Viewport>
-    <ScrollBar />
+    <ScrollBar orientation="vertical" />
+    <ScrollBar orientation="horizontal" />
     <ScrollAreaPrimitive.Corner />
   </ScrollAreaPrimitive.Root>
 ));

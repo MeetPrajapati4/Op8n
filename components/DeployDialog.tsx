@@ -156,7 +156,7 @@ export default function DeployDialog({
             {deployError && (
               <div className="p-3 rounded-xl bg-red-950/40 border border-red-500/40 flex items-start gap-2.5 text-xs sm:text-sm text-red-200">
                 <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0 mt-0.5" />
-                <p className="leading-snug">{deployError}</p>
+                <p className="leading-snug break-words">{deployError}</p>
               </div>
             )}
 

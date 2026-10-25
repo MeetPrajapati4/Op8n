@@ -47,7 +47,7 @@ function JsonViewer({ json }: JsonViewerProps) {
   if (!json) return null;
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 rounded-xl border border-white/[0.07] overflow-hidden bg-[#060608]/90 shadow-inner [transform:translateZ(0)]">
+    <div className="flex flex-col flex-1 min-h-0 rounded-xl border border-white/[0.07] overflow-hidden bg-[#060608]/90 shadow-inner [transform:translateZ(0)] min-w-0">
       {/* File Header */}
       <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#0C0C0F]/90 backdrop-blur-md border-b border-white/[0.07] flex-shrink-0 select-none">
         <div className="flex items-center gap-2">
@@ -60,9 +60,9 @@ function JsonViewer({ json }: JsonViewerProps) {
       </div>
 
       {/* Scrollable code block using shadcn ScrollArea */}
-      <ScrollArea className="flex-1 w-full p-3.5 sm:p-4" data-lenis-prevent="true">
+      <ScrollArea className="flex-1 w-full p-3.5 sm:p-4 min-h-0" data-lenis-prevent="true">
         <pre
-          className="text-xs font-mono leading-relaxed [contain:content] [transform:translateZ(0)]"
+          className="text-xs font-mono leading-relaxed [contain:content] [transform:translateZ(0)] whitespace-pre-wrap break-all sm:whitespace-pre sm:break-normal"
           style={{ fontFamily: 'var(--font-geist-mono), monospace' }}
           dangerouslySetInnerHTML={{ __html: highlighted }}
         />

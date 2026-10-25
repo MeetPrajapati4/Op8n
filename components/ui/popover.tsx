@@ -18,7 +18,7 @@ const PopoverContent = React.forwardRef<
       align={align}
       sideOffset={sideOffset}
       className={cn(
-        'z-50 w-72 rounded-xl border border-white/[0.08] bg-[#0C0C0F]/95 backdrop-blur-2xl p-4 text-zinc-200 shadow-2xl outline-none popover-content-anim will-change-[transform,opacity] [transform-origin:var(--radix-popover-content-transform-origin)]',
+        'z-50 w-72 max-w-[calc(100vw-2rem)] max-h-[var(--radix-popover-content-available-height,85vh)] overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-xl border border-white/[0.08] bg-[#0C0C0F]/95 backdrop-blur-2xl p-4 text-zinc-200 shadow-2xl outline-none popover-content-anim will-change-[transform,opacity] [transform-origin:var(--radix-popover-content-transform-origin)] smooth-scroll-momentum',
         className
       )}
       {...props}

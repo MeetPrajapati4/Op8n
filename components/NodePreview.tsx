@@ -39,7 +39,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
           Node Flow Preview (Click node to inspect)
         </span>
       </div>
-      <div className="overflow-x-auto pb-1.5 custom-scrollbar [contain:paint]">
+      <div className="overflow-x-auto pb-1.5 no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden smooth-scroll-momentum [contain:paint]">
         <motion.div
           initial="hidden"
           animate="show"
@@ -82,14 +82,14 @@ function NodePreview({ workflow }: NodePreviewProps) {
 
                   <PopoverContent className="w-72 sm:w-80 p-3.5 text-xs bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl" align="start">
                     <div className="flex flex-col gap-2.5">
-                      <div className="flex items-start justify-between border-b border-white/[0.07] pb-2">
-                        <div className="flex flex-col">
-                          <span className="font-bold text-white text-sm">{node.name}</span>
-                          <span className="text-xs text-[#01B6FE] font-mono font-medium">
+                      <div className="flex items-start justify-between border-b border-white/[0.07] pb-2 gap-2">
+                        <div className="flex flex-col min-w-0">
+                          <span className="font-bold text-white text-sm truncate max-w-[200px]">{node.name}</span>
+                          <span className="text-xs text-[#01B6FE] font-mono font-medium break-all">
                             {node.type}
                           </span>
                         </div>
-                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-zinc-300">
+                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/[0.04] border border-white/[0.06] text-zinc-300 flex-shrink-0">
                           v{node.typeVersion || 1}
                         </span>
                       </div>
@@ -110,10 +110,10 @@ function NodePreview({ workflow }: NodePreviewProps) {
                             {outgoingConnections.map((c, idx) => (
                               <span
                                 key={idx}
-                                className="inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded bg-white/[0.04] text-zinc-200 border border-white/[0.08]"
+                                className="inline-flex items-center gap-1.5 text-xs px-2 py-0.5 rounded bg-white/[0.04] text-zinc-200 border border-white/[0.08] max-w-[220px]"
                               >
-                                <ArrowRight className="w-3 h-3 text-[#01B6FE]" />
-                                <span>{c.node}</span>
+                                <ArrowRight className="w-3 h-3 text-[#01B6FE] flex-shrink-0" />
+                                <span className="truncate">{c.node}</span>
                               </span>
                             ))}
                           </div>
@@ -125,7 +125,7 @@ function NodePreview({ workflow }: NodePreviewProps) {
                         <span className="text-xs text-zinc-300 uppercase tracking-wider font-semibold">
                           Parameters:
                         </span>
-                        <pre className="text-xs font-mono bg-[#060608] border border-white/[0.06] p-2 rounded-lg max-h-32 overflow-y-auto text-zinc-200">
+                        <pre className="text-xs font-mono bg-[#060608] border border-white/[0.06] p-2 rounded-lg max-h-32 overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden whitespace-pre-wrap break-all text-zinc-200 smooth-scroll-momentum">
                           {JSON.stringify(node.parameters || {}, null, 2)}
                         </pre>
                       </div>

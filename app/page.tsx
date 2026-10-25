@@ -354,7 +354,7 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="h-full"
+              className="h-full flex flex-col min-h-0 min-w-0 overflow-hidden"
             >
               <ExplainView activeWorkflowJson={jsonString} />
             </motion.div>
@@ -365,14 +365,14 @@ export default function Home() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="h-full"
+              className="h-full flex flex-col min-h-0 min-w-0 overflow-hidden"
             >
               {/* Mobile View: Two Tabs (< 768px) */}
-              <div className="md:hidden h-full flex flex-col">
+              <div className="md:hidden h-full flex flex-col min-h-0 overflow-hidden">
                 <Tabs
                   value={mobileTab}
                   onValueChange={(val) => setMobileTab(val as 'describe' | 'output')}
-                  className="h-full flex flex-col"
+                  className="h-full flex flex-col min-h-0 overflow-hidden"
               >
                 <TabsList className="grid grid-cols-2 w-full mb-3 flex-shrink-0 bg-[#111116] border border-white/[0.07] p-1 rounded-xl">
                   <TabsTrigger value="describe">Describe</TabsTrigger>
@@ -382,7 +382,7 @@ export default function Home() {
                 </TabsList>
 
                 <TabsContent value="describe" className="flex-1 min-h-0 mt-0">
-                  <div className="h-full rounded-2xl border border-white/[0.07] bg-[#0C0C0F]/85 backdrop-blur-xl p-4 flex flex-col shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]">
+                  <div className="h-full rounded-2xl border border-white/[0.07] bg-[#0C0C0F]/85 backdrop-blur-xl p-4 flex flex-col shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] min-w-0 min-h-0 overflow-hidden">
                     <WorkflowForm
                       onGenerate={handleGenerate}
                       isLoading={status === 'loading'}
@@ -394,7 +394,7 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="output" className="flex-1 min-h-0 mt-0 flex flex-col">
-                  <div className="h-full rounded-2xl border border-white/[0.07] bg-[#0C0C0F]/85 backdrop-blur-xl p-4 flex flex-col gap-3 overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px]">
+                  <div className="h-full rounded-2xl border border-white/[0.07] bg-[#0C0C0F]/85 backdrop-blur-xl p-4 flex flex-col gap-3 overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] min-w-0 min-h-0">
                     <OutputToolbar
                       workflow={workflow}
                       jsonString={jsonString}
@@ -436,13 +436,13 @@ export default function Home() {
             </div>
 
             {/* Desktop View: Two-Column Side-by-Side (>= 768px) */}
-            <div className="hidden md:grid md:grid-cols-2 gap-4 lg:gap-6 h-full w-full max-w-[1920px] mx-auto px-1">
+            <div className="hidden md:grid md:grid-cols-2 gap-4 lg:gap-6 h-full w-full max-w-[1920px] mx-auto px-1 min-h-0 min-w-0 overflow-hidden">
               {/* Left Column: Input Form */}
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.25 }}
-                className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]"
+                className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] min-w-0 min-h-0"
               >
                 <WorkflowForm
                   onGenerate={handleGenerate}
@@ -504,7 +504,7 @@ export default function Home() {
                 initial={{ opacity: 0, x: 10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.25 }}
-                className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] gap-3 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px]"
+                className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] gap-3 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:20px_20px] min-w-0 min-h-0"
               >
                 {/* Toolbar */}
                 {workflow && (

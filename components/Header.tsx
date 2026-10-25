@@ -99,7 +99,8 @@ export default function Header({
             )}
             <span className="relative z-10 flex items-center gap-1.5">
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Audit &amp; Explain</span>
+              <span className="hidden sm:inline">Audit &amp; Explain</span>
+              <span className="sm:hidden">Audit</span>
             </span>
           </button>
         </nav>
@@ -114,11 +115,11 @@ export default function Header({
             whileTap={{ scale: 0.98 }}
             transition={{ duration: 0.12 }}
             onClick={onNewSession}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#01B6FE]/15 hover:bg-[#01B6FE]/25 border border-[#01B6FE]/40 hover:border-[#01B6FE]/70 text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#01B6FE]/15 hover:bg-[#01B6FE]/25 border border-[#01B6FE]/40 hover:border-[#01B6FE]/70 text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform flex-shrink-0"
             title="Start a new blank workflow session (Alt+N)"
           >
             <Plus className="w-3.5 h-3.5 text-[#02F7C8]" />
-            <span>New Session</span>
+            <span className="hidden sm:inline">New Session</span>
             <kbd className="hidden lg:inline text-[10px] font-mono ml-1 px-1.5 py-0.5 rounded bg-[#01B6FE]/25 text-white font-semibold border border-[#01B6FE]/30">
               Alt+N
             </kbd>
@@ -131,7 +132,7 @@ export default function Header({
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.12 }}
           onClick={onOpenHistory}
-          className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+          className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform flex-shrink-0"
           title="Workflow History & Backups"
         >
           <History className="w-3.5 h-3.5 text-zinc-300" />
@@ -149,7 +150,7 @@ export default function Header({
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.12 }}
           onClick={onOpenSettings}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#01B6FE]/50 focus:ring-4 focus:ring-[#01B6FE]/15 hover:-translate-y-[1px] active:translate-y-0 will-change-transform flex-shrink-0"
           title="Workflow Engine Preferences & Models"
         >
           <Sliders className="w-3.5 h-3.5 text-zinc-300" />
