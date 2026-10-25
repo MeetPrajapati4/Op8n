@@ -185,24 +185,24 @@ export default function SettingsDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="w-[96vw] sm:max-w-[920px] md:max-w-[960px] max-h-[90vh] overflow-y-auto bg-[#0C0C0F]/95 backdrop-blur-2xl border border-white/[0.12] text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_25px_50px_-12px_rgba(0,0,0,0.85)] p-6 sm:p-7 rounded-2xl smooth-scroll-momentum"
+        className="w-[96vw] sm:max-w-[1040px] md:max-w-[1140px] lg:max-w-[1200px] max-h-[92vh] overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden bg-[#0C0C0F]/95 backdrop-blur-2xl border border-white/[0.12] text-zinc-100 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_25px_50px_-12px_rgba(0,0,0,0.85)] p-5 sm:p-6 rounded-2xl smooth-scroll-momentum"
         data-lenis-prevent="true"
       >
-        <DialogHeader className="pb-1.5 border-b border-white/[0.08]">
+        <DialogHeader className="pb-2 border-b border-white/[0.08]">
           <DialogTitle className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2.5">
             <Sliders className="w-4 h-4 text-[#01B6FE]" />
             Workflow Engine Preferences &amp; Models
           </DialogTitle>
-          <DialogDescription className="text-xs sm:text-sm text-zinc-200 leading-relaxed mt-1">
+          <DialogDescription className="text-xs sm:text-sm text-zinc-200 leading-relaxed mt-0.5">
             Configure your AI credentials, model selection, and workflow canvas formatting.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSave} className="flex flex-col gap-4 mt-2">
+        <form onSubmit={handleSave} className="flex flex-col gap-3.5 mt-1.5">
           {/* Main 2-Column Horizontal Box Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
             {/* Left Column: AI Credentials / Active Model + Schema Target */}
-            <div className="flex flex-col gap-3.5">
+            <div className="flex flex-col gap-3">
               {/* 1. API Key Setup OR Active Model Selection */}
               <AnimatePresence mode="wait">
                 {!hasKey ? (
@@ -212,7 +212,7 @@ export default function SettingsDialog({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.18 }}
-                    className="flex flex-col gap-3 p-4 sm:p-5 rounded-2xl bg-[#121217] border border-white/[0.12] shadow-md"
+                    className="flex flex-col gap-3 p-3.5 sm:p-4 rounded-xl bg-[#121217] border border-white/[0.12] shadow-md"
                   >
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-white flex items-center gap-2">
@@ -229,14 +229,14 @@ export default function SettingsDialog({
                     </p>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                      <div className="flex flex-col gap-1.5 sm:col-span-1">
+                      <div className="flex flex-col gap-1 sm:col-span-1">
                         <label className="text-xs font-semibold text-white">
                           Provider
                         </label>
                         <select
                           value={selectedProvider}
                           onChange={(e) => setSelectedProvider(e.target.value)}
-                          className="w-full h-11 px-3 py-2 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
+                          className="w-full h-10 px-3 py-1.5 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
                         >
                           {Object.values(PROVIDER_REGISTRY).map((p) => (
                             <option key={p.id} value={p.id}>
@@ -246,7 +246,7 @@ export default function SettingsDialog({
                         </select>
                       </div>
 
-                      <div className="flex flex-col gap-1.5 sm:col-span-2">
+                      <div className="flex flex-col gap-1 sm:col-span-2">
                         <label className="text-xs font-semibold text-white">
                           Secret API Key
                         </label>
@@ -256,14 +256,14 @@ export default function SettingsDialog({
                           onChange={(e) => handleKeyChange(e.target.value)}
                           placeholder="Paste key (AIzaSy..., sk-...)"
                           autoComplete="off"
-                          className="w-full h-11 px-3.5 py-2 rounded-xl bg-[#181820] border border-white/[0.15] text-xs sm:text-sm text-white font-mono placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200"
+                          className="w-full h-10 px-3.5 py-1.5 rounded-xl bg-[#181820] border border-white/[0.15] text-xs sm:text-sm text-white font-mono placeholder:text-zinc-400 focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200"
                         />
                       </div>
                     </div>
 
                     {/* Supported Generation Models Preview for selected provider */}
                     {providerEntry?.staticModels && providerEntry.staticModels.length > 0 && (
-                      <div className="flex flex-col gap-1.5 pt-1">
+                      <div className="flex flex-col gap-1 pt-0.5">
                         <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-white">
                           <span>Supported Generation Models:</span>
                           <span className="font-mono text-[#02F7C8] text-xs font-bold">
@@ -274,7 +274,7 @@ export default function SettingsDialog({
                           {providerEntry.staticModels.map((m) => (
                             <span
                               key={m.id}
-                              className="text-xs font-mono font-medium px-2.5 py-1 rounded-lg bg-white/[0.06] text-zinc-200 border border-white/[0.1]"
+                              className="text-xs font-mono font-medium px-2 py-0.5 rounded-lg bg-white/[0.06] text-zinc-200 border border-white/[0.1]"
                             >
                               {getFriendlyModelName(m.id, m.name)}
                             </span>
@@ -289,7 +289,7 @@ export default function SettingsDialog({
                       disabled={isValidating || !inputKey.trim()}
                       whileHover={{ scale: isValidating || !inputKey.trim() ? 1 : 1.01 }}
                       whileTap={{ scale: isValidating || !inputKey.trim() ? 1 : 0.98 }}
-                      className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(3,135,254,0.35)] flex items-center justify-center gap-2 cursor-pointer mt-1"
+                      className="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-[0_0_20px_rgba(3,135,254,0.35)] flex items-center justify-center gap-2 cursor-pointer mt-0.5"
                     >
                       {isValidating ? (
                         <>
@@ -311,7 +311,7 @@ export default function SettingsDialog({
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.18 }}
-                    className="flex flex-col gap-3.5 p-4 sm:p-5 rounded-2xl bg-[#121217] border border-white/[0.12] shadow-md"
+                    className="flex flex-col gap-3 p-3.5 sm:p-4 rounded-xl bg-[#121217] border border-white/[0.12] shadow-md"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
@@ -343,14 +343,14 @@ export default function SettingsDialog({
                       </div>
                     </div>
 
-                    <div className="flex flex-col gap-2">
+                    <div className="flex flex-col gap-1.5">
                       <label className="text-xs sm:text-sm font-semibold text-zinc-200">
                         Select generation model for workflows &amp; auditing:
                       </label>
                       <select
                         value={activeModel}
                         onChange={(e) => handleModelSelect(e.target.value)}
-                        className="w-full h-11 px-3.5 py-2.5 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
+                        className="w-full h-10 px-3.5 py-2 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
                       >
                         {userModels.map((m) => {
                           const friendly = getFriendlyModelName(m.id, m.name);
@@ -367,20 +367,20 @@ export default function SettingsDialog({
               </AnimatePresence>
 
               {/* Schema Target */}
-              <div className="flex flex-col gap-3 p-4 sm:p-5 rounded-2xl bg-[#121217] border border-white/[0.12] shadow-md">
+              <div className="flex flex-col gap-2.5 p-3.5 sm:p-4 rounded-xl bg-[#121217] border border-white/[0.12] shadow-md">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-white uppercase tracking-wider">
                     Schema Target
                   </span>
                   <span className="text-xs font-mono text-[#01B6FE] font-medium">n8n syntax version</span>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <button
                     type="button"
                     onClick={() =>
                       setPrefs((prev) => ({ ...prev, targetVersion: 'v1' }))
                     }
-                    className={`p-3.5 sm:p-4 rounded-xl border text-left flex flex-col justify-center gap-1 transition-all cursor-pointer min-h-[68px] ${
+                    className={`p-3 rounded-xl border text-left flex flex-col justify-center gap-0.5 transition-all cursor-pointer min-h-[58px] ${
                       prefs.targetVersion === 'v1'
                         ? 'border-2 border-[#01B6FE] bg-[#01B6FE]/20 text-white ring-2 ring-[#01B6FE]/30 shadow-[0_0_20px_rgba(1,182,254,0.25)] font-bold'
                         : 'border border-white/[0.12] bg-[#181820] text-zinc-200 hover:text-white hover:border-white/[0.25]'
@@ -395,7 +395,7 @@ export default function SettingsDialog({
                     onClick={() =>
                       setPrefs((prev) => ({ ...prev, targetVersion: 'v0' }))
                     }
-                    className={`p-3.5 sm:p-4 rounded-xl border text-left flex flex-col justify-center gap-1 transition-all cursor-pointer min-h-[68px] ${
+                    className={`p-3 rounded-xl border text-left flex flex-col justify-center gap-0.5 transition-all cursor-pointer min-h-[58px] ${
                       prefs.targetVersion === 'v0'
                         ? 'border-2 border-[#01B6FE] bg-[#01B6FE]/20 text-white ring-2 ring-[#01B6FE]/30 shadow-[0_0_20px_rgba(1,182,254,0.25)] font-bold'
                         : 'border border-white/[0.12] bg-[#181820] text-zinc-200 hover:text-white hover:border-white/[0.25]'
@@ -408,8 +408,8 @@ export default function SettingsDialog({
               </div>
 
               {/* Serverless engine status */}
-              <div className="flex items-center justify-between px-4 py-3 rounded-xl bg-[#121217] border border-white/[0.12] shadow-sm text-xs sm:text-sm">
-                <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-between px-3.5 py-2 rounded-xl bg-[#121217] border border-white/[0.12] shadow-sm text-xs sm:text-sm">
+                <div className="flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
                   <span className="text-zinc-100 font-medium">
                     {hasKey ? 'Personal key active (browser encrypted)' : cloudEngineActive ? 'Serverless cloud engine active' : 'API key required'}
@@ -422,7 +422,7 @@ export default function SettingsDialog({
             </div>
 
             {/* Right Column: Canvas & Generation Rules */}
-            <div className="flex flex-col gap-4 p-4 sm:p-5 rounded-2xl bg-[#121217] border border-white/[0.12] shadow-md">
+            <div className="flex flex-col gap-3 p-3.5 sm:p-4 rounded-xl bg-[#121217] border border-white/[0.12] shadow-md">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-white uppercase tracking-wider">
                   Canvas &amp; Generation Rules
@@ -431,7 +431,7 @@ export default function SettingsDialog({
               </div>
 
               {/* Error handling strategy */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <label className="text-xs sm:text-sm font-semibold text-white flex items-center justify-between">
                   <span>Default Node Error Handling</span>
                   <span className="text-xs text-zinc-200 font-mono font-semibold bg-white/[0.08] px-2 py-0.5 rounded border border-white/[0.1]">
@@ -450,7 +450,7 @@ export default function SettingsDialog({
                       errorHandling: e.target.value as 'none' | 'continue' | 'retry',
                     }))
                   }
-                  className="w-full h-11 px-3.5 py-2.5 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
+                  className="w-full h-10 px-3.5 py-2 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
                 >
                   <option value="none">Strict (Stop on error)</option>
                   <option value="continue">Resilient (Continue execution on failure)</option>
@@ -459,7 +459,7 @@ export default function SettingsDialog({
               </div>
 
               {/* Layout Spacing Segmented Control */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <label className="text-xs sm:text-sm font-semibold text-white flex items-center justify-between">
                   <span>Canvas Node Spacing</span>
                   <span className="text-xs text-zinc-200 font-mono font-semibold bg-white/[0.08] px-2 py-0.5 rounded border border-white/[0.1]">
@@ -485,7 +485,7 @@ export default function SettingsDialog({
                           layoutSpacing: item.val as 180 | 220 | 280,
                         }))
                       }
-                      className={`h-10 py-2 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
+                      className={`h-9 py-1.5 rounded-xl text-xs sm:text-sm font-bold border transition-all cursor-pointer ${
                         prefs.layoutSpacing === item.val
                           ? 'bg-[#01B6FE]/20 border-2 border-[#01B6FE] text-white shadow-[0_0_15px_rgba(1,182,254,0.3)] ring-1 ring-[#01B6FE]/40'
                           : 'bg-[#181820] border border-white/[0.12] text-zinc-200 hover:text-white hover:border-white/[0.25]'
@@ -498,7 +498,7 @@ export default function SettingsDialog({
               </div>
 
               {/* Default Schedule Timezone */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 <label className="text-xs sm:text-sm font-semibold text-white flex items-center justify-between">
                   <span>Default Schedule Timezone</span>
                   <span className="text-xs text-zinc-200 font-mono font-semibold bg-white/[0.08] px-2 py-0.5 rounded border border-white/[0.1]">
@@ -510,7 +510,7 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, timezone: e.target.value }))
                   }
-                  className="w-full h-11 px-3.5 py-2.5 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
+                  className="w-full h-10 px-3.5 py-2 rounded-xl bg-[#181820] border border-white/[0.15] hover:border-white/[0.25] text-xs sm:text-sm font-medium text-white focus:outline-none focus:border-[#01B6FE]/60 focus:ring-4 focus:ring-[#01B6FE]/20 transition-all duration-200 cursor-pointer"
                 >
                   {TIMEZONES.map((tz) => (
                     <option key={tz} value={tz}>
@@ -521,12 +521,12 @@ export default function SettingsDialog({
               </div>
 
               {/* Custom styled checkboxes */}
-              <div className="flex items-center justify-between pt-3 border-t border-white/[0.1]">
+              <div className="flex items-center justify-between pt-2 border-t border-white/[0.08]">
                 <div className="pr-3">
                   <span className="text-xs sm:text-sm text-white font-semibold block">
                     Inject Sample Mock Payloads (pinData)
                   </span>
-                  <span className="text-xs text-zinc-200 block mt-1 leading-relaxed">
+                  <span className="text-xs text-zinc-200 block mt-0.5 leading-relaxed">
                     Add sample data on trigger nodes for instant testing
                   </span>
                 </div>
@@ -536,16 +536,16 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, injectPinData: e.target.checked }))
                   }
-                  className="w-5 h-5 rounded-md border-2 border-white/30 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
+                  className="w-4.5 h-4.5 rounded border-2 border-white/30 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
                 />
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-white/[0.1]">
+              <div className="flex items-center justify-between pt-2 border-t border-white/[0.08]">
                 <div className="pr-3">
                   <span className="text-xs sm:text-sm text-white font-semibold block">
                     Auto-add Canvas Sticky Note
                   </span>
-                  <span className="text-xs text-zinc-200 block mt-1 leading-relaxed">
+                  <span className="text-xs text-zinc-200 block mt-0.5 leading-relaxed">
                     Place an annotated sticky note describing the flow
                   </span>
                 </div>
@@ -555,14 +555,14 @@ export default function SettingsDialog({
                   onChange={(e) =>
                     setPrefs((prev) => ({ ...prev, addStickyNote: e.target.checked }))
                   }
-                  className="w-5 h-5 rounded-md border-2 border-white/30 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
+                  className="w-4.5 h-4.5 rounded border-2 border-white/30 checked:bg-[#01B6FE] checked:border-[#01B6FE] text-[#01B6FE] accent-[#01B6FE] focus:ring-4 focus:ring-[#01B6FE]/15 cursor-pointer transition-all duration-200 flex-shrink-0"
                 />
               </div>
             </div>
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-between pt-3.5 border-t border-white/[0.1]">
+          <div className="flex items-center justify-between pt-2.5 border-t border-white/[0.1]">
             <span className="text-xs sm:text-sm text-zinc-300 font-mono font-medium hidden sm:inline">
               Op8n Studio Engine
             </span>
@@ -570,13 +570,13 @@ export default function SettingsDialog({
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.15] text-zinc-100 hover:text-white transition-colors duration-150 cursor-pointer"
+                className="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white/[0.06] hover:bg-white/[0.12] border border-white/[0.15] text-zinc-100 hover:text-white transition-colors duration-150 cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_22px_rgba(3,135,254,0.45)] hover:shadow-[0_0_30px_rgba(117,1,253,0.65)] transition-all duration-200 flex items-center gap-2 cursor-pointer active:scale-[0.98]"
+                className="px-5 py-2 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-[#01B6FE] via-[#0387FE] to-[#7501FD] hover:brightness-110 text-white shadow-[0_0_22px_rgba(3,135,254,0.45)] hover:shadow-[0_0_30px_rgba(117,1,253,0.65)] transition-all duration-200 flex items-center gap-2 cursor-pointer active:scale-[0.98]"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Save Preferences</span>
