@@ -7,6 +7,12 @@ import { toast } from 'sonner';
 import { N8nWorkflow, N8nNode } from '@/lib/n8n-types';
 import { ValidationResult } from '@/lib/validator';
 import { getStoredPreferences } from '@/lib/settings';
+import {
+  getUserApiKey,
+  getUserProvider,
+  getUserActiveModel,
+  purgeUserApiKey,
+} from '@/lib/client/user-keys';
 
 interface RefineBarProps {
   currentWorkflow: N8nWorkflow | null;
@@ -75,19 +81,39 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
 
     setIsRefining(true);
     const preferences = getStoredPreferences();
+    const userKey = getUserApiKey();
+    const userProvider = getUserProvider();
+    const userModel = getUserActiveModel();
 
     try {
       const res = await fetch('/api/refine', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(userKey
+            ? {
+                'x-user-api-key': userKey,
+                'x-user-provider': userProvider,
+                'x-user-model': userModel,
+              }
+            : {}),
+        },
         body: JSON.stringify({
           existingWorkflow: currentWorkflow,
           instruction: text,
           preferences,
+          model: userModel,
         }),
       });
 
       const data = await res.json();
+
+      if (res.status === 401 || (data.error && data.error.toLowerCase().includes('api key'))) {
+        purgeUserApiKey();
+        toast.error('API key expired or invalid. Key purged. Please reconnect in Preferences.');
+        return;
+      }
+
       if (!res.ok || data.error) {
         throw new Error(data.error || 'Refinement failed');
       }
@@ -109,6 +135,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
     }
   };
 
+
   const handleConfirmApply = () => {
     if (!stagedResult) return;
     onApplyRefinement(stagedResult.workflow, stagedResult.validation, stagedResult.prompt);
@@ -118,13 +145,13 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
   };
 
   return (
-    <div className="flex flex-col gap-2 p-3 rounded-lg bg-[#141416] border border-[#2e2e35] select-none">
+    <div className="flex flex-col gap-3 p-3.5 rounded-xl bg-[#0C0C0F]/90 backdrop-blur-md border border-white/[0.07] select-none shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
       <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+        <span className="text-xs font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-[#FF6D5A]" />
           Refine Workflow
         </span>
-        <span className="text-[10px] text-zinc-500">Iterative AI modifications</span>
+        <span className="text-xs text-zinc-400">Iterative AI modifications</span>
       </div>
 
       {/* Input bar */}
@@ -133,20 +160,22 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
           e.preventDefault();
           handleRefine();
         }}
-        className="flex items-center gap-2"
+        className="flex items-center gap-2.5"
       >
         <input
           type="text"
           value={instruction}
           onChange={(e) => setInstruction(e.target.value)}
           placeholder="e.g. Add an error alert to Telegram if request fails, or change schedule to 8am"
-          className="flex-1 px-3 py-1.5 rounded-lg bg-[#18181b] border border-[#2e2e35] text-xs text-zinc-200 placeholder:text-zinc-600 focus:outline-none focus:border-[#FF6D5A]"
+          className="flex-1 px-3.5 py-2 rounded-lg bg-[#060608]/90 border border-white/[0.08] text-xs text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200"
           disabled={isRefining}
         />
-        <button
+        <motion.button
           type="submit"
+          whileHover={{ scale: !instruction.trim() || isRefining ? 1 : 1.02, y: -1 }}
+          whileTap={{ scale: !instruction.trim() || isRefining ? 1 : 0.96 }}
           disabled={!instruction.trim() || isRefining}
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white hover:opacity-90 disabled:opacity-40 transition-all flex items-center gap-1 flex-shrink-0"
+          className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white disabled:opacity-40 disabled:text-zinc-400 transition-all duration-150 ease-out flex items-center gap-1.5 flex-shrink-0 shadow-[0_0_15px_rgba(255,109,90,0.3)] cursor-pointer"
         >
           {isRefining ? (
             <>
@@ -156,27 +185,29 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
           ) : (
             <>
               <span>Apply</span>
-              <ArrowRight className="w-3 h-3" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </>
           )}
-        </button>
+        </motion.button>
       </form>
 
       {/* Quick suggestions */}
       {!stagedResult && (
-        <div className="flex flex-wrap gap-1.5 pt-0.5">
+        <div className="flex flex-wrap gap-2 pt-0.5">
           {QUICK_SUGGESTIONS.map((sug) => (
-            <button
+            <motion.button
               key={sug}
               type="button"
+              whileHover={{ scale: 1.02, y: -1 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => {
                 setInstruction(sug);
                 handleRefine(sug);
               }}
-              className="text-[10px] px-2 py-0.5 rounded border border-[#2e2e35] bg-[#18181b] text-zinc-400 hover:text-[#FF6D5A] hover:border-[#FF6D5A]/40 transition-colors"
+              className="text-xs px-2.5 py-1 rounded-lg border border-white/[0.06] bg-[#121217] text-zinc-300 hover:text-white hover:border-[#FF6D5A]/40 hover:bg-[#FF6D5A]/[0.06] transition-all duration-150 ease-out cursor-pointer"
             >
               + {sug}
-            </button>
+            </motion.button>
           ))}
         </div>
       )}
@@ -188,17 +219,17 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-1 p-2.5 rounded-lg border border-[#FF6D5A]/40 bg-[#1c1819] flex flex-col gap-2"
+            className="mt-1.5 p-3 rounded-xl border border-[#FF6D5A]/30 bg-[#FF6D5A]/[0.05] flex flex-col gap-2.5"
           >
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-zinc-200">
+              <span className="text-xs font-semibold text-zinc-100">
                 Proposed Changes: &ldquo;{stagedResult.prompt}&rdquo;
               </span>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setStagedResult(null)}
-                  className="px-2.5 py-1 rounded text-xs border border-[#2e2e35] text-zinc-400 hover:text-white flex items-center gap-1"
+                  className="px-2.5 py-1 rounded-lg text-xs border border-white/[0.08] bg-white/[0.03] text-zinc-300 hover:text-white transition-all duration-150 active:scale-[0.97] cursor-pointer flex items-center gap-1"
                 >
                   <X className="w-3 h-3" />
                   <span>Discard</span>
@@ -206,7 +237,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
                 <button
                   type="button"
                   onClick={handleConfirmApply}
-                  className="px-3 py-1 rounded text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white hover:opacity-90 flex items-center gap-1"
+                  className="px-3 py-1 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white flex items-center gap-1 shadow-sm transition-all duration-150 active:scale-[0.97] cursor-pointer"
                 >
                   <Check className="w-3 h-3" />
                   <span>Apply Refinement</span>
@@ -219,7 +250,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
               {stagedResult.diff.added.map((node) => (
                 <span
                   key={node.name}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800/60 text-emerald-300 font-mono text-[11px]"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-950/60 border border-emerald-800/60 text-emerald-300 font-mono text-xs"
                 >
                   <PlusCircle className="w-3 h-3 text-emerald-400" />
                   <span>{node.name}</span>
@@ -229,7 +260,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
               {stagedResult.diff.modified.map((node) => (
                 <span
                   key={node.name}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-blue-950/60 border border-blue-800/60 text-blue-300 font-mono text-[11px]"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-950/60 border border-blue-800/60 text-blue-300 font-mono text-xs"
                 >
                   <RefreshCw className="w-3 h-3 text-blue-400" />
                   <span>{node.name} (modified)</span>
@@ -239,7 +270,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
               {stagedResult.diff.removed.map((node) => (
                 <span
                   key={node.name}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-red-950/60 border border-red-800/60 text-red-300 font-mono text-[11px]"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-950/60 border border-red-800/60 text-red-300 font-mono text-xs"
                 >
                   <MinusCircle className="w-3 h-3 text-red-400" />
                   <span>{node.name}</span>
@@ -249,7 +280,7 @@ export default function RefineBar({ currentWorkflow, onApplyRefinement }: Refine
               {stagedResult.diff.added.length === 0 &&
                 stagedResult.diff.modified.length === 0 &&
                 stagedResult.diff.removed.length === 0 && (
-                  <span className="text-[11px] text-zinc-400">
+                  <span className="text-xs text-zinc-300">
                     Workflow parameters optimized.
                   </span>
                 )}

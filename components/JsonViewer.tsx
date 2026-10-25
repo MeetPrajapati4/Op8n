@@ -1,5 +1,6 @@
 'use client';
 
+import { memo, useMemo } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface JsonViewerProps {
@@ -32,28 +33,36 @@ function syntaxHighlight(json: string): string {
   );
 }
 
-export default function JsonViewer({ json }: JsonViewerProps) {
+function JsonViewer({ json }: JsonViewerProps) {
+  const highlighted = useMemo(() => {
+    if (!json) return '';
+    return syntaxHighlight(json);
+  }, [json]);
+
+  const jsonSizeKb = useMemo(() => {
+    if (!json) return '0.0';
+    return (new Blob([json]).size / 1024).toFixed(1);
+  }, [json]);
+
   if (!json) return null;
 
-  const highlighted = syntaxHighlight(json);
-
   return (
-    <div className="flex flex-col flex-1 min-h-0 rounded-lg border border-[#2e2e35] overflow-hidden bg-[#0d0d0f]">
+    <div className="flex flex-col flex-1 min-h-0 rounded-xl border border-white/[0.07] overflow-hidden bg-[#060608]/90 shadow-inner [transform:translateZ(0)]">
       {/* File Header */}
-      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#141416] border-b border-[#2e2e35] flex-shrink-0 select-none">
+      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#0C0C0F]/90 backdrop-blur-md border-b border-white/[0.07] flex-shrink-0 select-none">
         <div className="flex items-center gap-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-zinc-700" />
-          <span className="text-xs text-zinc-400 font-mono">workflow.json</span>
+          <span className="w-2 h-2 rounded-full bg-[#FF6D5A]/80 shadow-[0_0_6px_rgba(255,109,90,0.5)]" />
+          <span className="text-xs text-zinc-200 font-mono">workflow.json</span>
         </div>
-        <span className="text-[11px] text-zinc-600 font-mono">
-          {(new Blob([json]).size / 1024).toFixed(1)} KB
+        <span className="text-xs text-zinc-400 font-mono">
+          {jsonSizeKb} KB
         </span>
       </div>
 
       {/* Scrollable code block using shadcn ScrollArea */}
-      <ScrollArea className="flex-1 w-full p-4">
+      <ScrollArea className="flex-1 w-full p-3.5 sm:p-4" data-lenis-prevent="true">
         <pre
-          className="text-xs font-mono leading-relaxed"
+          className="text-xs font-mono leading-relaxed [contain:content] [transform:translateZ(0)]"
           style={{ fontFamily: 'var(--font-geist-mono), monospace' }}
           dangerouslySetInnerHTML={{ __html: highlighted }}
         />
@@ -76,3 +85,5 @@ export default function JsonViewer({ json }: JsonViewerProps) {
     </div>
   );
 }
+
+export default memo(JsonViewer);

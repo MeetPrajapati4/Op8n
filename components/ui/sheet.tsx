@@ -16,7 +16,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Overlay
     className={cn(
-      'fixed inset-0 z-50 bg-black/60 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 duration-200',
+      'fixed inset-0 z-50 bg-black/70 backdrop-blur-md sheet-overlay-anim',
       className
     )}
     {...props}
@@ -39,18 +39,22 @@ const SheetContent = React.forwardRef<
     <SheetPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed z-50 gap-4 bg-[#18181b] border-[#2e2e35] p-6 shadow-2xl transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-200',
+        'fixed z-50 gap-4 bg-[#0C0C0F]/95 backdrop-blur-2xl border-[#2e2e35] p-5 sm:p-6 shadow-2xl will-change-[transform,opacity]',
         side === 'right' &&
-          'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-md data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right',
+          'inset-y-0 right-0 h-full w-3/4 border-l sm:max-w-md sheet-slide-right-anim',
         side === 'left' &&
-          'inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-md data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left',
+          'inset-y-0 left-0 h-full w-3/4 border-r sm:max-w-md sheet-slide-left-anim',
+        side === 'top' &&
+          'inset-x-0 top-0 h-1/2 border-b sheet-slide-top-anim',
+        side === 'bottom' &&
+          'inset-x-0 bottom-0 h-1/2 border-t sheet-slide-bottom-anim',
         className
       )}
       {...props}
     >
       {children}
-      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-[#FF6D5A]">
-        <X className="h-4 w-4 text-zinc-400 hover:text-white" />
+      <SheetPrimitive.Close className="absolute right-4 top-4 rounded-lg p-1.5 opacity-70 transition-all hover:opacity-100 hover:bg-white/[0.06] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#FF6D5A] active:scale-95 cursor-pointer">
+        <X className="h-4 w-4 text-zinc-400 hover:text-white transition-colors" />
         <span className="sr-only">Close</span>
       </SheetPrimitive.Close>
     </SheetPrimitive.Content>
@@ -78,7 +82,7 @@ const SheetTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Title
     ref={ref}
-    className={cn('text-lg font-semibold text-zinc-100', className)}
+    className={cn('text-sm font-semibold text-zinc-100', className)}
     {...props}
   />
 ));
@@ -90,7 +94,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Description
     ref={ref}
-    className={cn('text-sm text-zinc-400', className)}
+    className={cn('text-xs text-zinc-400', className)}
     {...props}
   />
 ));

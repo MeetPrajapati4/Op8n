@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Copy, Check, Download, HelpCircle, Layers, Activity, Send } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Copy, Check, Download, HelpCircle, Layers, Activity, Send, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import ValidationBadge from '@/components/ValidationBadge';
@@ -13,6 +14,7 @@ interface OutputToolbarProps {
   jsonString: string | null;
   validation: ValidationResult | null;
   onOpenDeploy?: () => void;
+  onNewSession?: () => void;
 }
 
 export function calculateComplexity(workflow: N8nWorkflow | null): {
@@ -46,6 +48,7 @@ export default function OutputToolbar({
   jsonString,
   validation,
   onOpenDeploy,
+  onNewSession,
 }: OutputToolbarProps) {
   const [copied, setCopied] = useState(false);
 
@@ -80,25 +83,25 @@ export default function OutputToolbar({
   const complexity = calculateComplexity(workflow);
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 bg-[#141416] border border-[#2e2e35] rounded-lg select-none">
+    <div className="flex flex-wrap items-center justify-between gap-2.5 px-3.5 py-2 bg-[#0C0C0F]/90 backdrop-blur-md border border-white/[0.07] rounded-xl select-none shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
       {/* Left: Metrics & Validation */}
       <div className="flex items-center gap-2 flex-wrap">
         {/* Node count */}
-        <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#1f1f23] border border-[#2e2e35] text-xs font-mono text-zinc-300">
-          <Layers className="w-3 h-3 text-zinc-400" />
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-xs font-mono text-zinc-200">
+          <Layers className="w-3.5 h-3.5 text-zinc-400" />
           <span>{nodeCount} {nodeCount === 1 ? 'node' : 'nodes'}</span>
         </div>
 
         {/* Complexity badge */}
         <div
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium border"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border"
           style={{
             borderColor: `${complexity.color}40`,
             backgroundColor: `${complexity.color}15`,
             color: complexity.color,
           }}
         >
-          <Activity className="w-3 h-3" />
+          <Activity className="w-3.5 h-3.5" />
           <span>{complexity.level}</span>
         </div>
 
@@ -107,46 +110,48 @@ export default function OutputToolbar({
       </div>
 
       {/* Right: Actions */}
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         {/* How to import popover */}
         <Popover>
           <PopoverTrigger asChild>
-            <button
+            <motion.button
               type="button"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.96 }}
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
             >
               <HelpCircle className="w-3.5 h-3.5 text-zinc-400" />
               <span>Import Guide</span>
-            </button>
+            </motion.button>
           </PopoverTrigger>
-          <PopoverContent className="w-80 p-4" align="end">
-            <h4 className="text-xs font-semibold text-zinc-100 uppercase tracking-wider mb-3">
+          <PopoverContent className="w-80 sm:w-84 p-3.5 bg-[#0C0C0F]/95 backdrop-blur-xl border border-white/[0.08] shadow-2xl rounded-xl" align="end" data-lenis-prevent="true">
+            <h4 className="text-xs font-semibold text-zinc-100 uppercase tracking-wider mb-2.5">
               How to import into n8n (3 Steps)
             </h4>
-            <div className="flex flex-col gap-3 text-xs text-zinc-300">
+            <div className="flex flex-col gap-2.5 text-xs text-zinc-300">
               <div className="flex items-start gap-2.5">
-                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-[10px]">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-xs">
                   1
                 </span>
-                <p className="leading-tight">
-                  Click <strong className="text-white">Copy JSON</strong> above or download the <code className="text-[#FF6D5A] bg-[#1f1f23] px-1 py-0.5 rounded">.json</code> file.
+                <p className="leading-snug">
+                  Click <strong className="text-white">Copy JSON</strong> above or download the <code className="text-[#FF6D5A] bg-white/[0.06] border border-white/[0.08] px-1 py-0.5 rounded text-xs font-mono">.json</code> file.
                 </p>
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-[10px]">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-xs">
                   2
                 </span>
-                <p className="leading-tight">
-                  In your n8n workspace, open any canvas and press <kbd className="bg-[#27272a] text-zinc-200 px-1 py-0.5 rounded text-[11px] font-mono border border-[#3f3f46]">Ctrl+V</kbd> (<kbd className="bg-[#27272a] text-zinc-200 px-1 py-0.5 rounded text-[11px] font-mono border border-[#3f3f46]">Cmd+V</kbd>) or use <strong className="text-white">Menu → Import from JSON</strong>.
+                <p className="leading-snug">
+                  In your n8n workspace, open any canvas and press <kbd className="bg-zinc-800/90 border border-white/10 border-b-2 rounded px-1.5 py-0.5 text-xs font-mono text-zinc-100">Ctrl+V</kbd> (<kbd className="bg-zinc-800/90 border border-white/10 border-b-2 rounded px-1.5 py-0.5 text-xs font-mono text-zinc-100">Cmd+V</kbd>) or use <strong className="text-white">Menu → Import from JSON</strong>.
                 </p>
               </div>
 
               <div className="flex items-start gap-2.5">
-                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-[10px]">
+                <span className="flex-shrink-0 w-5 h-5 rounded-full bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white flex items-center justify-center font-bold text-xs">
                   3
                 </span>
-                <p className="leading-tight">
+                <p className="leading-snug">
                   Connect your credentials on the highlighted service nodes, then toggle <strong className="text-emerald-400">Active</strong> to run!
                 </p>
               </div>
@@ -155,10 +160,12 @@ export default function OutputToolbar({
         </Popover>
 
         {/* Copy JSON */}
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
           onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-200 hover:text-white hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
         >
           {copied ? (
             <>
@@ -171,30 +178,49 @@ export default function OutputToolbar({
               <span>Copy JSON</span>
             </>
           )}
-        </button>
+        </motion.button>
 
         {/* Send to n8n */}
         {onOpenDeploy && (
-          <button
+          <motion.button
             type="button"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.96 }}
             onClick={onOpenDeploy}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-[#221f20] hover:bg-[#2e2a2c] text-[#FF6D5A] border border-[#FF6D5A]/40 transition-colors focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#FF6D5A]/10 hover:bg-[#FF6D5A]/20 text-[#FF6D5A] border border-[#FF6D5A]/30 transition-all duration-150 ease-out cursor-pointer focus:outline-none focus:border-[#FF6D5A]/60 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
             title="Deploy directly to your connected n8n instance"
           >
             <Send className="w-3.5 h-3.5" />
             <span>Send to n8n</span>
-          </button>
+          </motion.button>
+        )}
+
+        {/* New Session */}
+        {onNewSession && (
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={onNewSession}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 cursor-pointer focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
+            title="Start a new blank workflow session"
+          >
+            <Plus className="w-3.5 h-3.5 text-[#FF6D5A]" />
+            <span>New</span>
+          </motion.button>
         )}
 
         {/* Download JSON */}
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.96 }}
           onClick={handleDownload}
-          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white hover:opacity-90 transition-opacity focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] hover:brightness-110 text-white transition-all duration-150 ease-out shadow-[0_0_15px_rgba(255,109,90,0.3)] cursor-pointer focus:outline-none focus:border-[#FF6D5A]/60 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0"
         >
           <Download className="w-3.5 h-3.5" />
           <span>Download</span>
-        </button>
+        </motion.button>
       </div>
     </div>
   );

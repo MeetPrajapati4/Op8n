@@ -1,11 +1,13 @@
 'use client';
 
 import Image from 'next/image';
-import { Sliders, History, Sparkles, ShieldCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Sliders, History, Sparkles, ShieldCheck, Plus } from 'lucide-react';
 
 interface HeaderProps {
   onOpenSettings: () => void;
   onOpenHistory: () => void;
+  onNewSession?: () => void;
   historyCount?: number;
   activeMode?: 'studio' | 'audit';
   onModeChange?: (mode: 'studio' | 'audit') => void;
@@ -14,96 +16,145 @@ interface HeaderProps {
 export default function Header({
   onOpenSettings,
   onOpenHistory,
+  onNewSession,
   historyCount = 0,
   activeMode = 'studio',
   onModeChange,
 }: HeaderProps) {
   return (
-    <header className="h-16 px-4 md:px-6 border-b border-[#2e2e35] bg-[#111113] flex items-center justify-between flex-shrink-0 select-none">
-      <div className="flex items-center gap-3">
-        <div className="relative w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#18181b] to-[#27272a] border border-[#2e2e35] p-1">
+    <header className="h-14 px-4 md:px-6 border-b border-white/[0.07] bg-[#0C0C0F]/80 backdrop-blur-xl flex items-center justify-between flex-shrink-0 select-none z-30 gap-4 shadow-[inset_0_-1px_0_0_rgba(255,255,255,0.04)]">
+      {/* Left Branding */}
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        <motion.div
+          whileHover={{ scale: 1.05, rotate: 2 }}
+          whileTap={{ scale: 0.95 }}
+          className="relative w-7 h-7 rounded-lg overflow-hidden flex items-center justify-center bg-gradient-to-br from-[#16161b] to-[#202028] border border-white/[0.08] p-1 shadow-sm flex-shrink-0 cursor-pointer"
+        >
           <Image
             src="/logo.png"
             alt="Op8n Logo"
-            width={32}
-            height={32}
+            width={28}
+            height={28}
             className="w-full h-full object-contain"
             priority
           />
-        </div>
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
+        </motion.div>
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <span
-              className="text-xl font-bold tracking-tight text-white"
+              className="text-sm font-bold tracking-tight text-white leading-none"
               style={{ fontFamily: 'var(--font-syne)' }}
             >
               Op8n
             </span>
-            <span className="hidden sm:inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white uppercase tracking-wider">
+            <span className="px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-gradient-to-r from-[#FF6D5A] to-[#E04F67] text-white uppercase tracking-wider shadow-sm shadow-rose-500/20">
               Studio
             </span>
           </div>
-          <p className="hidden md:block text-xs text-zinc-400">
+          <span className="hidden xl:inline-block h-3.5 w-px bg-white/[0.1]" />
+          <span className="hidden xl:inline text-xs text-zinc-400 font-normal truncate">
             Describe any automation in plain English → get importable n8n JSON
-          </p>
+          </span>
         </div>
       </div>
 
-      {/* Mode Switcher */}
+      {/* Center Segmented Mode Switcher (Studio vs Audit & Explain) */}
       {onModeChange && (
-        <div className="hidden sm:inline-flex items-center p-0.5 rounded-lg bg-[#18181b] border border-[#2e2e35]">
+        <nav
+          aria-label="Mode Switcher"
+          className="relative flex items-center p-0.5 rounded-full bg-[#111116] border border-white/[0.08] shadow-inner flex-shrink-0"
+        >
           <button
             type="button"
             onClick={() => onModeChange('studio')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
-              activeMode === 'studio'
-                ? 'bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white shadow-sm'
-                : 'text-zinc-400 hover:text-white'
+            className={`relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium cursor-pointer focus:outline-none focus-visible:ring-0 outline-none select-none transition-colors duration-150 ${
+              activeMode === 'studio' ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Studio</span>
+            {activeMode === 'studio' && (
+              <motion.div
+                layoutId="header-active-pill"
+                className="absolute inset-0 bg-gradient-to-r from-[#FF6D5A] to-[#E04F67] rounded-full shadow-[0_2px_12px_rgba(255,109,90,0.35)]"
+                transition={{ type: 'spring', stiffness: 480, damping: 32 }}
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Studio</span>
+            </span>
           </button>
           <button
             type="button"
             onClick={() => onModeChange('audit')}
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all ${
-              activeMode === 'audit'
-                ? 'bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white shadow-sm'
-                : 'text-zinc-400 hover:text-white'
+            className={`relative inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium cursor-pointer focus:outline-none focus-visible:ring-0 outline-none select-none transition-colors duration-150 ${
+              activeMode === 'audit' ? 'text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'
             }`}
           >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Audit &amp; Explain</span>
+            {activeMode === 'audit' && (
+              <motion.div
+                layoutId="header-active-pill"
+                className="absolute inset-0 bg-gradient-to-r from-[#FF6D5A] to-[#E04F67] rounded-full shadow-[0_2px_12px_rgba(255,109,90,0.35)]"
+                transition={{ type: 'spring', stiffness: 480, damping: 32 }}
+              />
+            )}
+            <span className="relative z-10 flex items-center gap-1.5">
+              <ShieldCheck className="w-3.5 h-3.5" />
+              <span>Audit &amp; Explain</span>
+            </span>
           </button>
-        </div>
+        </nav>
       )}
 
-      <div className="flex items-center gap-2">
-        <button
+      {/* Right Action Bar */}
+      <div className="flex items-center justify-end gap-1.5 sm:gap-2 flex-1 min-w-0">
+        {onNewSession && (
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.12 }}
+            onClick={onNewSession}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-[#FF6D5A]/10 hover:bg-[#FF6D5A]/20 border border-[#FF6D5A]/30 hover:border-[#FF6D5A]/60 text-rose-200 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+            title="Start a new blank workflow session (Alt+N)"
+          >
+            <Plus className="w-3.5 h-3.5 text-rose-400" />
+            <span>New Session</span>
+            <kbd className="hidden lg:inline text-[10px] font-mono opacity-80 ml-1 px-1.5 py-0.5 rounded bg-[#FF6D5A]/20 text-rose-200">
+              Alt+N
+            </kbd>
+          </motion.button>
+        )}
+
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.12 }}
           onClick={onOpenHistory}
-          className="relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
+          className="relative inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-300 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
           title="Workflow History & Backups"
         >
           <History className="w-3.5 h-3.5 text-zinc-400" />
-          <span>History</span>
+          <span className="hidden sm:inline">History</span>
           {historyCount > 0 && (
-            <span className="ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-[#27272a] text-zinc-300 border border-[#3f3f46]">
+            <span className="px-1.5 py-0.2 rounded-full text-[10px] font-mono bg-white/[0.06] text-zinc-200 border border-white/[0.1]">
               {historyCount}
             </span>
           )}
-        </button>
+        </motion.button>
 
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.12 }}
           onClick={onOpenSettings}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2e2e35] bg-[#18181b] text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors focus:outline-none focus:ring-1 focus:ring-[#FF6D5A]"
-          title="Workflow Engine Preferences"
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-white/[0.03] hover:bg-white/[0.07] border border-white/[0.08] hover:border-white/[0.15] text-zinc-300 hover:text-white transition-all duration-150 cursor-pointer shadow-sm focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 hover:-translate-y-[1px] active:translate-y-0 will-change-transform"
+          title="Workflow Engine Preferences & Models"
         >
           <Sliders className="w-3.5 h-3.5 text-zinc-400" />
-          <span>Preferences</span>
-        </button>
+          <span className="hidden sm:inline">Preferences</span>
+        </motion.button>
       </div>
     </header>
   );

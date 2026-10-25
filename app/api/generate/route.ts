@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { SYSTEM_PROMPT } from '@/lib/prompt';
 import { validateAndRepairWorkflow } from '@/lib/validator';
 import { DEFAULT_PREFERENCES, WorkflowPreferences } from '@/lib/settings';
+import { getServerAiConfig } from '@/lib/server/ai-config';
+import { createSelfHealingAiStream, isAuthError } from '@/lib/server/auto-error-handler';
 
-// Basic in-memory rate limiter (30 requests per minute per IP)
+// In-memory rate limiter per IP (30 requests per minute)
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 30;
@@ -27,12 +28,13 @@ function checkRateLimit(ip: string): boolean {
   return true;
 }
 
-// Zod Input Validation
+// Zod Input Validation: Strictly limits description to 5,000 characters to protect Vercel functions from abuse
 const generateInputSchema = z.object({
   description: z
     .string()
     .min(3, 'Description must be at least 3 characters long')
     .max(5000, 'Description must not exceed 5,000 characters'),
+  model: z.string().optional(),
   preferences: z
     .object({
       targetVersion: z.enum(['v1', 'v0']).optional(),
@@ -64,15 +66,28 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey || apiKey === 'your_key_here') {
+  // 1. Check if user provided an API key in request headers
+  const userApiKey = req.headers.get('x-user-api-key')?.trim();
+  const userProvider = req.headers.get('x-user-provider')?.trim();
+
+  // 2. Fallback to server-only environment variable if no user key provided
+  const serverConfig = getServerAiConfig();
+  const effectiveApiKey = userApiKey || serverConfig.apiKey;
+  const effectiveProvider = userApiKey
+    ? (userProvider || 'openai')
+    : serverConfig.provider;
+
+  if (!effectiveApiKey) {
     return NextResponse.json(
-      { error: 'Server GEMINI_API_KEY is not configured in .env.local.' },
-      { status: 500 }
+      {
+        error:
+          'No AI API key configured. Please connect your API key in Preferences.',
+      },
+      { status: 401 }
     );
   }
 
-  // Parse and validate body
+  // Parse and validate request body
   let bodyJson: unknown;
   try {
     bodyJson = await req.json();
@@ -88,7 +103,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { description, preferences = DEFAULT_PREFERENCES } = inputResult.data;
+  const { description, model, preferences = DEFAULT_PREFERENCES } = inputResult.data;
+  const sanitizedModel = model?.toLowerCase() === 'gemini-1.5-pro' ? 'gemini-2.5-flash' : model;
+  const effectiveModel = sanitizedModel || (effectiveProvider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o');
 
   // Server-Sent Events Streaming Response
   const encoder = new TextEncoder();
@@ -103,49 +120,46 @@ export async function POST(req: NextRequest) {
       try {
         sendEvent('step', 'Analyzing automation requirements…');
 
-        const genAI = new GoogleGenerativeAI(apiKey);
-        // Using gemini-2.5-flash with thinkingBudget: 0 and responseMimeType: application/json
-        // for ultra-fast generation (3-5 seconds response time!)
-        const geminiModel = genAI.getGenerativeModel({
-          model: 'gemini-2.5-flash',
-          generationConfig: {
-            temperature: 0.15,
-            responseMimeType: 'application/json',
-            thinkingConfig: {
-              thinkingBudget: 0,
-            },
-            maxOutputTokens: 2500,
-          } as any,
-        });
-
-        sendEvent('step', 'Building n8n workflow graph…');
-
         let promptText = `${SYSTEM_PROMPT}\n\nGenerate an n8n workflow for: ${description.trim()}`;
         if (preferences.injectPinData) {
           promptText += '\nInclude realistic sample test payload data in the trigger node parameters.';
         }
 
-        const streamResult = await geminiModel.generateContentStream(promptText);
         let rawOutput = '';
 
-        for await (const chunk of streamResult.stream) {
-          const text = chunk.text();
-          rawOutput += text;
-          sendEvent('chunk', text);
+        sendEvent('step', 'Querying AI model…');
+
+        const { stream: aiStream } = await createSelfHealingAiStream({
+          provider: effectiveProvider,
+          apiKey: effectiveApiKey,
+          model: effectiveModel,
+          promptText,
+          systemPrompt: SYSTEM_PROMPT,
+          onStep: (stepMsg) => sendEvent('step', stepMsg),
+        });
+
+        sendEvent('step', 'Building n8n workflow graph…');
+
+        for await (const chunk of aiStream) {
+          rawOutput += chunk;
+          sendEvent('chunk', chunk);
         }
 
         sendEvent('step', 'Validating schema & checking credentials…');
 
-        // Parse and validate
+        // Parse and validate workflow JSON
         const cleaned = cleanJsonString(rawOutput);
         let parsedWorkflow: unknown;
         try {
           parsedWorkflow = JSON.parse(cleaned);
         } catch {
-          throw new Error('Model output could not be parsed as JSON. Please retry.');
+          throw new Error('Model output could not be parsed as valid JSON. Please retry.');
         }
 
-        const validation = validateAndRepairWorkflow(parsedWorkflow, preferences as WorkflowPreferences);
+        const validation = validateAndRepairWorkflow(
+          parsedWorkflow,
+          preferences as WorkflowPreferences
+        );
 
         sendEvent('done', {
           workflow: validation.repairedWorkflow,
@@ -156,7 +170,14 @@ export async function POST(req: NextRequest) {
         controller.close();
       } catch (err: unknown) {
         const message = err instanceof Error ? err.message : 'Unknown generation error';
-        sendEvent('error', { error: message });
+        const isAuthErr = isAuthError(message);
+
+        sendEvent('error', {
+          error: isAuthErr
+            ? 'Invalid or expired API key. Provider rejected authentication.'
+            : message,
+          status: isAuthErr ? 401 : 500,
+        });
         controller.close();
       }
     },

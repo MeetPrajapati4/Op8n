@@ -16,7 +16,7 @@ export const PROVIDERS: Record<AIProvider, ProviderOption> = {
     id: 'gemini',
     name: 'Google Gemini',
     defaultModel: 'gemini-2.5-flash',
-    models: ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'],
+    models: ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-2.5-pro', 'gemini-1.5-flash'],
     placeholderKey: 'AIzaSy...',
     keyUrl: 'https://aistudio.google.com/app/apikey',
     requiresKey: false, // Can fall back to server env if not provided

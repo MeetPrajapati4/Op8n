@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Syne } from "next/font/google";
 import { Toaster } from "sonner";
+import "lenis/dist/lenis.css";
 import "./globals.css";
+import SmoothScroll from "@/components/SmoothScroll";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,8 +68,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} h-full antialiased`}
     >
-      <body className="h-dvh max-h-dvh overflow-hidden flex flex-col bg-[#0e0e10] text-zinc-100 selection:bg-[#FF6D5A]/30 selection:text-white">
-        {children}
+      <body className="h-dvh max-h-dvh overflow-hidden flex flex-col bg-[#070709] text-zinc-100 selection:bg-[#FF6D5A]/30 selection:text-white">
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
         <Toaster
           position="bottom-right"
           theme="dark"

@@ -43,3 +43,7 @@ next-env.d.ts
 
 # scratch scripts
 /scratch/
+
+# Encrypted settings & keys store
+/.data/
+.data/

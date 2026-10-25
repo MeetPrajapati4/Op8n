@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { SYSTEM_PROMPT } from '@/lib/prompt';
 import { validateAndRepairWorkflow } from '@/lib/validator';
 import { DEFAULT_PREFERENCES, WorkflowPreferences } from '@/lib/settings';
+import { getServerAiConfig } from '@/lib/server/ai-config';
+import { executeSelfHealingAiCall, isAuthError } from '@/lib/server/auto-error-handler';
 
 const refineInputSchema = z.object({
   existingWorkflow: z.record(z.string(), z.unknown()),
-  instruction: z.string().min(3).max(2000),
+  instruction: z.string().min(3, 'Instruction must be at least 3 characters').max(5000, 'Instruction must not exceed 5,000 characters'),
   preferences: z.record(z.string(), z.unknown()).optional(),
+  model: z.string().optional(),
 });
 
 function cleanJsonString(raw: string): string {
@@ -21,11 +23,19 @@ function cleanJsonString(raw: string): string {
 }
 
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey || apiKey === 'your_key_here') {
+  const userApiKey = req.headers.get('x-user-api-key')?.trim();
+  const userProvider = req.headers.get('x-user-provider')?.trim();
+  const userModel = req.headers.get('x-user-model')?.trim();
+
+  const serverConfig = getServerAiConfig();
+  const effectiveApiKey = userApiKey || serverConfig.apiKey;
+  const effectiveProvider = userApiKey ? (userProvider || 'gemini') : serverConfig.provider;
+  const effectiveModel = userModel || serverConfig.model || (effectiveProvider === 'gemini' ? 'gemini-2.5-flash' : 'gpt-4o');
+
+  if (!effectiveApiKey) {
     return NextResponse.json(
-      { error: 'Server GEMINI_API_KEY is not configured.' },
-      { status: 500 }
+      { error: 'No AI API key configured. Please connect your API key in Preferences.' },
+      { status: 401 }
     );
   }
 
@@ -44,23 +54,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { existingWorkflow, instruction, preferences = DEFAULT_PREFERENCES } = parseResult.data;
+  const { existingWorkflow, instruction, preferences = DEFAULT_PREFERENCES, model: reqModel } = parseResult.data;
+  const targetModel = reqModel || effectiveModel;
 
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-2.5-flash',
-      generationConfig: {
-        temperature: 0.15,
-        responseMimeType: 'application/json',
-        thinkingConfig: {
-          thinkingBudget: 0,
-        },
-        maxOutputTokens: 2500,
-      } as any,
-    });
-
-    const prompt = `${SYSTEM_PROMPT}
+  const prompt = `${SYSTEM_PROMPT}
 
 You are refining an EXISTING n8n workflow.
 Existing Workflow JSON:
@@ -72,8 +69,19 @@ User Refinement Request:
 Modify the workflow according to the user request. Keep existing node names and structure where possible, add or modify nodes as requested, update connection mappings properly.
 Output ONLY the updated valid n8n workflow JSON.`;
 
-    const result = await model.generateContent(prompt);
-    const cleaned = cleanJsonString(result.response.text());
+  try {
+    const { text: rawText, modelUsed, autoRecovered } = await executeSelfHealingAiCall({
+      provider: effectiveProvider,
+      apiKey: effectiveApiKey,
+      model: targetModel,
+      systemPrompt: SYSTEM_PROMPT,
+      userPrompt: `You are refining an EXISTING n8n workflow.\nExisting Workflow JSON:\n${JSON.stringify(existingWorkflow, null, 2)}\n\nUser Refinement Request:\n"${instruction.trim()}"\n\nModify the workflow according to the user request. Keep existing node names and structure where possible, add or modify nodes as requested, update connection mappings properly.\nOutput ONLY the updated valid n8n workflow JSON.`,
+      temperature: 0.15,
+      maxOutputTokens: 2500,
+      requireJson: true,
+    });
+
+    const cleaned = cleanJsonString(rawText);
     const parsed = JSON.parse(cleaned);
 
     const validation = validateAndRepairWorkflow(parsed, preferences as WorkflowPreferences);
@@ -82,9 +90,17 @@ Output ONLY the updated valid n8n workflow JSON.`;
       workflow: validation.repairedWorkflow,
       validation,
       nodeCount: validation.repairedWorkflow.nodes.length,
+      modelUsed,
+      autoRecovered,
     });
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Failed to refine workflow';
-    return NextResponse.json({ error: msg }, { status: 500 });
+    const isAuth = isAuthError(msg);
+
+    return NextResponse.json(
+      { error: isAuth ? 'Invalid or expired API key. Provider rejected authentication.' : msg },
+      { status: isAuth ? 401 : 500 }
+    );
   }
 }
+

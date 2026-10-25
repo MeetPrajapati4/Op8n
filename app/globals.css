@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0e0e10;
+  --background: #070709;
   --foreground: #f4f4f5;
-  --surface: #18181b;
-  --border: #2e2e35;
+  --surface: #0C0C0F;
+  --border: rgba(255, 255, 255, 0.08);
   --primary-start: #FF6D5A;
   --primary-end: #EE4F7B;
   --accent-gradient: linear-gradient(135deg, #FF6D5A 0%, #EE4F7B 100%);
@@ -33,24 +33,66 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-* {
+/* Lenis smooth scrolling integration */
+html.lenis {
+  height: 100%;
+}
+
+html.lenis body {
+  height: 100%;
+  min-height: 100dvh;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* 60FPS & High Refresh Rate Compositor Optimization */
+*, *::before, *::after {
   box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Eliminate 300ms mobile touch delay for instant responsiveness */
+button, input, select, textarea, a {
+  touch-action: manipulation;
+}
+
+/* GPU hardware accelerated compositing layer */
+.transform-gpu {
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Smooth momentum scrolling for internal scroll views */
+.smooth-scroll-momentum {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
 }
 
 /* Primary CTA gradient */
 .btn-primary-gradient {
   background: linear-gradient(135deg, #FF6D5A 0%, #EE4F7B 100%);
   color: #ffffff;
-  transition: opacity 0.2s ease, transform 0.15s ease, filter 0.2s ease;
+  transition: opacity 0.15s ease, transform 0.12s ease, filter 0.15s ease;
+  transform: translateZ(0);
+  will-change: transform, opacity;
 }
 
 .btn-primary-gradient:hover:not(:disabled) {
   filter: brightness(1.08);
-  transform: translateY(-1px);
+  transform: translateY(-1px) translateZ(0);
 }
 
 .btn-primary-gradient:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(0) translateZ(0);
 }
 
 /* Gradient Shimmer for loading state */
@@ -74,17 +116,19 @@ html, body {
   );
   background-size: 200% 100%;
   animation: gradient-shimmer 2.2s infinite linear;
+  will-change: background-position;
 }
 
-/* Focus ring in gradient hue */
+/* Refined smooth diffused focus ring in gradient coral hue */
 .focus-ring-accent {
   outline: none;
 }
 .focus-ring-accent:focus-visible,
 .focus-ring-accent:focus {
   outline: none;
-  border-color: #FF6D5A !important;
-  box-shadow: 0 0 0 2px rgba(255, 109, 90, 0.45) !important;
+  border-color: rgba(255, 109, 90, 0.5) !important;
+  box-shadow: 0 0 0 4px rgba(255, 109, 90, 0.1) !important;
+  transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out;
 }
 
 /* Custom discreet scrollbars for internal scrollable areas */
@@ -101,6 +145,305 @@ html, body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #454550;
+}
+
+/* ==========================================================================
+   Butter-Smooth 60FPS Dialog, Sidebar (Sheet), & Popover Animations
+   Native-grade physics curves (Apple / Linear / Raycast cubic-bezier)
+   ========================================================================== */
+
+/* --- Modal Dialog Overlay --- */
+.dialog-overlay-anim[data-state='open'] {
+  animation: modalOverlayFadeIn 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.dialog-overlay-anim[data-state='closed'] {
+  animation: modalOverlayFadeOut 180ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes modalOverlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+}
+
+@keyframes modalOverlayFadeOut {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(12px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+/* --- Modal Dialog Content --- */
+.dialog-content-anim[data-state='open'] {
+  animation: modalContentEnter 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.dialog-content-anim[data-state='closed'] {
+  animation: modalContentExit 200ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes modalContentEnter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalContentExit {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+/* --- Sidebar Sheet Overlay --- */
+.sheet-overlay-anim[data-state='open'] {
+  animation: sheetOverlayFadeIn 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.sheet-overlay-anim[data-state='closed'] {
+  animation: sheetOverlayFadeOut 220ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sheetOverlayFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+  }
+}
+
+@keyframes sheetOverlayFadeOut {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+/* --- Sidebar Sheet Sliding Content --- */
+.sheet-slide-right-anim[data-state='open'] {
+  animation: sheetSlideInRight 340ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.sheet-slide-right-anim[data-state='closed'] {
+  animation: sheetSlideOutRight 240ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sheetSlideInRight {
+  from {
+    transform: translate3d(100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheetSlideOutRight {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+.sheet-slide-left-anim[data-state='open'] {
+  animation: sheetSlideInLeft 340ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.sheet-slide-left-anim[data-state='closed'] {
+  animation: sheetSlideOutLeft 240ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sheetSlideInLeft {
+  from {
+    transform: translate3d(-100%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheetSlideOutLeft {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
+}
+
+.sheet-slide-top-anim[data-state='open'] {
+  animation: sheetSlideInTop 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.sheet-slide-top-anim[data-state='closed'] {
+  animation: sheetSlideOutTop 220ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sheetSlideInTop {
+  from {
+    transform: translate3d(0, -100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheetSlideOutTop {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -100%, 0);
+  }
+}
+
+.sheet-slide-bottom-anim[data-state='open'] {
+  animation: sheetSlideInBottom 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.sheet-slide-bottom-anim[data-state='closed'] {
+  animation: sheetSlideOutBottom 220ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes sheetSlideInBottom {
+  from {
+    transform: translate3d(0, 100%, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes sheetSlideOutBottom {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+/* --- Popover Dropdown Animation (Direction-aware) --- */
+.popover-content-anim[data-state='open'] {
+  animation: popoverFadeIn 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.popover-content-anim[data-state='closed'] {
+  animation: popoverFadeOut 150ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.popover-content-anim[data-side='bottom'][data-state='open'] {
+  animation: popoverSlideInBottom 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.popover-content-anim[data-side='top'][data-state='open'] {
+  animation: popoverSlideInTop 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.popover-content-anim[data-side='left'][data-state='open'] {
+  animation: popoverSlideInLeft 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.popover-content-anim[data-side='right'][data-state='open'] {
+  animation: popoverSlideInRight 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes popoverFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes popoverFadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+@keyframes popoverSlideInBottom {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes popoverSlideInTop {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes popoverSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translate3d(6px, 0, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes popoverSlideInRight {
+  from {
+    opacity: 0;
+    transform: translate3d(-6px, 0, 0) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+/* --- Tabs Content Glide --- */
+.tabs-content-anim[data-state='active'] {
+  animation: tabFadeIn 220ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes tabFadeIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

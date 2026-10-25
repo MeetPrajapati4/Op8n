@@ -10,10 +10,14 @@ const ScrollArea = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <ScrollAreaPrimitive.Root
     ref={ref}
+    data-lenis-prevent="true"
     className={cn('relative overflow-hidden', className)}
     {...props}
   >
-    <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
+    <ScrollAreaPrimitive.Viewport
+      data-lenis-prevent="true"
+      className="h-full w-full rounded-[inherit] smooth-scroll-momentum overscroll-contain transform-gpu"
+    >
       {children}
     </ScrollAreaPrimitive.Viewport>
     <ScrollBar />
@@ -30,16 +34,16 @@ const ScrollBar = React.forwardRef<
     ref={ref}
     orientation={orientation}
     className={cn(
-      'flex touch-none select-none transition-colors',
+      'flex touch-none select-none transition-colors z-30',
       orientation === 'vertical' &&
-        'h-full w-2 border-l border-l-transparent p-[1px]',
+        'h-full w-2.5 border-l border-l-transparent p-[1.5px]',
       orientation === 'horizontal' &&
-        'h-2 flex-col border-t border-t-transparent p-[1px]',
+        'h-2.5 flex-col border-t border-t-transparent p-[1.5px]',
       className
     )}
     {...props}
   >
-    <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-[#2e2e35] hover:bg-[#454550]" />
+    <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-zinc-700/60 hover:bg-[#FF6D5A]/70 transition-colors duration-150" />
   </ScrollAreaPrimitive.ScrollAreaScrollbar>
 ));
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;

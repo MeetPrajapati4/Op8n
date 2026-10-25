@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   ShieldAlert,
   ShieldCheck,
@@ -9,12 +10,16 @@ import {
   CheckCircle2,
   FileCode2,
   Lightbulb,
-  ArrowRight,
   Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { N8nWorkflow } from '@/lib/n8n-types';
+import {
+  getUserApiKey,
+  getUserProvider,
+  getUserActiveModel,
+  purgeUserApiKey,
+} from '@/lib/client/user-keys';
 
 interface ExplainViewProps {
   activeWorkflowJson?: string | null;
@@ -91,26 +96,57 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null);
 
+  useEffect(() => {
+    if (activeWorkflowJson && !jsonInput) {
+      setJsonInput(activeWorkflowJson);
+    }
+  }, [activeWorkflowJson]);
+
   const handleAnalyze = async () => {
     if (!jsonInput.trim() || isAnalyzing) return;
 
     setIsAnalyzing(true);
     setAnalysis(null);
 
+    const userKey = getUserApiKey();
+    const userProvider = getUserProvider();
+    const userModel = getUserActiveModel();
+
     try {
-      const res = await fetch('/api/explain', {
+      const res = await fetch('/api/audit', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(userKey
+            ? {
+                'x-user-api-key': userKey,
+                'x-user-provider': userProvider,
+                'x-user-model': userModel,
+              }
+            : {}),
+        },
         body: JSON.stringify({ workflowJson: jsonInput.trim() }),
       });
 
       const data = await res.json();
+
+      if (res.status === 401 || (data.error && data.error.toLowerCase().includes('api key'))) {
+        // Auto-purge invalid/expired key
+        purgeUserApiKey();
+        toast.error('API key expired or invalid. Key purged. Please reconnect in Preferences.');
+        return;
+      }
+
       if (!res.ok || data.error) {
         throw new Error(data.error || 'Failed to analyze workflow');
       }
 
       setAnalysis(data.analysis);
-      toast.success('Workflow audited and explained!');
+      if (data.autoRecovered && data.modelUsed) {
+        toast.success(`Workflow audited successfully! (Auto-optimized with ${data.modelUsed})`);
+      } else {
+        toast.success('Workflow audited and explained!');
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Analysis failed';
       toast.error(msg);
@@ -120,22 +156,24 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 h-full max-w-7xl mx-auto overflow-hidden">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 h-full w-full max-w-[1920px] mx-auto overflow-hidden">
       {/* Left: Input Editor */}
-      <div className="rounded-xl border border-[#2e2e35] bg-[#18181b] p-5 flex flex-col h-full overflow-hidden shadow-lg gap-3">
-        <div className="flex items-center justify-between flex-shrink-0">
+      <div className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] gap-3">
+        <div className="flex items-start justify-between gap-2 flex-shrink-0">
           <div>
-            <h3 className="text-sm font-semibold text-white">Paste n8n Workflow JSON</h3>
-            <p className="text-[11px] text-zinc-400">
-              Audit any community, template, or production n8n workflow
+            <h3 className="text-sm font-semibold tracking-tight text-white">
+              Audit &amp; Explain Workflow
+            </h3>
+            <p className="text-xs text-zinc-300">
+              Security, structure, and reliability analysis for n8n JSON
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {activeWorkflowJson && (
               <button
                 type="button"
                 onClick={() => setJsonInput(activeWorkflowJson)}
-                className="text-[11px] px-2 py-1 rounded border border-[#2e2e35] text-[#FF6D5A] hover:bg-[#221f20]"
+                className="text-xs font-medium px-3 py-1.5 rounded-lg border border-[#FF6D5A]/40 bg-[#FF6D5A]/10 text-rose-300 hover:text-white hover:bg-[#FF6D5A]/20 transition-all duration-150 ease-out cursor-pointer hover:-translate-y-[1px] active:translate-y-0"
               >
                 Use Active
               </button>
@@ -143,31 +181,35 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
             <button
               type="button"
               onClick={() => setJsonInput(SAMPLE_WORKFLOW)}
-              className="text-[11px] px-2 py-1 rounded border border-[#2e2e35] text-zinc-400 hover:text-white"
+              className="text-xs font-medium px-3 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] text-zinc-200 hover:text-white transition-all duration-150 ease-out cursor-pointer hover:-translate-y-[1px] active:translate-y-0"
             >
               Load Sample
             </button>
           </div>
         </div>
 
+        {/* Clean Monospace JSON input (JetBrains Mono / Fira Code font-mono) with softened focus ring */}
         <textarea
           value={jsonInput}
           onChange={(e) => setJsonInput(e.target.value)}
           placeholder="Paste full n8n workflow JSON here…"
-          className="flex-1 w-full rounded-lg bg-[#111113] border border-[#2e2e35] text-xs font-mono text-zinc-200 p-3 resize-none focus:outline-none focus:border-[#FF6D5A]"
+          className="flex-1 w-full rounded-xl bg-[#060608]/90 shadow-inner border border-white/[0.07] text-xs font-mono text-zinc-100 placeholder:text-zinc-500 p-3.5 resize-none focus:outline-none focus:border-[#FF6D5A]/50 focus:ring-4 focus:ring-[#FF6D5A]/10 transition-all duration-200 leading-relaxed"
           disabled={isAnalyzing}
         />
 
-        <button
+        <motion.button
           type="button"
           onClick={handleAnalyze}
           disabled={!jsonInput.trim() || isAnalyzing}
-          className="py-2.5 px-4 rounded-lg font-semibold text-xs bg-gradient-to-r from-[#FF6D5A] to-[#EE4F7B] text-white hover:opacity-90 disabled:opacity-40 transition-opacity flex items-center justify-center gap-2 flex-shrink-0"
+          whileHover={{ scale: !jsonInput.trim() || isAnalyzing ? 1 : 1.01 }}
+          whileTap={{ scale: !jsonInput.trim() || isAnalyzing ? 1 : 0.99 }}
+          transition={{ duration: 0.15 }}
+          className="py-2.5 px-4 rounded-xl font-semibold text-xs text-white disabled:bg-zinc-900/80 disabled:text-zinc-500 disabled:border-white/[0.05] disabled:shadow-none disabled:cursor-not-allowed bg-gradient-to-r from-[#FF6D5A] to-[#E6496D] shadow-[0_0_25px_-5px_rgba(255,109,90,0.45)] hover:shadow-[0_0_32px_-2px_rgba(255,109,90,0.65)] hover:brightness-110 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2 flex-shrink-0 cursor-pointer"
         >
           {isAnalyzing ? (
             <>
               <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              <span>Auditing &amp; Explaining… (3-5s)</span>
+              <span>Auditing &amp; Explaining…</span>
             </>
           ) : (
             <>
@@ -175,126 +217,151 @@ export default function ExplainView({ activeWorkflowJson }: ExplainViewProps) {
               <span>Audit &amp; Explain Workflow</span>
             </>
           )}
-        </button>
+        </motion.button>
       </div>
 
       {/* Right: Audit Report Output */}
-      <div className="rounded-xl border border-[#2e2e35] bg-[#18181b] p-5 flex flex-col h-full overflow-hidden shadow-lg">
-        {analysis ? (
-          <ScrollArea className="h-full pr-3">
-            <div className="flex flex-col gap-4 pb-4">
-              {/* Header card */}
-              <div className="p-3.5 rounded-lg bg-[#141416] border border-[#2e2e35] flex flex-col gap-1.5">
-                <span className="text-[10px] uppercase tracking-wider font-semibold text-[#FF6D5A]">
-                  Workflow Summary
-                </span>
-                <h3 className="text-sm font-bold text-white">{analysis.title}</h3>
-                <p className="text-xs text-zinc-300 leading-relaxed">
-                  {analysis.summary}
-                </p>
-                <div className="mt-1 pt-2 border-t border-[#232328] text-xs text-zinc-400 flex items-center gap-2">
-                  <span className="text-zinc-500 font-medium">Trigger:</span>
-                  <span className="text-blue-400 font-mono text-[11px]">
-                    {analysis.trigger}
-                  </span>
-                </div>
-              </div>
-
-              {/* Execution Flow Steps */}
-              <div className="flex flex-col gap-2">
-                <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                  <Activity className="w-3.5 h-3.5 text-[#FF6D5A]" />
-                  Execution Flow Breakdown
-                </span>
-                <div className="flex flex-col gap-1.5">
-                  {analysis.steps.map((step, idx) => (
-                    <div
-                      key={idx}
-                      className="p-2.5 rounded-lg bg-[#141416] border border-[#2e2e35] text-xs flex items-start gap-2.5"
-                    >
-                      <span className="w-5 h-5 rounded-full bg-[#27272a] text-zinc-300 flex items-center justify-center font-bold text-[10px] flex-shrink-0 mt-0.5">
-                        {idx + 1}
+      <div className="rounded-2xl border border-white/[0.08] bg-[#0C0C0F]/85 backdrop-blur-xl p-5 lg:p-6 flex flex-col h-full overflow-hidden shadow-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]">
+        <AnimatePresence mode="wait">
+          {analysis ? (
+            <motion.div
+              key="audit-report"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.25 }}
+              className="h-full flex flex-col min-h-0 flex-1 overflow-hidden"
+            >
+              <ScrollArea
+                className="flex-1 min-h-0 h-full w-full pr-3.5"
+                data-lenis-prevent="true"
+              >
+                <div className="flex flex-col gap-4 pb-6 overscroll-contain">
+                  {/* Header card */}
+                  <div className="p-4 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex flex-col gap-2 shadow-sm">
+                    <span className="text-xs uppercase tracking-wider font-semibold text-rose-400">
+                      Workflow Summary
+                    </span>
+                    <h3 className="text-sm font-bold text-white tracking-tight leading-snug">
+                      {analysis.title}
+                    </h3>
+                    <p className="text-xs text-zinc-200 leading-relaxed">
+                      {analysis.summary}
+                    </p>
+                    <div className="mt-1 pt-2.5 border-t border-[#232328] text-xs text-zinc-300 flex items-center gap-2">
+                      <span className="text-zinc-400 font-medium">Trigger:</span>
+                      <span className="text-rose-400 font-mono text-xs">
+                        {analysis.trigger}
                       </span>
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-zinc-200">{step.node}</span>
-                        <span className="text-zinc-400 text-[11px] leading-snug">
-                          {step.role}
-                        </span>
+                    </div>
+                  </div>
+
+                  {/* Execution Flow Steps */}
+                  <div className="flex flex-col gap-2.5">
+                    <span className="text-xs font-semibold text-zinc-200 flex items-center gap-2">
+                      <Activity className="w-4 h-4 text-rose-500" />
+                      Execution Flow Breakdown
+                    </span>
+                    <div className="flex flex-col gap-2">
+                      {analysis.steps.map((step, idx) => (
+                        <div
+                          key={idx}
+                          className="p-3 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex items-start gap-3 transition-colors duration-150 hover:border-zinc-700"
+                        >
+                          <span className="w-5 h-5 rounded-full bg-[#27272a] text-zinc-200 flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">
+                            {idx + 1}
+                          </span>
+                          <div className="flex flex-col gap-0.5">
+                            <span className="font-semibold text-xs text-zinc-100">
+                              {step.node}
+                            </span>
+                            <span className="text-zinc-300 text-xs leading-relaxed">
+                              {step.role}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Security & Reliability Audit */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    {/* Security */}
+                    <div className="p-3 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex flex-col gap-2">
+                      <span className="text-xs font-semibold text-zinc-200 flex items-center gap-2">
+                        <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                        Security Audit
+                      </span>
+                      <div className="flex flex-col gap-2">
+                        {analysis.securityFindings.map((f, i) => (
+                          <div
+                            key={i}
+                            className="p-2.5 rounded-lg bg-[#1c1c20] text-xs text-zinc-200 leading-relaxed border border-white/[0.04]"
+                          >
+                            {f.message}
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Security & Reliability Audit */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Security */}
-                <div className="p-3 rounded-lg bg-[#141416] border border-[#2e2e35] flex flex-col gap-2">
-                  <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                    Security Audit
-                  </span>
-                  <div className="flex flex-col gap-1.5">
-                    {analysis.securityFindings.map((f, i) => (
-                      <div
-                        key={i}
-                        className="p-1.5 rounded bg-[#1c1c20] text-[11px] text-zinc-300 leading-tight"
-                      >
-                        {f.message}
+                    {/* Reliability */}
+                    <div className="p-3 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex flex-col gap-2">
+                      <span className="text-xs font-semibold text-zinc-200 flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-amber-400" />
+                        Reliability &amp; Errors
+                      </span>
+                      <div className="flex flex-col gap-2">
+                        {analysis.reliabilityFindings.map((f, i) => (
+                          <div
+                            key={i}
+                            className="p-2.5 rounded-lg bg-[#1c1c20] text-xs text-zinc-200 leading-relaxed border border-white/[0.04]"
+                          >
+                            {f.message}
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
+                  </div>
+
+                  {/* Recommendations */}
+                  <div className="p-3 rounded-xl bg-[#141416]/90 border border-[#2e2e35] flex flex-col gap-2">
+                    <span className="text-xs font-semibold text-zinc-200 flex items-center gap-2">
+                      <Lightbulb className="w-4 h-4 text-yellow-400" />
+                      Architect Recommendations
+                    </span>
+                    <ul className="flex flex-col gap-2 text-xs text-zinc-200">
+                      {analysis.recommendations.map((rec, i) => (
+                        <li key={i} className="flex items-start gap-2.5 leading-relaxed">
+                          <span className="text-rose-500 font-bold mt-0.5">&bull;</span>
+                          <span>{rec}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-
-                {/* Reliability */}
-                <div className="p-3 rounded-lg bg-[#141416] border border-[#2e2e35] flex flex-col gap-2">
-                  <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-amber-400" />
-                    Reliability &amp; Errors
-                  </span>
-                  <div className="flex flex-col gap-1.5">
-                    {analysis.reliabilityFindings.map((f, i) => (
-                      <div
-                        key={i}
-                        className="p-1.5 rounded bg-[#1c1c20] text-[11px] text-zinc-300 leading-tight"
-                      >
-                        {f.message}
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              </ScrollArea>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="audit-placeholder"
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+              className="flex flex-col items-center justify-center flex-1 text-center gap-3 bg-[radial-gradient(#ffffff12_1px,transparent_1px)] [background-size:20px_20px] rounded-xl h-full"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-b from-white/[0.07] to-transparent border border-white/[0.08] shadow-2xl flex items-center justify-center text-zinc-400 animate-pulse">
+                <FileCode2 className="w-7 h-7 stroke-1" />
               </div>
-
-              {/* Recommendations */}
-              <div className="p-3 rounded-lg bg-[#141416] border border-[#2e2e35] flex flex-col gap-2">
-                <span className="text-xs font-semibold text-zinc-300 flex items-center gap-1.5">
-                  <Lightbulb className="w-3.5 h-3.5 text-yellow-400" />
-                  Architect Recommendations
-                </span>
-                <ul className="flex flex-col gap-1.5 text-xs text-zinc-300">
-                  {analysis.recommendations.map((rec, i) => (
-                    <li key={i} className="flex items-start gap-2 text-[11px]">
-                      <span className="text-[#FF6D5A] mt-0.5">&bull;</span>
-                      <span>{rec}</span>
-                    </li>
-                  ))}
-                </ul>
+              <div className="flex flex-col gap-1.5 max-w-sm px-4">
+                <h4 className="text-sm font-semibold text-zinc-100">No workflow audited yet</h4>
+                <p className="text-zinc-400 text-xs leading-relaxed">
+                  Paste any n8n workflow JSON on the left to receive an instant security, architecture, and reliability audit.
+                </p>
               </div>
-            </div>
-          </ScrollArea>
-        ) : (
-          <div className="flex flex-col items-center justify-center flex-1 text-center gap-3">
-            <div className="w-12 h-12 rounded-xl border border-[#2e2e35] bg-[#111113] flex items-center justify-center text-zinc-500">
-              <FileCode2 className="w-6 h-6 stroke-1" />
-            </div>
-            <div className="flex flex-col gap-1 max-w-xs">
-              <p className="text-zinc-300 text-sm font-medium">No workflow audited yet</p>
-              <p className="text-zinc-500 text-xs">
-                Paste any n8n workflow JSON on the left to receive an instant security, architecture, and reliability audit.
-              </p>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
