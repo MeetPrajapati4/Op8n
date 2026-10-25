@@ -10,13 +10,13 @@
 [![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://typescriptlang.org)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.x-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com)
-[![Vitest](https://img.shields.io/badge/Tests-13%20Passed-22c55e?style=flat-square&logo=vitest&logoColor=white)](https://vitest.dev)
-[![Speed](https://img.shields.io/badge/Generation-3--5s-FF6D5A?style=flat-square&logo=lightning&logoColor=white)](#-ultra-fast-generation)
+[![Turbopack](https://img.shields.io/badge/Turbopack-Ready-blueviolet?style=flat-square)](https://nextjs.org/docs/app/api-reference/turbopack)
+[![Speed](https://img.shields.io/badge/Generation-3--5s-FF6D5A?style=flat-square)](#-ultra-fast-generation)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 
 <br/>
 
-[Features](#-key-features) • [Quickstart](#-quickstart) • [How to Import](#-how-to-import-into-n8n) • [Architecture](#-architecture) • [License](#-attribution--license)
+[Features](#-key-features) • [Quickstart](#-quickstart) • [How to Import](#-how-to-import-into-n8n) • [Architecture](#-architecture) • [Security](#-security--privacy) • [License](#-attribution--license)
 
 </div>
 
@@ -43,20 +43,29 @@ Instead of manually dragging nodes, wiring connections, and writing boilerplate 
 ## 🌟 Key Features
 
 ### ⚡ Ultra-Fast Generation (3–5s)
-- Powered by Google Gemini Flash with zero-latency thinking budget optimization (`thinkingBudget: 0`) and direct JSON schema streaming.
-- Get complete 4–8 node workflow graphs generated and validated in **3.2 to 4.7 seconds**.
+- Powered by **Google Gemini 2.5 Flash** with zero-latency thinking budget optimization (`thinkingBudget: 0`) and direct JSON schema streaming.
+- Complete 4–8 node workflow graphs generated and validated in **3.2 to 4.7 seconds**.
+- Built-in **Self-Healing AI Engine**: Automatically falls back to resilient candidate models if a provider experiences temporary rate limits or deprecations.
+
+### 🌐 Multi-Provider & BYOK (Bring Your Own Key)
+- Connect any leading AI provider in **Settings**:
+  - **Google Gemini** (`gemini-2.5-flash`, `gemini-2.5-pro`)
+  - **OpenAI** (`gpt-4o-mini`, `gpt-4o`, `o3-mini`)
+  - **Anthropic Claude** (`claude-3-5-haiku`, `claude-3-5-sonnet`, `claude-3-7-sonnet`)
+  - **OpenRouter**, **Groq**, **DeepSeek**, **Mistral**, **Perplexity**, **Together AI**, and local **Ollama**.
+- **Write-Once & Client-Encrypted**: Keys are validated with the provider, encrypted locally in your browser, and sent securely per-request without being logged or stored on any external server.
 
 ### 🛡️ Deep Zod Validation & Auto-Repair
 - **Trigger Integrity**: Guarantees exactly one trigger node (Webhook, Schedule, Manual, or event triggers) or automatically prepends a Manual Trigger.
-- **Node Whitelist & Connection Verification**: Verifies all connection sources and destinations against `n8n-nodes-base` specs.
+- **Node Whitelist & Connection Verification**: Verifies all connection sources and destinations against `n8n-nodes-base` specifications.
 - **Secrets Sanitization**: Automatically scrubs API keys, bearer tokens, and secrets into safe placeholders (e.g. `[YOUR_API_KEY]`).
 - **Canvas Auto-Layout**: Automatically computes left-to-right coordinates (`x, y`) with zero overlapping nodes.
 
 ### 🔄 Conversational Refine Mode with Visual Diff
-- Don't start over when you need to make changes. Use **Refine Mode** to request modifications like:
+- Request modifications naturally without starting over:
   - *"Add a Slack alert right after the email is sent"*
   - *"Filter out orders where total < $50"*
-- Inspect modifications with an intuitive **visual diff bar** (`+Added`, `-Removed`, `~Modified`) and choose to **Apply** or **Discard**.
+- Inspect changes with an intuitive **visual diff bar** (`+Added`, `-Removed`, `~Modified`) and choose to **Apply** or **Discard**.
 
 ### 🚀 1-Click Direct Deploy to n8n
 - Connect your self-hosted or n8n Cloud workspace with your n8n Base URL and API Key.
@@ -89,14 +98,14 @@ Instead of manually dragging nodes, wiring connections, and writing boilerplate 
 ### Prerequisites
 - [Node.js](https://nodejs.org) (v18.18+ or v20+)
 - npm or pnpm
-- A Google Gemini API key (or use with any Gemini-compatible endpoint)
+- A Google Gemini API key (or any supported provider key)
 
 ### Installation
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/your-username/op8n.git
-cd op8n
+git clone https://github.com/MeetPrajapati4/Op8n.git
+cd Op8n
 
 # 2. Install dependencies
 npm install
@@ -107,7 +116,7 @@ cp .env.example .env.local
 
 Add your Gemini API key in `.env.local`:
 ```env
-GEMINI_API_KEY=your_gemini_api_key_here
+AI_API_KEY=your_gemini_api_key_here
 ```
 
 ### Run Locally
@@ -119,11 +128,14 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000) in your browser.
 
-### Run Tests
+### Build for Production
 
 ```bash
-# Run unit test suite (13 tests: Zod schemas, auto-repair, secret sanitizer, layout)
-npm test
+# Build with Next.js Turbopack
+npm run build
+
+# Start production server
+npm start
 ```
 
 ---
@@ -132,15 +144,15 @@ npm test
 
 You have 3 easy ways to import workflows into n8n:
 
-### Method 1: 1-Click Direct Deploy (Fastest)
-1. Click **Send to n8n** in the Op8n toolbar.
-2. Enter your n8n instance URL (e.g., `https://your-n8n.cloud` or `http://localhost:5678`) and API Key.
-3. Click **Deploy Workflow** — Op8n creates the workflow and gives you a direct link to open it!
-
-### Method 2: Direct Canvas Paste
+### Method 1: Direct Canvas Paste (Recommended)
 1. Click **Copy JSON** in Op8n.
 2. Open your n8n workflow editor.
 3. Click anywhere on the canvas and press <kbd>Ctrl+V</kbd> (or <kbd>Cmd+V</kbd> on macOS).
+
+### Method 2: 1-Click Direct Deploy
+1. Click **Send to n8n** in the Op8n toolbar.
+2. Enter your n8n instance URL (e.g., `https://your-n8n.cloud` or `http://localhost:5678`) and API Key.
+3. Click **Deploy Workflow** — Op8n creates the workflow and gives you a direct link to open it!
 
 ### Method 3: Download & Import
 1. Click **Download .json** in the Op8n toolbar.
@@ -155,16 +167,19 @@ You have 3 easy ways to import workflows into n8n:
 op8n/
 ├── app/
 │   ├── api/
-│   │   ├── generate/route.ts      # Fast SSE workflow generation (Gemini 2.5 Flash)
+│   │   ├── generate/route.ts      # Fast SSE workflow generation with auto-repair
 │   │   ├── refine/route.ts        # Conversational refinement endpoint
-│   │   ├── explain/route.ts       # Security audit & logic explanation endpoint
+│   │   ├── audit/route.ts         # Security audit & logic explanation endpoint
+│   │   ├── validate-key/route.ts  # Multi-provider client key validation
+│   │   ├── status/route.ts        # Server status & cloud engine telemetry
+│   │   ├── health/route.ts        # Service uptime healthcheck
 │   │   └── n8n/deploy/route.ts    # SSRF-protected 1-click n8n REST deployer
-│   ├── globals.css                # Tailwind CSS v4 styling & animations
-│   ├── layout.tsx                 # Root layout, fonts (Geist, Syne) & SEO metadata
+│   ├── globals.css                # Tailwind CSS v4 styling & 60fps animations
+│   ├── layout.tsx                 # Root layout with Lenis smooth scrolling & fonts
 │   └── page.tsx                   # Main studio app shell (zero-scroll h-dvh)
 ├── components/
 │   ├── Header.tsx                 # Top navigation with Studio / Audit mode switcher
-│   ├── Footer.tsx                 # Status indicator, legal disclaimer & shortcuts
+│   ├── Footer.tsx                 # Clean, minimal bottom status bar
 │   ├── WorkflowForm.tsx           # Prompt textarea, presets & generation trigger
 │   ├── NodePreview.tsx            # Interactive canvas flow & Node Inspector popover
 │   ├── JsonViewer.tsx             # Syntax-highlighted JSON viewer with quick copy
@@ -172,16 +187,26 @@ op8n/
 │   ├── RefineBar.tsx              # Conversational diff bar with Add/Remove pills
 │   ├── DeployDialog.tsx           # Modal for 1-click n8n REST API deployment
 │   ├── ExplainView.tsx            # Security audit & step explanation UI
-│   ├── SettingsDialog.tsx         # Workflow canvas preferences & n8n instance setup
+│   ├── SettingsDialog.tsx         # Multi-provider keys, active model & canvas preferences
 │   ├── HistorySheet.tsx           # IndexedDB workflow history drawer
-│   └── ValidationBadge.tsx        # Schema validation status popover
-├── lib/
-│   ├── validator.ts               # Zod schemas, auto-layout, trigger check & sanitization
-│   ├── db.ts                      # IndexedDB persistent storage utilities (idb)
-│   ├── settings.ts                # User preferences & localStorage persistence
-│   └── n8n-types.ts               # Complete TypeScript interfaces for n8n workflows
-└── test/
-    └── validator.test.ts          # Vitest test suite with 10 fixtures & repair cases
+│   ├── ValidationBadge.tsx        # Schema validation status popover
+│   └── SmoothScroll.tsx           # Lenis smooth-scrolling wrapper
+└── lib/
+    ├── validator.ts               # Zod schemas, auto-layout, trigger check & sanitization
+    ├── prompt.ts                  # n8n node specification prompts & formatting rules
+    ├── settings.ts                # User preferences & localStorage persistence
+    ├── n8n-types.ts               # Complete TypeScript interfaces for n8n workflows
+    ├── db.ts                      # IndexedDB persistent storage utilities (idb)
+    ├── registry/
+    │   ├── providers.ts           # Multi-provider catalog (Gemini, OpenAI, Claude, Groq...)
+    │   └── model-filter.ts        # Model suitability filter & friendly naming
+    ├── client/
+    │   └── user-keys.ts           # Client-side encrypted write-once key management
+    └── server/
+        ├── auto-error-handler.ts  # Self-healing AI stream with automatic candidate failover
+        ├── provider-client.ts     # Unified multi-provider chat & stream client
+        ├── ai-config.ts           # Server-side environment key detection
+        └── rate-limiter.ts        # In-memory sliding window rate limiter
 ```
 
 ---
@@ -197,5 +222,5 @@ op8n/
 ## 📄 Attribution & License
 
 - Licensed under the **[MIT License](LICENSE)**.
-- Created and developed by **Meet Prajapati**.
+- Created and developed by **[Meet Prajapati](https://github.com/MeetPrajapati4)**.
 - Op8n is an independent project and is **not affiliated with, maintained by, or endorsed by n8n GmbH**.
